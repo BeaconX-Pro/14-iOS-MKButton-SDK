@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'MKBeaconXDButton_Example' do
+  pod 'MKBeaconXDButton', :path => '../'
+
+  target 'MKBeaconXDButton_Tests' do
+    inherit! :search_paths
+
+    pod 'FBSnapshotTestCase'
+  end
+end
