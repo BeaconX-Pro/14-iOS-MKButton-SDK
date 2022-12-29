@@ -28,15 +28,21 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/aadyx2007@163.com/MKBeaconXDButton.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '12.0'
 
   s.source_files = 'MKBeaconXDButton/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'MKBeaconXDButton' => ['MKBeaconXDButton/Assets/*.png']
-  # }
+  s.resource_bundles = {
+    'MKBeaconXDButton' => ['MKBeaconXDButton/Assets/*.png']
+  }
+  
+  s.dependency 'CTMediator'
+  s.dependency 'MKBaseBleModule'
+  s.dependency 'MKBaseModuleLibrary'
+  s.dependency 'MKCustomUIModule'
+  s.dependency 'MKBeaconXCustomUI'
+  s.dependency 'HHTransition'
+  s.dependency 'MLInputDodger'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  
 end
