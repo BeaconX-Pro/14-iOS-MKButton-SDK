@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'MKBeaconXDButton'
-  s.version          = '0.1.0'
+  s.version          = '0.0.1'
   s.summary          = 'A short description of MKBeaconXDButton.'
 
 # This description is used to generate tags and improve search results.
@@ -43,6 +43,7 @@ TODO: Add long description of the pod here.
   s.dependency 'MKBeaconXCustomUI'
   s.dependency 'HHTransition'
   s.dependency 'MLInputDodger'
+  s.dependency 'iOSDFULibrary'
 
   
 end

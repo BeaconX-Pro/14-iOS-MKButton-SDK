@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign)BOOL connectable;
 
-@property (nonatomic, assign)BOOL turnOffByButton;
-
 @property (nonatomic, assign)BOOL passwordVerification;
 
 @property (nonatomic, assign)BOOL resetByButton;

@@ -28,10 +28,6 @@
             [self operationFailedBlockWithMsg:@"Read LED Params Error" block:failedBlock];
             return;
         }
-        if (![self readVibrationParams]) {
-            [self operationFailedBlockWithMsg:@"Read Vibration Params Error" block:failedBlock];
-            return;
-        }
         if (![self readBuzzerParams]) {
             [self operationFailedBlockWithMsg:@"Read Buzzer Params Error" block:failedBlock];
             return;
@@ -51,20 +47,6 @@
         success = YES;
         self.blinkingTime = returnData[@"result"][@"time"];
         self.blinkingInterval = returnData[@"result"][@"interval"];
-        dispatch_semaphore_signal(self.semaphore);
-    } failedBlock:^(NSError * _Nonnull error) {
-        dispatch_semaphore_signal(self.semaphore);
-    }];
-    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
-    return success;
-}
-
-- (BOOL)readVibrationParams {
-    __block BOOL success = NO;
-    [MKBXDInterface bxd_readRemoteReminderVibrationNotiParamsWithSucBlock:^(id  _Nonnull returnData) {
-        success = YES;
-        self.vibratingTime = returnData[@"result"][@"time"];
-        self.vibratingInterval = returnData[@"result"][@"interval"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);

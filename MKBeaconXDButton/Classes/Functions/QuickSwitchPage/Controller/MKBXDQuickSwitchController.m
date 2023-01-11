@@ -80,8 +80,8 @@ MKBXQuickSwitchCellDelegate>
         return;
     }
     if (index == 1) {
-        //按键关机
-        [self configButtonPowerOff:isOn];
+        //按键恢复出厂设置
+        [self configButtonReset:isOn];
         return;
     }
     if (index == 2) {
@@ -90,18 +90,13 @@ MKBXQuickSwitchCellDelegate>
         return;
     }
     if (index == 3) {
-        //按键恢复出厂设置
-        [self configButtonReset:isOn];
+        //按键消警
+        [self configDismissByButton:isOn];
         return;
     }
     if (index == 4) {
         //回应包开关
         [self configScanPacket:isOn];
-        return;
-    }
-    if (index == 5) {
-        //按键消警
-        [self configDismissByButton:isOn];
         return;
     }
 }
@@ -141,47 +136,6 @@ MKBXQuickSwitchCellDelegate>
         self.dataModel.connectable = connect;
         MKBXQuickSwitchCellModel *cellModel = self.dataList[0];
         cellModel.isOn = connect;
-        [self.view showCentralToast:@"Success!"];
-    } failedBlock:^(NSError * _Nonnull error) {
-        [[MKHudManager share] hide];
-        [self.view showCentralToast:error.userInfo[@"errorInfo"]];
-        [self.collectionView reloadData];
-    }];
-}
-
-#pragma mark - 配置按键关机状态
-- (void)configButtonPowerOff:(BOOL)isOn {
-    if (isOn) {
-        [self setButtonPowerOffToDevice:isOn];
-        return;
-    }
-    //禁用按键关机
-    @weakify(self);
-    MKAlertViewAction *cancelAction = [[MKAlertViewAction alloc] initWithTitle:@"Cancel" handler:^{
-        @strongify(self);
-        [self.collectionView reloadData];
-    }];
-    
-    MKAlertViewAction *confirmAction = [[MKAlertViewAction alloc] initWithTitle:@"OK" handler:^{
-        @strongify(self);
-        [self setButtonPowerOffToDevice:isOn];
-    }];
-    NSString *msg = @"If this function is disabled, you cannot power off the Beacon by button.";
-    MKAlertView *alertView = [[MKAlertView alloc] init];
-    [alertView addAction:cancelAction];
-    [alertView addAction:confirmAction];
-    [alertView showAlertWithTitle:@"Warning!" message:msg notificationName:@"mk_bxd_needDismissAlert"];
-}
-
-- (void)setButtonPowerOffToDevice:(BOOL)isOn {
-    [[MKHudManager share] showHUDWithTitle:@"Setting..."
-                                     inView:self.view
-                              isPenetration:NO];
-    [MKBXDInterface bxd_configTurnOffDeviceByButtonStatus:isOn sucBlock:^{
-        [[MKHudManager share] hide];
-        self.dataModel.turnOffByButton = isOn;
-        MKBXQuickSwitchCellModel *cellModel = self.dataList[1];
-        cellModel.isOn = isOn;
         [self.view showCentralToast:@"Success!"];
     } failedBlock:^(NSError * _Nonnull error) {
         [[MKHudManager share] hide];
@@ -259,7 +213,7 @@ MKBXQuickSwitchCellDelegate>
     [MKBXDInterface bxd_configResetDeviceByButtonStatus:isOn sucBlock:^{
         [[MKHudManager share] hide];
         self.dataModel.resetByButton = isOn;
-        MKBXQuickSwitchCellModel *cellModel = self.dataList[3];
+        MKBXQuickSwitchCellModel *cellModel = self.dataList[1];
         cellModel.isOn = isOn;
         [self.view showCentralToast:@"Success!"];
     } failedBlock:^(NSError * _Nonnull error) {
@@ -318,7 +272,7 @@ MKBXQuickSwitchCellDelegate>
     [MKBXDInterface bxd_configDismissAlarmByButton:isOn sucBlock:^{
         [[MKHudManager share] hide];
         self.dataModel.dismiss = isOn;
-        MKBXQuickSwitchCellModel *cellModel = self.dataList[5];
+        MKBXQuickSwitchCellModel *cellModel = self.dataList[3];
         cellModel.isOn = isOn;
         [self.view showCentralToast:@"Success!"];
     } failedBlock:^(NSError * _Nonnull error) {
@@ -353,8 +307,8 @@ MKBXQuickSwitchCellDelegate>
     
     MKBXQuickSwitchCellModel *cellModel2 = [[MKBXQuickSwitchCellModel alloc] init];
     cellModel2.index = 1;
-    cellModel2.titleMsg = @"Turn off Beacon by button";
-    cellModel2.isOn = self.dataModel.turnOffByButton;
+    cellModel2.titleMsg = @"Reset Beacon by button";
+    cellModel2.isOn = self.dataModel.resetByButton;
     [self.dataList addObject:cellModel2];
     
     MKBXQuickSwitchCellModel *cellModel3 = [[MKBXQuickSwitchCellModel alloc] init];
@@ -365,9 +319,10 @@ MKBXQuickSwitchCellDelegate>
     
     MKBXQuickSwitchCellModel *cellModel4 = [[MKBXQuickSwitchCellModel alloc] init];
     cellModel4.index = 3;
-    cellModel4.titleMsg = @"Reset Beacon by button";
-    cellModel4.isOn = self.dataModel.resetByButton;
+    cellModel4.titleMsg = @"Dismiss alarm by button";
+    cellModel4.isOn = self.dataModel.dismiss;
     [self.dataList addObject:cellModel4];
+    
     
     MKBXQuickSwitchCellModel *cellModel5 = [[MKBXQuickSwitchCellModel alloc] init];
     cellModel5.index = 4;
@@ -375,11 +330,6 @@ MKBXQuickSwitchCellDelegate>
     cellModel5.isOn = self.dataModel.scanPacket;
     [self.dataList addObject:cellModel5];
     
-    MKBXQuickSwitchCellModel *cellModel6 = [[MKBXQuickSwitchCellModel alloc] init];
-    cellModel6.index = 5;
-    cellModel6.titleMsg = @"Dismiss alarm by button";
-    cellModel6.isOn = self.dataModel.dismiss;
-    [self.dataList addObject:cellModel6];
         
     [self.collectionView reloadData];
 }

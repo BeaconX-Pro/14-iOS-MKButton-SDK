@@ -121,17 +121,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readEffectiveClickIntervalWithSucBlock:(void (^)(id returnData))sucBlock
                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Turn off Device by button.
-/*
- @{
- @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_readTurnOffDeviceByButtonStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                            failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Scan response packet.
 /*
  @{
@@ -213,7 +202,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  @{
  @"channelType":@"00",           //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.
-    @"alarmNotificationType":@"0"           //0:Silent  1:LED 2:Vibration 3:Buzzer 4:LED+Vibration  5:LED+Buzzer
+    @"alarmNotificationType":@"0"           //0:Silent  1:LED 2:Buzzer 3:LED+Buzzer
  }
  */
 /// @param sucBlock Success callback
@@ -265,21 +254,6 @@ NS_ASSUME_NONNULL_BEGIN
                           sucBlock:(void (^)(id returnData))sucBlock
                        failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Trigger Vibration reminder parameters.
-/*
- @{
- @"channelType":@"00",           //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.
- @"time":@"10",         //x100ms
- @"interval":@"5",      //x100ms
- }
- */
-/// @param channelType channelType
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_readAlarmVibrationNotiParams:(MKBXDChannelAlarmType)channelType
-                                sucBlock:(void (^)(id returnData))sucBlock
-                             failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Buzzer Vibration reminder parameters.
 /*
  @{
@@ -306,18 +280,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_readRemoteReminderLEDNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
                                             failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Remote Vibration reminder parameters.
-/*
- @{
- @"time":@"10",         //x100ms
- @"interval":@"5",      //x100ms
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_readRemoteReminderVibrationNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
-                                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Remote Buzzer reminder parameters.
 /*
@@ -354,18 +316,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readDismissAlarmLEDNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
                                           failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Read Vibration dismissal alarm parameter.
-/*
- @{
- @"time":@"10",         //x100ms
- @"interval":@"5",      //x100ms
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_readDismissAlarmVibrationNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
-                                                failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Read Buzzer dismissal alarm parameter.
 /*
  @{
@@ -381,7 +331,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Dismiss alarm notification type.
 /*
  @{
-    @"type":@"0"           //0:Silent  1:LED 2:Vibration 3:Buzzer 4:LED+Vibration  5:LED+Buzzer
+    @"type":@"0"           //0:Silent  1:LED 2:Buzzer 3:LED+Buzzer
  }
  */
 /// @param sucBlock Success callback
@@ -399,17 +349,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_readBatteryVoltageWithSucBlock:(void (^)(id returnData))sucBlock
                                failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Read device current time.
-/*
- @{
- @"timestamp":@"1646797042924",
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_readDeviceTimeWithSucBlock:(void (^)(id returnData))sucBlock
-                           failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read sensor status.
 /*

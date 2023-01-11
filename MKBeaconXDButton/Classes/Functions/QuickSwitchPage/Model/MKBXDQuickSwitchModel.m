@@ -30,10 +30,6 @@
             [self operationFailedBlockWithMsg:@"Read Connectable Error" block:failedBlock];
             return;
         }
-        if (![self readTurnOffByButton]) {
-            [self operationFailedBlockWithMsg:@"Read Turn off Beacon by button Error" block:failedBlock];
-            return;
-        }
         if (![self readPasswordVerification]) {
             [self operationFailedBlockWithMsg:@"Read Password verification Error" block:failedBlock];
             return;
@@ -64,19 +60,6 @@
     [MKBXDInterface bxd_readConnectableWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
         self.connectable = [returnData[@"result"][@"connectable"] boolValue];
-        dispatch_semaphore_signal(self.semaphore);
-    } failedBlock:^(NSError * _Nonnull error) {
-        dispatch_semaphore_signal(self.semaphore);
-    }];
-    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
-    return success;
-}
-
-- (BOOL)readTurnOffByButton {
-    __block BOOL success = NO;
-    [MKBXDInterface bxd_readTurnOffDeviceByButtonStatusWithSucBlock:^(id  _Nonnull returnData) {
-        success = YES;
-        self.turnOffByButton = [returnData[@"result"][@"isOn"] boolValue];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);

@@ -2,6 +2,8 @@ PODS:
   - CircleProgressBar (0.32)
   - CTMediator (46)
   - HHTransition (3.1.0)
+  - iOSDFULibrary (4.13.0):
+    - ZIPFoundation (= 0.9.11)
   - Masonry (1.1.0)
   - MBProgressHUD (1.2.0)
   - MJRefresh (3.7.5)
@@ -206,6 +208,7 @@ PODS:
   - MKBeaconXDButton (0.1.0):
     - CTMediator
     - HHTransition
+    - iOSDFULibrary
     - MKBaseBleModule
     - MKBaseModuleLibrary
     - MKBeaconXCustomUI
@@ -598,6 +601,7 @@ PODS:
   - MLInputDodger (1.5.2)
   - Toast (4.0.0)
   - WRNavigationBar (1.4.0)
+  - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
   - MKBeaconXDButton (from `../`)
@@ -607,6 +611,7 @@ SPEC REPOS:
     - CircleProgressBar
     - CTMediator
     - HHTransition
+    - iOSDFULibrary
     - Masonry
     - MBProgressHUD
     - MJRefresh
@@ -617,6 +622,7 @@ SPEC REPOS:
     - MLInputDodger
     - Toast
     - WRNavigationBar
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   MKBeaconXDButton:
@@ -626,17 +632,19 @@ SPEC CHECKSUMS:
   CircleProgressBar: 3920079be5224b62b3d9ed6eeb23ac01c835b681
   CTMediator: f1cf58d509fb3192086c367711f039efd769b907
   HHTransition: 7a3e1348fd111641138626c5529455e492d7e19f
+  iOSDFULibrary: 3b9de67ed4bfb901b5f09c2fea843f65e152612d
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   MJRefresh: fdf5e979eb406a0341468932d1dfc8b7f9fce961
   MKBaseBleModule: 15aa067c4e408a473e025b1a768ebce00a7e5949
   MKBaseModuleLibrary: 6de43aeeb519d1c5f3aa94ebaffe8b3a57351312
   MKBeaconXCustomUI: e75dc529c553c9424e647e30272a463e0a8e9a4e
-  MKBeaconXDButton: 75121b3149a218b79e9915c3ea3357ce41c6a2d0
+  MKBeaconXDButton: bf47ebd374a5a0de6966466ff782ae51e9232350
   MKCustomUIModule: 83b76a0ccd1ac855157091b389154bd6a309c414
   MLInputDodger: 79a0e420a80d0d3bba122bf2639603cc76609ba8
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   WRNavigationBar: 10bfdf96addf14d640d07c2ef08a029c18d8af10
+  ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
 PODFILE CHECKSUM: e0f24954bffcc4e1ca9aad703a2b64b3d417f1aa
 

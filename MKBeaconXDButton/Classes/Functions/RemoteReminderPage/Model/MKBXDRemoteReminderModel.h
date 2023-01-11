@@ -17,11 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy)NSString *blinkingInterval;
 
-#pragma mark - Vibration notification
-@property (nonatomic, copy)NSString *vibratingTime;
-
-@property (nonatomic, copy)NSString *vibratingInterval;
-
 #pragma mark - Buzzer notification
 @property (nonatomic, copy)NSString *ringingTime;
 

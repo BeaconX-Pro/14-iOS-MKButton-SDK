@@ -24,10 +24,6 @@
 
 - (void)readDataWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock {
     dispatch_async(self.readQueue, ^{
-        if (![self readTimestamp]) {
-            [self operationFailedBlockWithMsg:@"Read Timestamp Error" block:failedBlock];
-            return;
-        }
         if (![self readSingleCount]) {
             [self operationFailedBlockWithMsg:@"Read Single Count Error" block:failedBlock];
             return;
@@ -49,23 +45,6 @@
 }
 
 #pragma mark - interface
-- (BOOL)readTimestamp {
-    __block BOOL success = NO;
-    [MKBXDInterface bxd_readDeviceTimeWithSucBlock:^(id  _Nonnull returnData) {
-        success = YES;
-        NSDate *date = [NSDate dateWithTimeIntervalSince1970:([returnData[@"result"][@"timestamp"] longLongValue] / 1000.0)];
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy-MM-dd hh:mm:ss.SSS"];
-        NSString *tempValue = [formatter stringFromDate:date];
-        NSArray *tempList = [tempValue componentsSeparatedByString:@" "];
-        self.timestamp = [NSString stringWithFormat:@"%@T%@Z",tempList[0],tempList[1]];
-        dispatch_semaphore_signal(self.semaphore);
-    } failedBlock:^(NSError * _Nonnull error) {
-        dispatch_semaphore_signal(self.semaphore);
-    }];
-    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
-    return success;
-}
 
 - (BOOL)readSingleCount {
     __block BOOL success = NO;

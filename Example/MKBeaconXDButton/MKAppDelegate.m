@@ -58,7 +58,7 @@
 }
 
 - (void)addLaunchScreen {
-    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"Launch Screen" bundle:nil] instantiateViewControllerWithIdentifier:@"LaunchImageBoard"];
+    UIViewController *viewController = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil] instantiateViewControllerWithIdentifier:@"LaunchImageBoard"];
     self.launchView = viewController.view;
     [self.window addSubview:self.launchView];
     [self.window bringSubviewToFront:self.launchView];

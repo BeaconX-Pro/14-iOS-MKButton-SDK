@@ -46,10 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
 /*
 0:Silent
 1:LED
-2:Vibration
-3:Buzzer
-4:LED+Vibration
-5:LED+Buzzer
+2:Buzzer
+3:LED+Buzzer
 */
 - (void)updateNotificationType:(NSInteger)notiType;
 

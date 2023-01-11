@@ -33,10 +33,6 @@
             [self operationFailedBlockWithMsg:@"Read LED Params Error" block:failedBlock];
             return;
         }
-        if (![self readVibrationParams]) {
-            [self operationFailedBlockWithMsg:@"Read Vibration Params Error" block:failedBlock];
-            return;
-        }
         if (![self readBuzzerParams]) {
             [self operationFailedBlockWithMsg:@"Read Buzzer Params Error" block:failedBlock];
             return;
@@ -60,21 +56,14 @@
             return;
         }
         
-        if (self.dismissAlarmNotiType == 1 || self.dismissAlarmNotiType == 4 || self.dismissAlarmNotiType == 5) {
-            //LED/LED+Vibration/LED+Buzzer
+        if (self.dismissAlarmNotiType == 1 || self.dismissAlarmNotiType == 3) {
+            //LED/LED+Buzzer
             if (![self configLEDParams]) {
                 [self operationFailedBlockWithMsg:@"Config LED Params Error" block:failedBlock];
                 return;
             }
         }
-        if (self.dismissAlarmNotiType == 2 || self.dismissAlarmNotiType == 4) {
-            //Vibration/LED+Vibration
-            if (![self configVibrationParams]) {
-                [self operationFailedBlockWithMsg:@"Config Vibration Params Error" block:failedBlock];
-                return;
-            }
-        }
-        if (self.dismissAlarmNotiType == 3 || self.dismissAlarmNotiType == 5) {
+        if (self.dismissAlarmNotiType == 2 || self.dismissAlarmNotiType == 3) {
             //Buzzer/LED+Buzzer
             if (![self configBuzzerParams]) {
                 [self operationFailedBlockWithMsg:@"Config Buzzer Params Error" block:failedBlock];
@@ -142,32 +131,6 @@
     return success;
 }
 
-- (BOOL)readVibrationParams {
-    __block BOOL success = NO;
-    [MKBXDInterface bxd_readDismissAlarmVibrationNotiParamsWithSucBlock:^(id  _Nonnull returnData) {
-        success = YES;
-        self.vibratingTime = returnData[@"result"][@"time"];
-        self.vibratingInterval = returnData[@"result"][@"interval"];
-        dispatch_semaphore_signal(self.semaphore);
-    } failedBlock:^(NSError * _Nonnull error) {
-        dispatch_semaphore_signal(self.semaphore);
-    }];
-    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
-    return success;
-}
-
-- (BOOL)configVibrationParams {
-    __block BOOL success = NO;
-    [MKBXDInterface bxd_configDismissAlarmVibrationNotiParams:[self.vibratingTime integerValue] interval:[self.vibratingInterval integerValue] sucBlock:^{
-        success = YES;
-        dispatch_semaphore_signal(self.semaphore);
-    } failedBlock:^(NSError * _Nonnull error) {
-        dispatch_semaphore_signal(self.semaphore);
-    }];
-    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
-    return success;
-}
-
 - (BOOL)readBuzzerParams {
     __block BOOL success = NO;
     [MKBXDInterface bxd_readDismissAlarmBuzzerNotiParamsWithSucBlock:^(id  _Nonnull returnData) {
@@ -205,35 +168,19 @@
 }
 
 - (BOOL)validParams {
-    if (self.dismissAlarmNotiType == 0) {
-        //Silent
-        return YES;
-    }
     if (self.dismissAlarmNotiType == 1) {
         //LED
         return [self validLEDParams];
     }
     if (self.dismissAlarmNotiType == 2) {
-        //Vibration
-        return [self validVibratingParams];
-    }
-    if (self.dismissAlarmNotiType == 3) {
         //Buzzer
         return [self validBuzzerParams];
     }
-    if (self.dismissAlarmNotiType == 4) {
-        //LED+Vibration
-        if (![self validLEDParams] || ![self validVibratingParams]) {
-            return NO;
-        }
-        return YES;
-    }
-    if (self.dismissAlarmNotiType == 5) {
+    if (self.dismissAlarmNotiType == 3) {
         //LED+Buzzer
         if (![self validLEDParams] || ![self validBuzzerParams]) {
             return NO;
         }
-        return YES;
     }
     return YES;
 }
@@ -243,16 +190,6 @@
         return NO;
     }
     if (!ValidStr(self.blinkingInterval) || [self.blinkingInterval integerValue] < 1 || [self.blinkingInterval integerValue] > 100) {
-        return NO;
-    }
-    return YES;
-}
-
-- (BOOL)validVibratingParams {
-    if (!ValidStr(self.vibratingTime) || [self.vibratingTime integerValue] < 1 || [self.vibratingTime integerValue] > 6000) {
-        return NO;
-    }
-    if (!ValidStr(self.vibratingInterval) || [self.vibratingInterval integerValue] < 1 || [self.vibratingInterval integerValue] > 100) {
         return NO;
     }
     return YES;

@@ -120,14 +120,6 @@
                  failedBlock:failedBlock];
 }
 
-+ (void)bxd_readTurnOffDeviceByButtonStatusWithSucBlock:(void (^)(id returnData))sucBlock
-                                            failedBlock:(void (^)(NSError *error))failedBlock {
-    [self readDataWithTaskID:mk_bxd_taskReadTurnOffDeviceByButtonStatusOperation
-                     cmdFlag:@"29"
-                    sucBlock:sucBlock
-                 failedBlock:failedBlock];
-}
-
 + (void)bxd_readScanResponsePacketWithSucBlock:(void (^)(id returnData))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadScanResponsePacketOperation
@@ -236,18 +228,6 @@
                          failureBlock:failedBlock];
 }
 
-+ (void)bxd_readAlarmVibrationNotiParams:(MKBXDChannelAlarmType)channelType
-                                sucBlock:(void (^)(id returnData))sucBlock
-                             failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
-    NSString *commandString = [@"ea003c01" stringByAppendingString:type];
-    [centralManager addTaskWithTaskID:mk_bxd_taskReadAlarmVibrationNotiParamsOperation
-                       characteristic:peripheral.bxd_custom
-                          commandData:commandString
-                         successBlock:sucBlock
-                         failureBlock:failedBlock];
-}
-
 + (void)bxd_readAlarmBuzzerNotiParams:(MKBXDChannelAlarmType)channelType
                              sucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock {
@@ -264,14 +244,6 @@
                                             failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadRemoteReminderLEDNotiParamsOperation
                      cmdFlag:@"3e"
-                    sucBlock:sucBlock
-                 failedBlock:failedBlock];
-}
-
-+ (void)bxd_readRemoteReminderVibrationNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
-                                                  failedBlock:(void (^)(NSError *error))failedBlock {
-    [self readDataWithTaskID:mk_bxd_taskReadRemoteReminderVibrationNotiParamsOperation
-                     cmdFlag:@"3f"
                     sucBlock:sucBlock
                  failedBlock:failedBlock];
 }
@@ -300,14 +272,6 @@
                  failedBlock:failedBlock];
 }
 
-+ (void)bxd_readDismissAlarmVibrationNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
-                                                failedBlock:(void (^)(NSError *error))failedBlock {
-    [self readDataWithTaskID:mk_bxd_taskReadDismissAlarmVibrationNotiParamsOperation
-                     cmdFlag:@"44"
-                    sucBlock:sucBlock
-                 failedBlock:failedBlock];
-}
-
 + (void)bxd_readDismissAlarmBuzzerNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
                                              failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadDismissAlarmBuzzerNotiParamsOperation
@@ -328,14 +292,6 @@
                                failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadBatteryVoltageOperation
                      cmdFlag:@"4a"
-                    sucBlock:sucBlock
-                 failedBlock:failedBlock];
-}
-
-+ (void)bxd_readDeviceTimeWithSucBlock:(void (^)(id returnData))sucBlock
-                           failedBlock:(void (^)(NSError *error))failedBlock {
-    [self readDataWithTaskID:mk_bxd_taskReadDeviceTimeOperation
-                     cmdFlag:@"4b"
                     sucBlock:sucBlock
                  failedBlock:failedBlock];
 }

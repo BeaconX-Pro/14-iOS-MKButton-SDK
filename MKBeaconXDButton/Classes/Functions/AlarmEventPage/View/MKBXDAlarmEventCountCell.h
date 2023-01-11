@@ -22,11 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol MKBXDAlarmEventCountCellDelegate <NSObject>
 
-- (void)bxd_alarmEvent_checkButtonPressed:(NSInteger)index;
-
 - (void)bxd_alarmEvent_clearButtonPressed:(NSInteger)index;
-
-- (void)bxd_alarmEvent_exportButtonPressed:(NSInteger)index;
 
 @end
 

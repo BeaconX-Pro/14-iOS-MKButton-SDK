@@ -251,7 +251,7 @@ static CGFloat const pickerViewWidth = 110.f;
 
 - (NSMutableArray *)dataList {
     if (!_dataList) {
-        _dataList = [NSMutableArray arrayWithObjects:@"Silent",@"LED",@"Vibration",@"Buzzer",@"LED+Vibration",@"LED+Buzzer", nil];
+        _dataList = [NSMutableArray arrayWithObjects:@"Silent",@"LED",@"Buzzer",@"LED+Buzzer", nil];
     }
     return _dataList;
 }

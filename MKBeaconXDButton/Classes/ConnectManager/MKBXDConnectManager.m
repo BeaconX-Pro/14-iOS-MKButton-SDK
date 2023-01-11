@@ -61,12 +61,19 @@
 //            [self operationFailedMsg:@"Read Device Type Error" completeBlock:failedBlock];
 //            return;
 //        }
-        if (![self readSensorStatus]) {
-            [self operationFailedMsg:@"Read Sensor Error" completeBlock:failedBlock];
+        NSString *software = [self readSoftwareVersion];
+        if (!ValidStr(software)) {
+            [self operationFailedMsg:@"Read Software Failed!" completeBlock:failedBlock];
             return;
         }
-        if (![self configDate]) {
-            [self operationFailedMsg:@"Sync Time Failed" completeBlock:failedBlock];
+        if (![software isEqualToString:@"BXP-B-D"]) {
+            [self operationFailedMsg:@"Opps:The current app only supports BXP-B-D type devices!" completeBlock:failedBlock];
+            return;
+            return;
+        }
+        
+        if (![self readSensorStatus]) {
+            [self operationFailedMsg:@"Read Sensor Error" completeBlock:failedBlock];
             return;
         }
         moko_dispatch_main_safe(^{
@@ -127,6 +134,18 @@
     return success;
 }
 
+- (NSString *)readSoftwareVersion {
+    __block NSString *software = @"";
+    [MKBXDInterface bxd_readSoftwareWithSucBlock:^(id  _Nonnull returnData) {
+        software = returnData[@"result"][@"software"];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return software;
+}
+
 - (BOOL)readSensorStatus {
     __block BOOL success = NO;
     [MKBXDInterface bxd_readSensorStatusWithSucBlock:^(id  _Nonnull returnData) {
@@ -134,20 +153,6 @@
         self.threeSensor = [returnData[@"result"][@"threeAxis"] boolValue];
         self.htSensor = [returnData[@"result"][@"htSensor"] boolValue];
         self.lightSensor = [returnData[@"result"][@"lightSensor"] boolValue];
-        dispatch_semaphore_signal(self.semaphore);
-    } failedBlock:^(NSError * _Nonnull error) {
-        dispatch_semaphore_signal(self.semaphore);
-    }];
-    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
-    return success;
-}
-
-- (BOOL)configDate {
-    __block BOOL success = NO;
-    NSDate *zoneDate = [NSDate dateWithTimeIntervalSinceNow:-8*60*60];
-    NSTimeInterval interval = [zoneDate timeIntervalSince1970];
-    [MKBXDInterface bxd_configDeviceTime:(interval * 1000) sucBlock:^{
-        success = YES;
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);

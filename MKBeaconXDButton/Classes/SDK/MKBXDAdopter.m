@@ -137,12 +137,8 @@
             return @"00";
         case mk_bxd_reminderType_led:
             return @"01";
-        case mk_bxd_reminderType_vibration:
-            return @"02";
         case mk_bxd_reminderType_buzzer:
             return @"03";
-        case mk_bxd_reminderType_ledAndVibration:
-            return @"04";
         case mk_bxd_reminderType_ledAndBuzzer:
             return @"05";
     }

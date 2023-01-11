@@ -71,14 +71,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_factoryResetWithSucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Turn off Device by button.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_configTurnOffDeviceByButtonStatus:(BOOL)isOn
-                                     sucBlock:(void (^)(void))sucBlock
-                                  failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Scan response packet.
 /// @param isOn isOn
 /// @param sucBlock Success callback
@@ -165,18 +157,6 @@ NS_ASSUME_NONNULL_BEGIN
                             sucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Trigger Vibration reminder parameters.
-/// @param channelType channelType
-/// @param vibratingTime Vibrating time.1 ~ 6000(Unit:100ms)
-/// @param vibratingInterval Vibrating interval.1 ~ 100(Unit:100ms)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_configAlarmVibrationNotiParams:(MKBXDChannelAlarmType)channelType
-                             vibratingTime:(NSInteger)vibratingTime
-                         vibratingInterval:(NSInteger)vibratingInterval
-                                  sucBlock:(void (^)(void))sucBlock
-                               failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Trigger Buzzer reminder parameters.
 /// @param channelType channelType
 /// @param ringingTime Ringing time.1 ~ 6000(Unit:100ms)
@@ -198,16 +178,6 @@ NS_ASSUME_NONNULL_BEGIN
                              blinkingInterval:(NSInteger)blinkingInterval
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Remote Vibration reminder parameters.
-/// @param vibratingTime Vibrating time.1 ~ 6000(Unit:100ms)
-/// @param vibratingInterval Vibrating interval.1 ~ 100(Unit:100ms)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_configRemoteReminderVibrationNotiParams:(NSInteger)vibratingTime
-                                  vibratingInterval:(NSInteger)vibratingInterval
-                                           sucBlock:(void (^)(void))sucBlock
-                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Remote Buzzer reminder parameters.
 /// @param ringingTime Ringing time.1 ~ 6000(Unit:100ms)
@@ -242,16 +212,6 @@ NS_ASSUME_NONNULL_BEGIN
                                    interval:(NSInteger)interval
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Configure Vibration dismissal alarm parameter.
-/// @param time 1~6000 (unit:100ms)
-/// @param interval 1~100(unit:100ms)
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_configDismissAlarmVibrationNotiParams:(NSInteger)time
-                                         interval:(NSInteger)interval
-                                         sucBlock:(void (^)(void))sucBlock
-                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure Buzzer dismissal alarm parameter.
 /// @param time 1~6000 (unit:100ms)
@@ -288,14 +248,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_clearLongPressEventDataWithSucBlock:(void (^)(void))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
-
-/// Configure Device Time.
-/// @param timestamp Timestamp
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_configDeviceTime:(long long)timestamp
-                    sucBlock:(void (^)(void))sucBlock
-                 failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure the device' ID.
 /// @param deviceID 1 ~ 6 Bytes.(HEX)

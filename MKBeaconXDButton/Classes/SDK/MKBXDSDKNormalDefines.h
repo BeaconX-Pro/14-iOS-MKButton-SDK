@@ -22,9 +22,7 @@ typedef NS_ENUM(NSInteger, mk_bxd_txPower) {
 typedef NS_ENUM(NSInteger, mk_bxd_reminderType) {
     mk_bxd_reminderType_silent,
     mk_bxd_reminderType_led,
-    mk_bxd_reminderType_vibration,
     mk_bxd_reminderType_buzzer,
-    mk_bxd_reminderType_ledAndVibration,
     mk_bxd_reminderType_ledAndBuzzer,
 };
 

@@ -137,13 +137,6 @@
         resultDic = @{
             @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
         };
-    }else if ([cmd isEqualToString:@"29"]) {
-        //读取按键开关及状态
-        operationID = mk_bxd_taskReadTurnOffDeviceByButtonStatusOperation;
-        BOOL isOn = [content isEqualToString:@"01"];
-        resultDic = @{
-            @"isOn":@(isOn)
-        };
     }else if ([cmd isEqualToString:@"2f"]) {
         //读取回应包开关
         operationID = mk_bxd_taskReadScanResponsePacketOperation;
@@ -216,7 +209,19 @@
         //读取触发提醒模式
         operationID = mk_bxd_taskReadAlarmNotificationTypeOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
-        NSString *alarmNotiType = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 2)];
+        NSInteger noteType = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(2, 2)];
+        //默认Silent
+        NSString *alarmNotiType = @"0";
+        if (noteType == 1) {
+            //LED
+            alarmNotiType = @"1";
+        }else if (noteType == 3) {
+            //Buzzer
+            alarmNotiType = @"2";
+        }else if (noteType == 5) {
+            //LED+Buzzer
+            alarmNotiType = @"3";
+        }
         resultDic = @{
             @"channelType":channelType,
             @"alarmNotificationType":alarmNotiType,
@@ -253,17 +258,6 @@
             @"time":time,
             @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
         };
-    }else if ([cmd isEqualToString:@"3c"]) {
-        //读取通道触发马达提醒参数
-        operationID = mk_bxd_taskReadAlarmVibrationNotiParamsOperation;
-        NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
-        resultDic = @{
-            @"channelType":channelType,
-            @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
-        };
     }else if ([cmd isEqualToString:@"3d"]) {
         //读取通道触发蜂鸣器提醒参数
         operationID = mk_bxd_taskReadAlarmBuzzerNotiParamsOperation;
@@ -278,15 +272,6 @@
     }else if ([cmd isEqualToString:@"3e"]) {
         //读取远程LED提醒参数
         operationID = mk_bxd_taskReadRemoteReminderLEDNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
-        resultDic = @{
-            @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
-        };
-    }else if ([cmd isEqualToString:@"3f"]) {
-        //读取远程马达提醒参数
-        operationID = mk_bxd_taskReadRemoteReminderVibrationNotiParamsOperation;
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
         NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
@@ -318,15 +303,6 @@
             @"time":time,
             @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
         };
-    }else if ([cmd isEqualToString:@"44"]) {
-        //读取马达消警参数
-        operationID = mk_bxd_taskReadDismissAlarmVibrationNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
-        resultDic = @{
-            @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
-        };
     }else if ([cmd isEqualToString:@"45"]) {
         //读取蜂鸣器消警参数
         operationID = mk_bxd_taskReadDismissAlarmBuzzerNotiParamsOperation;
@@ -339,7 +315,19 @@
     }else if ([cmd isEqualToString:@"46"]) {
         //读取消警提醒模式
         operationID = mk_bxd_taskReadDismissAlarmNotificationTypeOperation;
-        NSString *alarmNotiType = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSInteger noteType = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(0, content.length)];
+        //默认Silent
+        NSString *alarmNotiType = @"0";
+        if (noteType == 1) {
+            //LED
+            alarmNotiType = @"1";
+        }else if (noteType == 3) {
+            //Buzzer
+            alarmNotiType = @"2";
+        }else if (noteType == 5) {
+            //LED+Buzzer
+            alarmNotiType = @"3";
+        }
         resultDic = @{
             @"type":alarmNotiType,
         };
@@ -350,11 +338,6 @@
         resultDic = @{
             @"voltage":voltage,
         };
-    }else if ([cmd isEqualToString:@"4b"]) {
-        //读取设备时间
-        operationID = mk_bxd_taskReadDeviceTimeOperation;
-        NSString *timestamp = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
-        resultDic = @{@"timestamp":timestamp};
     }else if ([cmd isEqualToString:@"4f"]) {
         //读取传感器状态
         operationID = mk_bxd_taskReadSensorStatusOperation;
@@ -437,9 +420,6 @@
     }else if ([cmd isEqualToString:@"28"]) {
         //恢复出厂设置
         operationID = mk_bxd_taskConfigFactoryResetOperation;
-    }else if ([cmd isEqualToString:@"29"]) {
-        //设置按键开关机状态
-        operationID = mk_bxd_taskConfigTurnOffDeviceByButtonStatusOperation;
     }else if ([cmd isEqualToString:@"2f"]) {
         //设置回应包开关
         operationID = mk_bxd_taskConfigScanResponsePacketOperation;
@@ -470,18 +450,12 @@
     }else if ([cmd isEqualToString:@"3b"]) {
         //设置通道触发LED提醒参数
         operationID = mk_bxd_taskConfigAlarmLEDNotiParamsOperation;
-    }else if ([cmd isEqualToString:@"3c"]) {
-        //设置通道触发马达提醒参数
-        operationID = mk_bxd_taskConfigAlarmVibrationNotiParamsOperation;
     }else if ([cmd isEqualToString:@"3d"]) {
         //设置通道触发蜂鸣器提醒参数
         operationID = mk_bxd_taskConfigAlarmBuzzerNotiParamsOperation;
     }else if ([cmd isEqualToString:@"3e"]) {
         //设置远程LED提醒参数
         operationID = mk_bxd_taskConfigRemoteReminderLEDNotiParamsOperation;
-    }else if ([cmd isEqualToString:@"3f"]) {
-        //设置远程马达提醒参数
-        operationID = mk_bxd_taskConfigRemoteReminderVibrationNotiParamsOperation;
     }else if ([cmd isEqualToString:@"40"]) {
         //设置远程蜂鸣器提醒参数
         operationID = mk_bxd_taskConfigRemoteReminderBuzzerNotiParamsOperation;
@@ -494,9 +468,6 @@
     }else if ([cmd isEqualToString:@"43"]) {
         //设置远程LED消警参数
         operationID = mk_bxd_taskConfigDismissAlarmLEDNotiParamsOperation;
-    }else if ([cmd isEqualToString:@"44"]) {
-        //设置远程马达消警参数
-        operationID = mk_bxd_taskConfigDismissAlarmVibrationNotiParamsOperation;
     }else if ([cmd isEqualToString:@"45"]) {
         //设置远程蜂鸣器消警参数
         operationID = mk_bxd_taskConfigDismissAlarmBuzzerNotiParamsOperation;
@@ -512,9 +483,6 @@
     }else if ([cmd isEqualToString:@"49"]) {
         //删除长按通道触发记录
         operationID = mk_bxd_taskClearLongPressEventDataOperation;
-    }else if ([cmd isEqualToString:@"4b"]) {
-        //设置设备时间
-        operationID = mk_bxd_taskConfigDeviceTimeOperation;
     }else if ([cmd isEqualToString:@"50"]) {
         //设置deviceID
         operationID = mk_bxd_taskConfigDeviceIDOperation;
