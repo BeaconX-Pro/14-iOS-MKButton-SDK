@@ -8,6 +8,19 @@
 
 #import "Target_BXD_Module.h"
 
+#import "MKBXDScanController.h"
+#import "MKBXDAboutController.h"
+
 @implementation Target_BXD_Module
+
+/// 扫描页面
+- (UIViewController *)Action_BXPButton_D_Module_ScanController:(NSDictionary *)params {
+    return [[MKBXDScanController alloc] init];
+}
+
+/// 关于页面
+- (UIViewController *)Action_BXPButton_D_Module_AboutController:(NSDictionary *)params {
+    return [[MKBXDAboutController alloc] init];
+}
 
 @end
