@@ -205,15 +205,711 @@ PODS:
     - MKBaseModuleLibrary
     - MKCustomUIModule
     - MLInputDodger
-  - MKBeaconXDButton (0.1.0):
+  - MKBeaconXDButton (0.0.1):
+    - MKBeaconXDButton/ApplicationModule (= 0.0.1)
+    - MKBeaconXDButton/ConnectManager (= 0.0.1)
+    - MKBeaconXDButton/CTMediator (= 0.0.1)
+    - MKBeaconXDButton/Expand (= 0.0.1)
+    - MKBeaconXDButton/Functions (= 0.0.1)
+    - MKBeaconXDButton/SDK (= 0.0.1)
+    - MKBeaconXDButton/Target (= 0.0.1)
+  - MKBeaconXDButton/ApplicationModule (0.0.1):
+    - MKBaseModuleLibrary
+  - MKBeaconXDButton/ConnectManager (0.0.1):
+    - MKBaseModuleLibrary
+    - MKBeaconXDButton/SDK
+  - MKBeaconXDButton/CTMediator (0.0.1):
     - CTMediator
+    - MKBaseModuleLibrary
+  - MKBeaconXDButton/Expand (0.0.1):
+    - MKBaseModuleLibrary
+    - MKBeaconXDButton/Expand/View (= 0.0.1)
+    - MKCustomUIModule
+  - MKBeaconXDButton/Expand/View (0.0.1):
+    - MKBaseModuleLibrary
+    - MKBeaconXDButton/Expand/View/DeviceIDCell (= 0.0.1)
+    - MKBeaconXDButton/Expand/View/NTPickerView (= 0.0.1)
+    - MKCustomUIModule
+  - MKBeaconXDButton/Expand/View/DeviceIDCell (0.0.1):
+    - MKBaseModuleLibrary
+    - MKCustomUIModule
+  - MKBeaconXDButton/Expand/View/NTPickerView (0.0.1):
+    - MKBaseModuleLibrary
+    - MKCustomUIModule
+  - MKBeaconXDButton/Functions (0.0.1):
     - HHTransition
-    - iOSDFULibrary
-    - MKBaseBleModule
     - MKBaseModuleLibrary
     - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AboutPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/AccelerationPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmDataExportPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmEventPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmNotiTypePage (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/DeviceInfoPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/DevicePage (= 0.0.1)
+    - MKBeaconXDButton/Functions/DismissConfigPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/PowerSavePage (= 0.0.1)
+    - MKBeaconXDButton/Functions/QuickSwitchPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/RemoteReminderPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/ScanPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/SettingPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/TabBarPage (= 0.0.1)
+    - MKBeaconXDButton/Functions/UpdatePage (= 0.0.1)
+    - MKBeaconXDButton/SDK
     - MKCustomUIModule
     - MLInputDodger
+  - MKBeaconXDButton/Functions/AboutPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AboutPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AboutPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AccelerationPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AccelerationPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/AccelerationPage/Model (= 0.0.1)
+    - MKBeaconXDButton/Functions/AccelerationPage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AccelerationPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AccelerationPage/Model
+    - MKBeaconXDButton/Functions/AccelerationPage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AccelerationPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AccelerationPage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmDataExportPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmDataExportPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmDataExportPage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmDataExportPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmDataExportPage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmDataExportPage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmEventPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmEventPage/Model (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmEventPage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmDataExportPage/Controller
+    - MKBeaconXDButton/Functions/AlarmEventPage/Model
+    - MKBeaconXDButton/Functions/AlarmEventPage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventPage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmModeConfigPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage/Model (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmModeConfigPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage/Model
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage/View
+    - MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmModeConfigPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmModeConfigPage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmNotiTypePage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmNotiTypePage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmNotiTypePage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmNotiTypePage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/AlarmPage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmModeConfigPage/Controller
+    - MKBeaconXDButton/Functions/AlarmPage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DeviceInfoPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/DeviceInfoPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/DeviceInfoPage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DeviceInfoPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/DeviceInfoPage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DeviceInfoPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DevicePage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/DevicePage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/DevicePage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DevicePage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/DeviceInfoPage/Controller
+    - MKBeaconXDButton/Functions/DevicePage/Model
+    - MKBeaconXDButton/Functions/QuickSwitchPage/Controller
+    - MKBeaconXDButton/Functions/UpdatePage/Controller
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DevicePage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DismissConfigPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/DismissConfigPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/DismissConfigPage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DismissConfigPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/DismissConfigPage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/DismissConfigPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/PowerSavePage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/PowerSavePage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/PowerSavePage/Model (= 0.0.1)
+    - MKBeaconXDButton/Functions/PowerSavePage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/PowerSavePage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/PowerSavePage/Model
+    - MKBeaconXDButton/Functions/PowerSavePage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/PowerSavePage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/PowerSavePage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/QuickSwitchPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/QuickSwitchPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/QuickSwitchPage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/QuickSwitchPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/QuickSwitchPage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/QuickSwitchPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/RemoteReminderPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/RemoteReminderPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/RemoteReminderPage/Model (= 0.0.1)
+    - MKBeaconXDButton/Functions/RemoteReminderPage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/RemoteReminderPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/RemoteReminderPage/Model
+    - MKBeaconXDButton/Functions/RemoteReminderPage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/RemoteReminderPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/RemoteReminderPage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/ScanPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/ScanPage/Adopter (= 0.0.1)
+    - MKBeaconXDButton/Functions/ScanPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/ScanPage/Model (= 0.0.1)
+    - MKBeaconXDButton/Functions/ScanPage/View (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/ScanPage/Adopter (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/ScanPage/Model
+    - MKBeaconXDButton/Functions/ScanPage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/ScanPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AboutPage/Controller
+    - MKBeaconXDButton/Functions/ScanPage/Adopter
+    - MKBeaconXDButton/Functions/ScanPage/Model
+    - MKBeaconXDButton/Functions/ScanPage/View
+    - MKBeaconXDButton/Functions/TabBarPage/Controller
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/ScanPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/ScanPage/View (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/ScanPage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/SettingPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/SettingPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/SettingPage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/SettingPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AccelerationPage/Controller
+    - MKBeaconXDButton/Functions/AlarmEventPage/Controller
+    - MKBeaconXDButton/Functions/DismissConfigPage/Controller
+    - MKBeaconXDButton/Functions/PowerSavePage/Controller
+    - MKBeaconXDButton/Functions/RemoteReminderPage/Controller
+    - MKBeaconXDButton/Functions/SettingPage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/SettingPage/Model (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/TabBarPage (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/TabBarPage/Controller (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/TabBarPage/Controller (0.0.1):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmPage/Controller
+    - MKBeaconXDButton/Functions/DevicePage/Controller
+    - MKBeaconXDButton/Functions/SettingPage/Controller
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/UpdatePage (0.0.1):
+    - HHTransition
+    - iOSDFULibrary
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/UpdatePage/Controller (= 0.0.1)
+    - MKBeaconXDButton/Functions/UpdatePage/Model (= 0.0.1)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/UpdatePage/Controller (0.0.1):
+    - HHTransition
+    - iOSDFULibrary
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/UpdatePage/Model
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/UpdatePage/Model (0.0.1):
+    - HHTransition
+    - iOSDFULibrary
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/SDK (0.0.1):
+    - MKBaseBleModule
+  - MKBeaconXDButton/Target (0.0.1):
+    - MKBeaconXDButton/Functions
   - MKCustomUIModule (1.4.4):
     - CircleProgressBar
     - Masonry
@@ -639,7 +1335,7 @@ SPEC CHECKSUMS:
   MKBaseBleModule: 15aa067c4e408a473e025b1a768ebce00a7e5949
   MKBaseModuleLibrary: 6de43aeeb519d1c5f3aa94ebaffe8b3a57351312
   MKBeaconXCustomUI: e75dc529c553c9424e647e30272a463e0a8e9a4e
-  MKBeaconXDButton: bf47ebd374a5a0de6966466ff782ae51e9232350
+  MKBeaconXDButton: 756985ee17a64d621191a0eb504abeb59d4dc968
   MKCustomUIModule: 83b76a0ccd1ac855157091b389154bd6a309c414
   MLInputDodger: 79a0e420a80d0d3bba122bf2639603cc76609ba8
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
