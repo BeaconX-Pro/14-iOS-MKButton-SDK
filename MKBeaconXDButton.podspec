@@ -281,7 +281,6 @@ TODO: Add long description of the pod here.
           ssss.dependency 'MKBeaconXDButton/Functions/ScanPage/Adopter'
           
           ssss.dependency 'MKBeaconXDButton/Functions/TabBarPage/Controller'
-          ssss.dependency 'MKBeaconXDButton/Functions/AboutPage/Controller'
         end
       
         sss.subspec 'View' do |ssss|

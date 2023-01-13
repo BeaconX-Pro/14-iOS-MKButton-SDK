@@ -33,6 +33,8 @@
 #import "MKBLEBaseCentralManager.h"
 #import "MKBLEBaseLogManager.h"
 
+#import "CTMediator+MKBXDAdd.h"
+
 #import "MKBXDSDK.h"
 
 #import "MKBXDConnectManager.h"
@@ -46,7 +48,6 @@
 #import "MKBXDScanDeviceInfoCell.h"
 
 #import "MKBXDTabBarController.h"
-#import "MKBXDAboutController.h"
 
 static NSString *const localPasswordKey = @"mk_bxd_passwordKey";
 
@@ -106,7 +107,7 @@ MKBXDTabBarControllerDelegate>
 
 #pragma mark - super method
 - (void)rightButtonMethod {
-    MKBXDAboutController *vc = [[MKBXDAboutController alloc] init];
+    UIViewController *vc = [[CTMediator sharedInstance] CTMediator_BXPButton_D_AboutPage];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -20,6 +20,8 @@
 #import "CBPeripheral+MKBXDAdd.h"
 #import "MKBXDBaseAdvModel.h"
 
+static NSString *const mk_bxp_button_d_logName = @"mk_bxp_button_d_log";
+
 NSString *const mk_bxd_peripheralConnectStateChangedNotification = @"mk_bxd_peripheralConnectStateChangedNotification";
 NSString *const mk_bxd_centralManagerStateChangedNotification = @"mk_bxd_centralManagerStateChangedNotification";
 
@@ -63,8 +65,14 @@ static dispatch_once_t onceToken;
 
 @implementation MKBXDCentralManager
 
+- (void)dealloc {
+    [self logToLocal:@"MKBXDCentralManager销毁"];
+    NSLog(@"MKBXDCentralManager销毁");
+}
+
 - (instancetype)init {
     if (self = [super init]) {
+        [self logToLocal:@"MKBXDCentralManager初始化"];
         [[MKBLEBaseCentralManager shared] loadDataManager:self];
     }
     return self;
@@ -112,12 +120,14 @@ static dispatch_once_t onceToken;
 }
 
 - (void)MKBLEBaseCentralManagerStartScan {
+    [self logToLocal:@"开始扫描"];
     if ([self.delegate respondsToSelector:@selector(mk_bxd_startScan)]) {
         [self.delegate mk_bxd_startScan];
     }
 }
 
 - (void)MKBLEBaseCentralManagerStopScan {
+    [self logToLocal:@"停止扫描"];
     if ([self.delegate respondsToSelector:@selector(mk_bxd_stopScan)]) {
         [self.delegate mk_bxd_stopScan];
     }
@@ -125,6 +135,8 @@ static dispatch_once_t onceToken;
 
 #pragma mark - MKBLEBaseCentralManagerStateProtocol
 - (void)MKBLEBaseCentralManagerStateChanged:(MKCentralManagerState)centralManagerState {
+    NSString *string = [NSString stringWithFormat:@"蓝牙中心改变:%@",@(centralManagerState)];
+    [self logToLocal:string];
     [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_centralManagerStateChangedNotification object:nil];
 }
 
@@ -143,6 +155,8 @@ static dispatch_once_t onceToken;
     }else if (connectState == MKPeripheralConnectStateConnectedFailed) {
         self.connectStatus = mk_bxd_centralConnectStatusConnectedFailed;
     }
+    NSString *string = [NSString stringWithFormat:@"连接状态发生改变:%@",@(connectState)];
+    [self logToLocal:string];
     [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
 }
 
@@ -155,6 +169,7 @@ static dispatch_once_t onceToken;
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA02"]]) {
         //引起设备断开连接的类型
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        [self saveToLogData:content appToDevice:NO];
         [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_deviceDisconnectTypeNotification
                                                             object:nil
                                                           userInfo:@{@"type":[content substringWithRange:NSMakeRange(8, 2)]}];
@@ -164,6 +179,7 @@ static dispatch_once_t onceToken;
         || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]
         || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        [self saveToLogData:content appToDevice:NO];
         if (content.length != 26) {
             return;
         }
@@ -179,6 +195,7 @@ static dispatch_once_t onceToken;
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
         //三轴数据
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        [self saveToLogData:content appToDevice:NO];
         NSNumber *xData = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(8, 4)]];
         NSString *xDataString = [NSString stringWithFormat:@"%ld",(long)[xData integerValue]];
         NSNumber *yData = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(12, 4)]];
@@ -197,6 +214,7 @@ static dispatch_once_t onceToken;
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     if (error) {
         NSLog(@"+++++++++++++++++发送数据出错");
+        [self logToLocal:@"发送数据出错"];
         return;
     }
     
@@ -399,10 +417,12 @@ static dispatch_once_t onceToken;
     [[MKBLEBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
         if (MKValidStr(self.password) && self.password.length <= 16) {
             //需要密码登录
+            [self logToLocal:@"密码登录"];
             [self sendPasswordToDevice];
             return;
         }
         //免密登录
+        [self logToLocal:@"免密登录"];
         MKBLEBase_main_safe(^{
             self.connectStatus = mk_bxd_centralConnectStatusConnected;
             [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
@@ -573,6 +593,22 @@ static dispatch_once_t onceToken;
             failedBlock(error);
         }
     });
+}
+
+- (void)saveToLogData:(NSString *)string appToDevice:(BOOL)app {
+    if (!MKValidStr(string)) {
+        return;
+    }
+    NSString *fuction = (app ? @"App To Device" : @"Device To App");
+    NSString *recordString = [NSString stringWithFormat:@"%@---->%@",fuction,string];
+    [self logToLocal:recordString];
+}
+
+- (void)logToLocal:(NSString *)string {
+    if (!MKValidStr(string)) {
+        return;
+    }
+    [MKBLEBaseLogManager saveDataWithFileName:mk_bxp_button_d_logName dataList:@[string]];
 }
 
 @end

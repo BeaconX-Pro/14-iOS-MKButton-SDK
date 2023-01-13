@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CTMediator (MKBXDAdd)
 
+/// 关于页面
+- (UIViewController *)CTMediator_BXPButton_D_AboutPage;
+
 @end
 
 NS_ASSUME_NONNULL_END

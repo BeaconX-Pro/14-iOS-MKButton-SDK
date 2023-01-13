@@ -18,7 +18,6 @@
   "platforms": {
     "ios": "12.0"
   },
-  "source_files": "MKBeaconXDButton/Classes/**/*",
   "resource_bundles": {
     "MKBeaconXDButton": [
       "MKBeaconXDButton/Assets/*.png"
