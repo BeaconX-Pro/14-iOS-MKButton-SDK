@@ -189,7 +189,7 @@
     if (!ValidStr(self.blinkingTime) || [self.blinkingTime integerValue] < 1 || [self.blinkingTime integerValue] > 6000) {
         return NO;
     }
-    if (!ValidStr(self.blinkingInterval) || [self.blinkingInterval integerValue] < 1 || [self.blinkingInterval integerValue] > 100) {
+    if (!ValidStr(self.blinkingInterval) || [self.blinkingInterval integerValue] < 0 || [self.blinkingInterval integerValue] > 100) {
         return NO;
     }
     return YES;
@@ -199,7 +199,7 @@
     if (!ValidStr(self.ringingTime) || [self.ringingTime integerValue] < 1 || [self.ringingTime integerValue] > 6000) {
         return NO;
     }
-    if (!ValidStr(self.ringingInterval) || [self.ringingInterval integerValue] < 1 || [self.ringingInterval integerValue] > 100) {
+    if (!ValidStr(self.ringingInterval) || [self.ringingInterval integerValue] < 0 || [self.ringingInterval integerValue] > 100) {
         return NO;
     }
     return YES;

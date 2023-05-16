@@ -333,7 +333,11 @@ MKBXDTabBarControllerDelegate>
             return YES;
         }
     }
-    return NO;
+    NSString *identy = advData.peripheral.identifier.UUIDString;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"identifier == %@", identy];
+    NSArray *array = [self.dataList filteredArrayUsingPredicate:predicate];
+    BOOL contain = ValidArray(array);
+    return contain;
 }
 
 - (void)processAdvData:(MKBXDBaseAdvModel *)advData {

@@ -207,7 +207,7 @@ MKBXDRemoteReminderCellDelegate>
         [self.view showCentralToast:@"Blink Time Error"];
         return ;
     }
-    if (!ValidStr(self.dataModel.blinkingInterval) || [self.dataModel.blinkingInterval integerValue] < 1 || [self.dataModel.blinkingInterval integerValue] > 100) {
+    if (!ValidStr(self.dataModel.blinkingInterval) || [self.dataModel.blinkingInterval integerValue] < 0 || [self.dataModel.blinkingInterval integerValue] > 100) {
         [self.view showCentralToast:@"Blink Interval Error"];
         return ;
     }
@@ -229,7 +229,7 @@ MKBXDRemoteReminderCellDelegate>
         [self.view showCentralToast:@"Ringing Time Error"];
         return ;
     }
-    if (!ValidStr(self.dataModel.ringingInterval) || [self.dataModel.ringingInterval integerValue] < 1 || [self.dataModel.ringingInterval integerValue] > 100) {
+    if (!ValidStr(self.dataModel.ringingInterval) || [self.dataModel.ringingInterval integerValue] < 0 || [self.dataModel.ringingInterval integerValue] > 100) {
         [self.view showCentralToast:@"Ringing Interval Error"];
         return ;
     }
@@ -282,7 +282,7 @@ MKBXDRemoteReminderCellDelegate>
     MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
     cellModel2.index = 1;
     cellModel2.msg = @"Blinking interval";
-    cellModel2.textPlaceholder = @"1~100";
+    cellModel2.textPlaceholder = @"0~100";
     cellModel2.textFieldValue = self.dataModel.blinkingInterval;
     cellModel2.textFieldType = mk_realNumberOnly;
     cellModel2.unit = @"x100ms";
@@ -311,7 +311,7 @@ MKBXDRemoteReminderCellDelegate>
     MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
     cellModel2.index = 3;
     cellModel2.msg = @"Ringing interval";
-    cellModel2.textPlaceholder = @"1~100";
+    cellModel2.textPlaceholder = @"0~100";
     cellModel2.textFieldValue = self.dataModel.ringingInterval;
     cellModel2.textFieldType = mk_realNumberOnly;
     cellModel2.unit = @"x100ms";

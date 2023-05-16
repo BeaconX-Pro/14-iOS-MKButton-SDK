@@ -148,7 +148,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Trigger LED reminder parameters.
 /// @param channelType channelType
 /// @param blinkingTime Blinking time.1 ~ 6000(Unit:100ms)
-/// @param blinkingInterval Blinking interval.1 ~ 100(Unit:100ms)
+/// @param blinkingInterval Blinking interval.0 ~ 100(Unit:100ms)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configAlarmLEDNotiParams:(MKBXDChannelAlarmType)channelType
@@ -160,7 +160,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Trigger Buzzer reminder parameters.
 /// @param channelType channelType
 /// @param ringingTime Ringing time.1 ~ 6000(Unit:100ms)
-/// @param ringingInterval Ringing interval.1 ~ 100(Unit:100ms)
+/// @param ringingInterval Ringing interval.0 ~ 100(Unit:100ms)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configAlarmBuzzerNotiParams:(MKBXDChannelAlarmType)channelType
@@ -171,7 +171,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Remote LED reminder parameters.
 /// @param blinkingTime Blinking time.1 ~ 6000(Unit:100ms)
-/// @param blinkingInterval Blinking interval.1 ~ 100(Unit:100ms)
+/// @param blinkingInterval Blinking interval.0 ~ 100(Unit:100ms)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configRemoteReminderLEDNotiParams:(NSInteger)blinkingTime
@@ -181,7 +181,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Remote Buzzer reminder parameters.
 /// @param ringingTime Ringing time.1 ~ 6000(Unit:100ms)
-/// @param ringingInterval Ringing interval.1 ~ 100(Unit:100ms)
+/// @param ringingInterval Ringing interval.0 ~ 100(Unit:100ms)®
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configRemoteReminderBuzzerNotiParams:(NSInteger)ringingTime
@@ -205,7 +205,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Configure LED dismissal alarm parameter.
 /// @param time 1~6000 (unit:100ms)
-/// @param interval 1~100(unit:100ms)
+/// @param interval 0~100(unit:100ms)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configDismissAlarmLEDNotiParams:(NSInteger)time
@@ -215,7 +215,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Configure Buzzer dismissal alarm parameter.
 /// @param time 1~6000 (unit:100ms)
-/// @param interval 1~100(unit:100ms)
+/// @param interval 0~100(unit:100ms)
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configDismissAlarmBuzzerNotiParams:(NSInteger)time

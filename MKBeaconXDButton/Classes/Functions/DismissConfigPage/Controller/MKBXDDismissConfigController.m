@@ -292,7 +292,7 @@ MKBXDNotificationTypePickerViewDelegate>
     MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
     cellModel2.index = 1;
     cellModel2.msg = @"Blinking interval";
-    cellModel2.textPlaceholder = @"1~100";
+    cellModel2.textPlaceholder = @"0~100";
     cellModel2.textFieldValue = self.dataModel.blinkingInterval;
     cellModel2.textFieldType = mk_realNumberOnly;
     cellModel2.unit = @"x100ms";
@@ -320,7 +320,7 @@ MKBXDNotificationTypePickerViewDelegate>
     MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
     cellModel2.index = 3;
     cellModel2.msg = @"Ringing interval";
-    cellModel2.textPlaceholder = @"1~100";
+    cellModel2.textPlaceholder = @"0~100";
     cellModel2.textFieldValue = self.dataModel.ringingInterval;
     cellModel2.textFieldType = mk_realNumberOnly;
     cellModel2.unit = @"x100ms";

@@ -341,7 +341,8 @@
     }else if ([cmd isEqualToString:@"4f"]) {
         //读取传感器状态
         operationID = mk_bxd_taskReadSensorStatusOperation;
-        NSString *bit = [MKBLEBaseSDKAdopter binaryByhex:content];
+        NSString *bitContent = (content.length == 4 ? [content substringFromIndex:2] : content);
+        NSString *bit = [MKBLEBaseSDKAdopter binaryByhex:bitContent];
         BOOL threeAxis = [[bit substringWithRange:NSMakeRange(7, 1)] isEqualToString:@"1"];
         BOOL htSensor = [[bit substringWithRange:NSMakeRange(6, 1)] isEqualToString:@"1"];
         BOOL lightSensor = [[bit substringWithRange:NSMakeRange(6, 1)] isEqualToString:@"1"];

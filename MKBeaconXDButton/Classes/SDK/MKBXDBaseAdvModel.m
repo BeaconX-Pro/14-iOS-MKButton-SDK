@@ -10,6 +10,8 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#import "MKBLEBaseLogManager.h"
+
 #import "MKBLEBaseSDKDefines.h"
 #import "MKBLEBaseSDKAdopter.h"
 
@@ -27,6 +29,9 @@
     }
     NSData *scanData = advDic[[CBUUID UUIDWithString:@"FEE0"]];
     NSData *respondData = advDic[[CBUUID UUIDWithString:@"EA00"]];
+    
+    [MKBLEBaseLogManager saveDataWithFileName:@"BXP-B-D" dataList:@[[MKBLEBaseSDKAdopter hexStringFromData:scanData],
+                                                                    [MKBLEBaseSDKAdopter hexStringFromData:respondData]]];
     if (!MKValidData(scanData)) {
         return @[];
     }

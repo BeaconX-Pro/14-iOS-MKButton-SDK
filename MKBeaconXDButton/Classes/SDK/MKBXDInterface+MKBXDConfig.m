@@ -233,7 +233,7 @@
                     blinkingInterval:(NSInteger)blinkingInterval
                             sucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
-    if (blinkingTime < 1 || blinkingTime > 6000 || blinkingInterval < 1 || blinkingInterval > 100) {
+    if (blinkingTime < 1 || blinkingTime > 6000 || blinkingInterval < 0 || blinkingInterval > 100) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
@@ -252,7 +252,7 @@
                         ringingInterval:(NSInteger)ringingInterval
                                sucBlock:(void (^)(void))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
-    if (ringingTime < 1 || ringingTime > 6000 || ringingInterval < 1 || ringingInterval > 100) {
+    if (ringingTime < 1 || ringingTime > 6000 || ringingInterval < 0 || ringingInterval > 100) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
@@ -270,7 +270,7 @@
                              blinkingInterval:(NSInteger)blinkingInterval
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock {
-    if (blinkingTime < 1 || blinkingTime > 6000 || blinkingInterval < 1 || blinkingInterval > 100) {
+    if (blinkingTime < 1 || blinkingTime > 6000 || blinkingInterval < 0 || blinkingInterval > 100) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
@@ -287,7 +287,7 @@
                                  ringingInterval:(NSInteger)ringingInterval
                                         sucBlock:(void (^)(void))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock {
-    if (ringingTime < 1 || ringingTime > 6000 || ringingInterval < 1 || ringingInterval > 100) {
+    if (ringingTime < 1 || ringingTime > 6000 || ringingInterval < 0 || ringingInterval > 100) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
@@ -323,7 +323,7 @@
                                    interval:(NSInteger)interval
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock {
-    if (time < 1 || time > 6000 || interval < 1 || interval > 100) {
+    if (time < 1 || time > 6000 || interval < 0 || interval > 100) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
@@ -340,7 +340,7 @@
                                       interval:(NSInteger)interval
                                       sucBlock:(void (^)(void))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock {
-    if (time < 1 || time > 6000 || interval < 1 || interval > 100) {
+    if (time < 1 || time > 6000 || interval < 0 || interval > 100) {
         [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
