@@ -252,40 +252,40 @@
         operationID = mk_bxd_taskReadAlarmLEDNotiParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
         resultDic = @{
             @"channelType":channelType,
             @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+            @"interval":interval,
         };
     }else if ([cmd isEqualToString:@"3d"]) {
         //读取通道触发蜂鸣器提醒参数
         operationID = mk_bxd_taskReadAlarmBuzzerNotiParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
         resultDic = @{
             @"channelType":channelType,
             @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+            @"interval":interval,
         };
     }else if ([cmd isEqualToString:@"3e"]) {
         //读取远程LED提醒参数
         operationID = mk_bxd_taskReadRemoteReminderLEDNotiParamsOperation;
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+            @"interval":interval,
         };
     }else if ([cmd isEqualToString:@"40"]) {
         //读取远程蜂鸣器提醒参数
         operationID = mk_bxd_taskReadRemoteReminderBuzzerNotiParamsOperation;
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+            @"interval":interval,
         };
     }else if ([cmd isEqualToString:@"42"]) {
         //读取按键消警使能
@@ -298,19 +298,19 @@
         //读取LED消警参数
         operationID = mk_bxd_taskReadDismissAlarmLEDNotiParamsOperation;
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+            @"interval":interval,
         };
     }else if ([cmd isEqualToString:@"45"]) {
         //读取蜂鸣器消警参数
         operationID = mk_bxd_taskReadDismissAlarmBuzzerNotiParamsOperation;
         NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(4, 4)];
+        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
-            @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+            @"interval":interval,
         };
     }else if ([cmd isEqualToString:@"46"]) {
         //读取消警提醒模式
