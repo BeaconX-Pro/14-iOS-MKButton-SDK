@@ -119,6 +119,16 @@
         return;
     }
     self.rangingValueLabel.text = SafeStr(_dataModel.rangingData);
+    BOOL hidden = NO;
+    if ([_dataModel.xData isEqualToString:@"0mg"]
+        && [_dataModel.yData isEqualToString:@"0mg"]
+        && [_dataModel.zData isEqualToString:@"0mg"]) {
+        hidden = YES;
+    }
+    self.xDataLabel.hidden = hidden;
+    self.yDataLabel.hidden = hidden;
+    self.zDataLabel.hidden = hidden;
+    self.accelerationLabel.hidden = hidden;
     self.xDataLabel.text = [@"X: " stringByAppendingString:SafeStr(_dataModel.xData)];
     self.yDataLabel.text = [@"Y: " stringByAppendingString:SafeStr(_dataModel.yData)];
     self.zDataLabel.text = [@"Z: " stringByAppendingString:SafeStr(_dataModel.zData)];
