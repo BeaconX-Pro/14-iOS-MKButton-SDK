@@ -29,14 +29,13 @@ extern NSString *const mk_bxd_centralManagerStateChangedNotification;
 extern NSString *const mk_bxd_deviceDisconnectTypeNotification;
 
 /*
- The current trigger record returned by the device.
+ The current long press trigger record returned by the device.
         @{
-    @"timestamp":timestamp,         //Record trigger timestamp (accurate to millisecond level).
-     @"alarmType":alarmType,        //Type of trigger.(00:Single press event  01:Double press event 02:Long press event )
+     @"count":@"3",
  }
  
  */
-extern NSString *const mk_bxd_receiveAlarmEventDataNotification;
+extern NSString *const mk_bxd_receiveLongConnectionModeDataNotification;
 
 extern NSString *const mk_bxd_receiveThreeAxisDataNotification;
 
@@ -153,21 +152,13 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
                  successBlock:(void (^)(id returnData))successBlock
                  failureBlock:(void (^)(NSError *error))failureBlock;
 
-/// Alarm event data(Single press event.).
-/// @param notify notify
-- (BOOL)notifySinglePressEventData:(BOOL)notify;
-
-/// Alarm event data(Double press event.).
-/// @param notify notify
-- (BOOL)notifyDoublePressEventData:(BOOL)notify;
-
-/// Alarm event data(Long press event.).
-/// @param notify notify
-- (BOOL)notifyLongPressEventData:(BOOL)notify;
-
-/// Monitor three-axis accelerometer data.
+/// Three axis data.
 /// @param notify notify
 - (BOOL)notifyThreeAxisData:(BOOL)notify;
+
+/// Long Connection Mode.
+/// @param notify notify
+- (BOOL)notifyLongConModeData:(BOOL)notify;
 
 @end
 

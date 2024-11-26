@@ -88,17 +88,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readConnectableWithSucBlock:(void (^)(id returnData))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.
-/*
- @{
- @"isOn":@(YES)
- }
- */
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_readPasswordVerificationWithSucBlock:(void (^)(id returnData))sucBlock
-                                     failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Read the current connection password of the device.
 /*
  @{
@@ -152,6 +141,36 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readTriggerChannelStateWithSucBlock:(void (^)(id returnData))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Read the channel broadcast content.
+/*
+    @{
+    @"channelType":@"00",       //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.
+    @"advType":@"0",            //@"0": Alarm Info  @"1":UID  @"2":iBeacon
+    @"advContent":@{
+ 
+ }
+ }
+ advContent: As follows. There is no advContent if the advType is Alarm Info.
+ UID
+ @"advContent":@{
+ @"namespaceID":XXXXXXXX,
+ @"instanceID":XXXXXX
+}
+ 
+ iBeacon
+ @"advContent":@{
+ @"uuid":XXXXXXXX,
+ @"major":@"1",
+ @"minor":@"1",
+}
+ 
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readChannelAdvContent:(MKBXDChannelAlarmType)channelType
+                         sucBlock:(void (^)(id returnData))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Read the channel broadcast parameters that trigger the alarm function.
 /*
  @{
@@ -201,13 +220,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// Alarm notification type.
 /*
  @{
- @"channelType":@"00",           //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.
+ @"channelType":@"00",           //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.  @"04":Long Connection Mode
     @"alarmNotificationType":@"0"           //0:Silent  1:LED 2:Buzzer 3:LED+Buzzer
  }
  */
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)bxd_readAlarmNotificationType:(MKBXDChannelAlarmType)channelType
++ (void)bxd_readAlarmNotificationType:(MKBXDChannelAlarmNotifyType)channelType
                              sucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock;
 
@@ -426,6 +445,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_readDeviceTypeWithSucBlock:(void (^)(id returnData))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock;
+
+
+#pragma mark - password
+/// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.
+/*
+ @{
+ @"state":@"00",        //@"00":Without connection password.    @"01":Need connection password.
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readPasswordVerificationWithSucBlock:(void (^)(id returnData))sucBlock
+                                     failedBlock:(void (^)(NSError *error))failedBlock;
 
 @end
 

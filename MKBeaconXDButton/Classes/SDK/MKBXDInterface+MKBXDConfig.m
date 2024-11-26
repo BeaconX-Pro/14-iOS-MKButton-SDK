@@ -49,16 +49,6 @@
                    failedBlock:failedBlock];
 }
 
-+ (void)bxd_configPasswordVerification:(BOOL)isOn
-                              sucBlock:(void (^)(void))sucBlock
-                           failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *commandString = (isOn ? @"ea01230101" : @"ea01230100");
-    [self configDataWithTaskID:mk_bxd_taskConfigPasswordVerificationOperation
-                          data:commandString
-                      sucBlock:sucBlock
-                   failedBlock:failedBlock];
-}
-
 + (void)bxd_configConnectPassword:(NSString *)password
                          sucBlock:(void (^)(void))sucBlock
                       failedBlock:(void (^)(NSError *error))failedBlock {
@@ -135,6 +125,52 @@
                    failedBlock:failedBlock];
 }
 
++ (void)bxd_configChannelContentAlarmInfo:(MKBXDChannelAlarmType)channelType
+                                 sucBlock:(void (^)(void))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013302",[MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"00"];
+    [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_configChannelContentUID:(MKBXDChannelAlarmType)channelType
+                        namespaceID:(NSString *)namespaceID
+                         instanceID:(NSString *)instanceID
+                           sucBlock:(void (^)(void))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock {
+    if (namespaceID.length != 20 || ![MKBLEBaseSDKAdopter checkHexCharacter:namespaceID]
+        || instanceID.length != 12 || ![MKBLEBaseSDKAdopter checkHexCharacter:instanceID]) {
+        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        return;
+    }
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@",@"ea013312",[MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"01",namespaceID,instanceID];
+    [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_configChannelContentBeacon:(MKBXDChannelAlarmType)channelType
+                                 major:(NSInteger)major
+                                 minor:(NSInteger)minor
+                                  uuid:(NSString *)uuid
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock {
+    if (major < 0 || major > 65535
+        || minor < 0 || minor > 65535 || !MKValidStr(uuid) || uuid.length != 32
+        || ![MKBLEBaseSDKAdopter checkHexCharacter:uuid]) {
+        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        return;
+    }
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@%@",@"ea013316",[MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"02",uuid,[MKBLEBaseSDKAdopter fetchHexValue:major byteLen:2],[MKBLEBaseSDKAdopter fetchHexValue:minor byteLen:2]];
+    [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
 + (void)bxd_configTriggerChannelAdvParams:(id <MKBXDTriggerChannelAdvParamsProtocol>)protocol
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock {
@@ -175,7 +211,7 @@
                    failedBlock:failedBlock];
 }
 
-+ (void)bxd_configAlarmNotificationType:(MKBXDChannelAlarmType)channelType
++ (void)bxd_configAlarmNotificationType:(MKBXDChannelAlarmNotifyType)channelType
                            reminderType:(mk_bxd_reminderType)reminderType
                                sucBlock:(void (^)(void))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
@@ -427,6 +463,33 @@
                           data:commandString
                       sucBlock:sucBlock
                    failedBlock:failedBlock];
+}
+
++ (void)bxd_batteryResetWithSucBlock:(void (^)(void))sucBlock
+                         failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = @"ea015d00";
+    [self configDataWithTaskID:mk_bxd_taskBatteryResetOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
+#pragma mark - password
++ (void)bxd_configPasswordVerification:(BOOL)isOn
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = (isOn ? @"ea01230101" : @"ea01230100");
+    
+    [centralManager addTaskWithTaskID:mk_bxd_taskConfigPasswordVerificationOperation characteristic:centralManager.peripheral.bxd_password commandData:commandString successBlock:^(id  _Nonnull returnData) {
+        BOOL success = [returnData[@"result"][@"success"] boolValue];
+        if (!success) {
+            [MKBLEBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
+            return ;
+        }
+        if (sucBlock) {
+            sucBlock();
+        }
+    } failureBlock:failedBlock];
 }
 
 #pragma mark - private method

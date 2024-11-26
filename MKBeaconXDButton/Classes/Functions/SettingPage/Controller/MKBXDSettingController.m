@@ -19,6 +19,9 @@
 #import "MKHudManager.h"
 #import "MKSettingTextCell.h"
 #import "MKTextFieldCell.h"
+#import "MKAlertView.h"
+
+#import "MKBXDInterface+MKBXDConfig.h"
 
 #import "MKBXDConnectManager.h"
 
@@ -41,6 +44,8 @@ MKTextFieldCellDelegate>
 @property (nonatomic, strong)NSMutableArray *section1List;
 
 @property (nonatomic, strong)NSMutableArray *section2List;
+
+@property (nonatomic, strong)NSMutableArray *section3List;
 
 @property (nonatomic, strong)MKBXDSettingPageModel *dataModel;
 
@@ -110,11 +115,16 @@ MKTextFieldCellDelegate>
         [self.navigationController pushViewController:vc animated:YES];
         return;
     }
+    if (indexPath.section == 2 && indexPath.row == 0) {
+        //Reset Battery
+        [self batteryReset];
+        return;
+    }
 }
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -125,7 +135,10 @@ MKTextFieldCellDelegate>
         return ([MKBXDConnectManager shared].threeSensor ? self.section1List.count : 0);
     }
     if (section == 2) {
-        return self.section2List.count;
+        return ([[MKBXDConnectManager shared].deviceType integerValue] == 1 ? self.section2List.count : 0);
+    }
+    if (section == 3) {
+        return self.section3List.count;
     }
     return 0;
 }
@@ -141,8 +154,13 @@ MKTextFieldCellDelegate>
         cell.dataModel = self.section1List[indexPath.row];
         return cell;
     }
+    if (indexPath.section == 2) {
+        MKSettingTextCell *cell = [MKSettingTextCell initCellWithTableView:tableView];
+        cell.dataModel = self.section2List[indexPath.row];
+        return cell;
+    }
     MKTextFieldCell *cell = [MKTextFieldCell initCellWithTableView:tableView];
-    cell.dataModel = self.section2List[indexPath.row];
+    cell.dataModel = self.section3List[indexPath.row];
     cell.delegate = self;
     return cell;
 }
@@ -155,7 +173,7 @@ MKTextFieldCellDelegate>
     if (index == 0) {
         //Effective click interval
         self.dataModel.clickInterval = value;
-        MKTextFieldCellModel *cellModel = self.section2List[0];
+        MKTextFieldCellModel *cellModel = self.section3List[0];
         cellModel.textFieldValue = value;
         return;
     }
@@ -182,11 +200,40 @@ MKTextFieldCellDelegate>
     [self.dataModel readDataWithSucBlock:^{
         @strongify(self);
         [[MKHudManager share] hide];
-        MKTextFieldCellModel *cellModel = self.section2List[0];
+        MKTextFieldCellModel *cellModel = self.section3List[0];
         cellModel.textFieldValue = self.dataModel.clickInterval;
         [self.tableView reloadData];
     } failedBlock:^(NSError * _Nonnull error) {
         @strongify(self);
+        [[MKHudManager share] hide];
+        [self.view showCentralToast:error.userInfo[@"errorInfo"]];
+    }];
+}
+
+- (void)batteryReset{
+    @weakify(self);
+    MKAlertViewAction *cancelAction = [[MKAlertViewAction alloc] initWithTitle:@"Cancel" handler:^{
+    }];
+    
+    MKAlertViewAction *confirmAction = [[MKAlertViewAction alloc] initWithTitle:@"OK" handler:^{
+        @strongify(self);
+        [self sendResetCommandToDevice];
+    }];
+    NSString *msg = @"*Please ensure you have replaced the new battery for this beacon before reset the Battery.";
+    MKAlertView *alertView = [[MKAlertView alloc] init];
+    [alertView addAction:cancelAction];
+    [alertView addAction:confirmAction];
+    [alertView showAlertWithTitle:@"Warning!" message:msg notificationName:@"mk_bxd_needDismissAlert"];
+}
+
+- (void)sendResetCommandToDevice{
+    [[MKHudManager share] showHUDWithTitle:@"Setting..."
+                                     inView:self.view
+                              isPenetration:NO];
+    [MKBXDInterface bxd_batteryResetWithSucBlock:^{
+        [[MKHudManager share] hide];
+        [self.view showCentralToast:@"Success"];
+    } failedBlock:^(NSError * _Nonnull error) {
         [[MKHudManager share] hide];
         [self.view showCentralToast:error.userInfo[@"errorInfo"]];
     }];
@@ -197,6 +244,7 @@ MKTextFieldCellDelegate>
     [self loadSection0Datas];
     [self loadSection1Datas];
     [self loadSection2Datas];
+    [self loadSection3Datas];
     
     [self.tableView reloadData];
 }
@@ -226,6 +274,12 @@ MKTextFieldCellDelegate>
 }
 
 - (void)loadSection2Datas {
+    MKSettingTextCellModel *cellModel1 = [[MKSettingTextCellModel alloc] init];
+    cellModel1.leftMsg = @"Reset Battery";
+    [self.section2List addObject:cellModel1];
+}
+
+- (void)loadSection3Datas {
     MKTextFieldCellModel *cellModel = [[MKTextFieldCellModel alloc] init];
     cellModel.index = 0;
     cellModel.msg = @"Effective click interval";
@@ -233,7 +287,7 @@ MKTextFieldCellDelegate>
     cellModel.textFieldType = mk_realNumberOnly;
     cellModel.maxLength = 2;
     cellModel.unit = @"x100ms";
-    [self.section2List addObject:cellModel];
+    [self.section3List addObject:cellModel];
 }
 
 #pragma mark - UI
@@ -244,8 +298,8 @@ MKTextFieldCellDelegate>
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.top.mas_equalTo(defaultTopInset);
-        make.bottom.mas_equalTo(-VirtualHomeHeight - 49.f);
+        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop);
+        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom).mas_offset(-49.f);
     }];
 }
 
@@ -278,6 +332,13 @@ MKTextFieldCellDelegate>
         _section2List = [NSMutableArray array];
     }
     return _section2List;
+}
+
+- (NSMutableArray *)section3List {
+    if (!_section3List) {
+        _section3List = [NSMutableArray array];
+    }
+    return _section3List;
 }
 
 - (MKBXDSettingPageModel *)dataModel {

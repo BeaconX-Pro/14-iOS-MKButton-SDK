@@ -28,17 +28,11 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/aadyx2007@163.com/MKBeaconXDButton.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '14.0'
   
   s.resource_bundles = {
     'MKBeaconXDButton' => ['MKBeaconXDButton/Assets/*.png']
   }
-  
-  s.subspec 'ApplicationModule' do |ss|
-      ss.source_files = 'MKBeaconXDButton/Classes/ApplicationModule/**'
-      
-      ss.dependency 'MKBaseModuleLibrary'
-    end
     
     s.subspec 'ConnectManager' do |ss|
       ss.source_files = 'MKBeaconXDButton/Classes/ConnectManager/**'
@@ -110,26 +104,12 @@ TODO: Add long description of the pod here.
         end
       end
       
-      ss.subspec 'AlarmDataExportPage' do |sss|
-        sss.subspec 'Controller' do |ssss|
-          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmDataExportPage/Controller/**'
-        
-          ssss.dependency 'MKBeaconXDButton/Functions/AlarmDataExportPage/View'
-        end
-      
-        sss.subspec 'View' do |ssss|
-          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmDataExportPage/View/**'
-        end
-      end
-      
       ss.subspec 'AlarmEventPage' do |sss|
         sss.subspec 'Controller' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventPage/Controller/**'
         
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventPage/Model'
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventPage/View'
-          
-          ssss.dependency 'MKBeaconXDButton/Functions/AlarmDataExportPage/Controller'
         end
       
         sss.subspec 'View' do |ssss|
@@ -142,22 +122,88 @@ TODO: Add long description of the pod here.
       end
       
       ss.subspec 'AlarmModeConfigPage' do |sss|
-        sss.subspec 'Controller' do |ssss|
-          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/Controller/**'
         
-          ssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Model'
-          ssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/View'
-          
-          ssss.dependency 'MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller'
-        end
-      
-        sss.subspec 'View' do |ssss|
-          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/**'
+        sss.subspec 'Defines' do |ssss|
+            ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/Defines/**'
         end
         
         sss.subspec 'Model' do |ssss|
-          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/Model/**'
+            ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/Model/**'
         end
+        
+        sss.subspec 'V1' do |ssss|
+          ssss.subspec 'Controller' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V1/Controller/**'
+          
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/V1/Model'
+            
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/View'
+            
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller'
+          end
+          ssss.subspec 'Model' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V1/Model/**'
+            
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Model'
+          end
+        end
+        
+        sss.subspec 'V2' do |ssss|
+          ssss.subspec 'Controller' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V2/Controller/**'
+          
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/V2/Model'
+            
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/View'
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Defines'
+          end
+          ssss.subspec 'Model' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V2/Model/**'
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Model'
+          end
+        end
+      
+        sss.subspec 'View' do |ssss|
+          
+          ssss.subspec 'AbnormalInactivityTimeCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/AbnormalInactivityTimeCell/**'
+          end
+          
+          ssss.subspec 'SlotBeaconCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotBeaconCell/**'
+          end
+          
+          ssss.subspec 'SlotFramePickCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotFramePickCell/**'
+            
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Defines'
+          end
+          
+          ssss.subspec 'SlotParamCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotParamCell/**'
+            
+            sssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Defines'
+          end
+          
+          ssss.subspec 'SlotUIDCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotUIDCell/**'
+          end
+          
+          ssss.subspec 'TxPowerCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/TxPowerCell/**'
+          end
+          
+          ssss.subspec 'TriggerTypeClickCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/TriggerTypeClickCell/**'
+          end
+          
+          ssss.subspec 'AlarmTypePickCell' do |sssss|
+            sssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/AlarmTypePickCell/**'
+          end
+          
+        end
+        
+        
       end
       
       ss.subspec 'AlarmNotiTypePage' do |sss|
@@ -178,11 +224,31 @@ TODO: Add long description of the pod here.
         
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmPage/Model'
           
-          ssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/Controller'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage'
         end
       
         sss.subspec 'Model' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmPage/Model/**'
+        end
+      end
+      
+      ss.subspec 'AlarmPageV2' do |sss|
+        sss.subspec 'Controller' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmPageV2/Controller/**'
+        
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmPageV2/Model'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmPageV2/View'
+          
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmModeConfigPage/V2/Controller'
+        end
+      
+        sss.subspec 'Model' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmPageV2/Model/**'
+        end
+        
+        sss.subspec 'View' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmPageV2/View/**'
         end
       end
       
@@ -324,6 +390,7 @@ TODO: Add long description of the pod here.
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/TabBarPage/Controller/**'
           
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmPage/Controller'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmPageV2/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/SettingPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/DevicePage/Controller'
         end
@@ -340,7 +407,7 @@ TODO: Add long description of the pod here.
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/UpdatePage/Model/**'
         end
       
-        sss.dependency 'iOSDFULibrary'
+        sss.dependency 'iOSDFULibrary',   '4.13.0'
       end
       
       ss.dependency 'MKBeaconXDButton/SDK'
@@ -356,4 +423,4 @@ TODO: Add long description of the pod here.
       
     end
     
-  end
+end

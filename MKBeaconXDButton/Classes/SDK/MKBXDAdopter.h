@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSString *)fetchThreeAxisDataAG:(mk_bxd_threeAxisDataAG)ag;
 
++ (NSDictionary *)parseChannelContent:(NSString *)content;
+
 @end
 
 NS_ASSUME_NONNULL_END

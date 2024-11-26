@@ -172,4 +172,66 @@
     }
 }
 
++ (NSDictionary *)parseChannelContent:(NSString *)content {
+    if (!MKValidStr(content) || content.length < 2) {
+        return @{};
+    }
+    NSMutableDictionary *resultDic = [NSMutableDictionary dictionary];
+    NSInteger index = 0;
+    NSString *channelType = [content substringWithRange:NSMakeRange(index, 2)];
+    [resultDic setObject:channelType forKey:@"channelType"];
+    index += 2;
+    
+    NSString *advType = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 2)];
+    [resultDic setObject:advType forKey:@"advType"];
+    index += 2;
+    
+    if ([advType isEqualToString:@"0"]) {
+        //Alarm info
+        return resultDic;
+    }
+    
+    if ([advType isEqualToString:@"1"]) {
+        //UID
+        NSString *namespaceID = [content substringWithRange:NSMakeRange(index, 20)];
+        index += 20;
+        
+        NSString *instanceID = [content substringWithRange:NSMakeRange(index, 12)];
+        index += 12;
+        
+        NSDictionary *advContent = @{
+            @"namespaceID":namespaceID,
+            @"instanceID":instanceID,
+        };
+        
+        [resultDic setObject:advContent forKey:@"advContent"];
+        
+        return resultDic;
+    }
+    
+    if ([advType isEqualToString:@"2"]) {
+        //iBeacon
+        NSString *uuid = [content substringWithRange:NSMakeRange(index, 32)];
+        index += 32;
+        
+        NSString *major = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        index += 4;
+        
+        NSString *minor = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        index += 4;
+        
+        NSDictionary *advContent = @{
+            @"uuid":uuid,
+            @"major":major,
+            @"minor":minor,
+        };
+        
+        [resultDic setObject:advContent forKey:@"advContent"];
+        
+        return resultDic;
+    }
+    
+    return @{};
+}
+
 @end

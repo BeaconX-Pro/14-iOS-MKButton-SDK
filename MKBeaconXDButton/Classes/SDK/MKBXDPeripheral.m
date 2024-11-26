@@ -38,13 +38,11 @@
         if ([service.UUID isEqual:[CBUUID UUIDWithString:@"AA00"]]) {
             NSArray *list = @[[CBUUID UUIDWithString:@"AA01"],
                               [CBUUID UUIDWithString:@"AA02"],
-                              [CBUUID UUIDWithString:@"AA03"],
-                              [CBUUID UUIDWithString:@"AA04"],
-                              [CBUUID UUIDWithString:@"AA05"],
                               [CBUUID UUIDWithString:@"AA06"],
-                              [CBUUID UUIDWithString:@"AA07"]];
+                              [CBUUID UUIDWithString:@"AA07"],
+                              [CBUUID UUIDWithString:@"AA08"]];
             [self.peripheral discoverCharacteristics:list forService:service];
-        }else if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]]) {
+        } else if ([service.UUID isEqual:[CBUUID UUIDWithString:@"180A"]]) {
             NSArray *characteristics = @[[CBUUID UUIDWithString:@"2A24"],
                                          [CBUUID UUIDWithString:@"2A25"],
                                          [CBUUID UUIDWithString:@"2A26"],

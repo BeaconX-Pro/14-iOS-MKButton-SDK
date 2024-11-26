@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKBXDAlarmNotiTypeModel : NSObject
 
-/// 0:single 1:double 2:long 3:abnormal
+/// 0:single 1:double 2:long 3:abnormal     4:long connection mode
 @property (nonatomic, assign)NSInteger alarmType;
 
 /*

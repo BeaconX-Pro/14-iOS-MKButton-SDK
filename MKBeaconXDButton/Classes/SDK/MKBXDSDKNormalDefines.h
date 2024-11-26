@@ -7,6 +7,14 @@ typedef NS_ENUM(NSInteger, MKBXDChannelAlarmType) {
     MKBXDChannelAlarmType_abnormalInactivity,
 };
 
+typedef NS_ENUM(NSInteger, MKBXDChannelAlarmNotifyType) {
+    MKBXDChannelAlarmNotifyType_single,
+    MKBXDChannelAlarmNotifyType_double,
+    MKBXDChannelAlarmNotifyType_long,
+    MKBXDChannelAlarmNotifyType_abnormalInactivity,
+    MKBXDChannelAlarmNotifyType_longConMode,        //V1 don't support
+};
+
 typedef NS_ENUM(NSInteger, mk_bxd_txPower) {
     mk_bxd_txPowerNeg40dBm,   //RadioTxPower:-40dBm
     mk_bxd_txPowerNeg20dBm,   //-20dBm

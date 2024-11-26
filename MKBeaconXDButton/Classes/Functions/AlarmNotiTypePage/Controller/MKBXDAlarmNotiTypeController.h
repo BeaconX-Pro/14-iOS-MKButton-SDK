@@ -15,6 +15,7 @@ typedef NS_ENUM(NSInteger, MKBXDAlarmNotiTypeControllerType) {
     MKBXDAlarmNotiTypeControllerType_double,
     MKBXDAlarmNotiTypeControllerType_long,
     MKBXDAlarmNotiTypeControllerType_abnormal,
+    MKBXDAlarmNotiTypeControllerType_longConnMode,      //只有V2版本才有
 };
 
 @interface MKBXDAlarmNotiTypeController : MKBaseViewController

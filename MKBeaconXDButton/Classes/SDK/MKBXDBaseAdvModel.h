@@ -14,6 +14,8 @@ typedef NS_ENUM(NSInteger, MKBXDDataFrameType) {
     MKBXDUnknownFrameType,          //Unknown.
     MKBXDAdvFrameType,              //device broadcast packet.
     MKBXDRespondFrameType,          //Device broadcast response packet.
+    MKBXDUIDFrameType,              //UID
+    MKBXDBeaconFrameType,           //iBeacon
 };
 
 typedef NS_ENUM(NSInteger, MKBXDAdvAlarmType) {
@@ -108,6 +110,38 @@ typedef NS_ENUM(NSInteger, MKBXDAdvAlarmType) {
 @property (nonatomic, copy)NSString *macAddress;
 
 - (MKBXDAdvRespondDataModel *)initRespondWithAdvertiseData:(NSData *)advData;
+
+@end
+
+
+@interface MKBXDUIDBeacon : MKBXDBaseAdvModel
+
+//RSSI@0m
+@property (nonatomic, strong) NSNumber *txPower;
+@property (nonatomic, copy) NSString *namespaceId;
+@property (nonatomic, copy) NSString *instanceId;
+
+- (MKBXDUIDBeacon *)initWithAdvertiseData:(NSData *)advData;
+
+@end
+
+
+
+@interface MKBXDBeacon : MKBXDBaseAdvModel
+
+//RSSI@1m
+@property (nonatomic, copy)NSNumber *rssi1M;
+@property (nonatomic, copy)NSNumber *txPower;
+//Advetising Interval
+@property (nonatomic, copy) NSString *interval;
+
+@property (nonatomic, copy)NSString *major;
+
+@property (nonatomic, copy)NSString *minor;
+
+@property (nonatomic, copy)NSString *uuid;
+
+- (MKBXDBeacon *)initWithAdvertiseData:(NSData *)advData;
 
 @end
 

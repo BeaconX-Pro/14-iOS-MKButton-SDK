@@ -14,8 +14,11 @@
 #import "MKBaseTableView.h"
 #import "UIView+MKAdd.h"
 #import "UITableView+MKAdd.h"
+#import "NSString+MKAdd.h"
 
 #import "MKHudManager.h"
+
+#import "MKBXDConnectManager.h"
 
 #import "MKBXDInterface+MKBXDConfig.h"
 
@@ -161,8 +164,8 @@ MKBXDAlarmEventCountCellDelegate>
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.top.mas_equalTo(defaultTopInset);
-        make.bottom.mas_equalTo(-VirtualHomeHeight);
+        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop);
+        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom);
     }];
 }
 
@@ -174,6 +177,10 @@ MKBXDAlarmEventCountCellDelegate>
         _tableView.dataSource = self;
         
         _tableView.backgroundColor = RGBCOLOR(242, 242, 242);
+        
+        if ([[MKBXDConnectManager shared].deviceType integerValue] == 1) {
+            _tableView.tableFooterView = [self tableFooterView];
+        }
     }
     return _tableView;
 }
@@ -190,6 +197,27 @@ MKBXDAlarmEventCountCellDelegate>
         _dataModel = [[MKBXDAlarmEventDataModel alloc] init];
     }
     return _dataModel;
+}
+
+- (UIView *)tableFooterView {
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kViewWidth, 80.f)];
+    footerView.backgroundColor = RGBCOLOR(242, 242, 242);
+    
+    NSString *noteMsg = @"*The Alarm Count here mainly refers to the button press count in Advertising Mode under non-connected status.";
+    CGSize noteSize = [NSString sizeWithText:noteMsg
+                                     andFont:MKFont(12.f)
+                                  andMaxSize:CGSizeMake(kViewWidth - 2 * 15.f, MAXFLOAT)];
+    
+    UILabel *noteLabel = [[UILabel alloc] initWithFrame:CGRectMake(15.f, 10.f, kViewWidth - 2 * 15.f, noteSize.height)];
+    noteLabel.textColor = RGBCOLOR(118, 118, 118);
+    noteLabel.textAlignment = NSTextAlignmentLeft;
+    noteLabel.font = MKFont(12.f);
+    noteLabel.text = noteMsg;
+    noteLabel.numberOfLines = 0;
+    
+    [footerView addSubview:noteLabel];
+    
+    return footerView;
 }
 
 @end

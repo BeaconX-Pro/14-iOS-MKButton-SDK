@@ -130,17 +130,7 @@ MKBXDTabBarControllerDelegate>
         return cell;
     }
     MKBXDScanDataModel *model = self.dataList[indexPath.section];
-    
-    NSObject *obj = model.advertiseList[indexPath.row - 1];
-    if ([obj isKindOfClass:MKBXDScanDeviceInfoCellModel.class]) {
-        MKBXDScanDeviceInfoCell *cell = [MKBXDScanDeviceInfoCell initCellWithTableView:tableView];
-        cell.dataModel = obj;
-        return cell;
-    }
-    
-    MKBXDScanAdvCell *cell = [MKBXDScanAdvCell initCellWithTableView:tableView];
-    cell.dataModel = obj;
-    return cell;
+    return [MKBXDScanPageAdopter loadCellWithTableView:tableView dataModel:model.advertiseList[indexPath.row - 1]];
 }
 
 #pragma mark - UITableViewDelegate
@@ -150,14 +140,7 @@ MKBXDTabBarControllerDelegate>
         return headerViewHeight;
     }
     MKBXDScanDataModel *model = self.dataList[indexPath.section];
-    NSObject *obj = model.advertiseList[indexPath.row - 1];
-    if ([obj isKindOfClass:MKBXDScanDeviceInfoCellModel.class]) {
-        return 105.f;
-    }
-    if ([obj isKindOfClass:MKBXDScanAdvCellModel.class]) {
-        return 70.f;
-    }
-    return 0.f;
+    return [MKBXDScanPageAdopter loadCellHeightWithDataModel:model.advertiseList[indexPath.row - 1]];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -511,7 +494,7 @@ MKBXDTabBarControllerDelegate>
     [topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.top.mas_equalTo(defaultTopInset);
+        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop);
         make.height.mas_equalTo(searchButtonHeight + 2 * 15.f);
     }];
     [self.refreshButton addSubview:self.refreshIcon];
@@ -541,7 +524,7 @@ MKBXDTabBarControllerDelegate>
         make.left.mas_equalTo(10.f);
         make.right.mas_equalTo(-10.f);
         make.top.mas_equalTo(topView.mas_bottom);
-        make.bottom.mas_equalTo(-VirtualHomeHeight - 5.f);
+        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom).mas_offset(-5.f);
     }];
 }
 

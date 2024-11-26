@@ -27,7 +27,7 @@ NSString *const mk_bxd_centralManagerStateChangedNotification = @"mk_bxd_central
 
 NSString *const mk_bxd_deviceDisconnectTypeNotification = @"mk_bxd_deviceDisconnectTypeNotification";
 
-NSString *const mk_bxd_receiveAlarmEventDataNotification = @"mk_bxd_receiveAlarmEventDataNotification";
+NSString *const mk_bxd_receiveLongConnectionModeDataNotification = @"mk_bxd_receiveLongConnectionModeDataNotification";
 
 NSString *const mk_bxd_receiveThreeAxisDataNotification = @"mk_bxd_receiveThreeAxisDataNotification";
 
@@ -104,10 +104,17 @@ static dispatch_once_t onceToken;
                                 advertisementData:(NSDictionary<NSString *,id> *)advertisementData
                                              RSSI:(NSNumber *)RSSI {
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSLog(@"%@",advertisementData);
         NSArray *deviceList = [MKBXDBaseAdvModel parseAdvData:advertisementData
                                                    peripheral:peripheral
                                                          RSSI:RSSI];
+        for (NSInteger i = 0; i < deviceList.count; i ++) {
+            MKBXDBaseAdvModel *beaconModel = deviceList[i];
+            beaconModel.identifier = peripheral.identifier.UUIDString;
+            beaconModel.rssi = RSSI;
+            beaconModel.peripheral = peripheral;
+            beaconModel.deviceName = advertisementData[CBAdvertisementDataLocalNameKey];
+            beaconModel.connectEnable = [advertisementData[CBAdvertisementDataIsConnectable] boolValue];
+        }
         if (!MKValidArray(deviceList)) {
             return;
         }
@@ -175,23 +182,6 @@ static dispatch_once_t onceToken;
                                                           userInfo:@{@"type":[content substringWithRange:NSMakeRange(8, 2)]}];
         return;
     }
-    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]
-        || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]
-        || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
-        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
-        [self saveToLogData:content appToDevice:NO];
-        if (content.length != 26) {
-            return;
-        }
-        NSString *timestamp = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 16)];
-        NSString *alarmType = [content substringWithRange:NSMakeRange(24, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveAlarmEventDataNotification
-                                                            object:nil
-                                                          userInfo:@{@"timestamp":timestamp,
-                                                                     @"alarmType":alarmType,
-                                                                   }];
-        return;
-    }
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
         //三轴数据
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
@@ -207,6 +197,17 @@ static dispatch_once_t onceToken;
                                                           userInfo:@{@"x-Data":xDataString,
                                                                      @"y-Data":yDataString,
                                                                      @"z-Data":zDataString,
+                                                                   }];
+        return;
+    }
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA08"]]) {
+        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        [self saveToLogData:content appToDevice:NO];
+        //长连接按键触发次数
+        NSString *count = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 2)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveLongConnectionModeDataNotification
+                                                            object:nil
+                                                          userInfo:@{@"count":count,
                                                                    }];
         return;
     }
@@ -236,7 +237,9 @@ static dispatch_once_t onceToken;
 }
 
 - (void)startScan {
-    [[MKBLEBaseCentralManager shared] scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"FEE0"],
+    [[MKBLEBaseCentralManager shared] scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"FEAA"],
+                                                                       [CBUUID UUIDWithString:@"FEAB"],
+                                                                       [CBUUID UUIDWithString:@"FEE0"],
                                                                        [CBUUID UUIDWithString:@"EA00"]]
                                                              options:nil];
 }
@@ -373,35 +376,19 @@ static dispatch_once_t onceToken;
     [[MKBLEBaseCentralManager shared] addOperation:operation];
 }
 
-- (BOOL)notifySinglePressEventData:(BOOL)notify {
-    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_singleAlarmData == nil) {
-        return NO;
-    }
-    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_singleAlarmData];
-    return YES;
-}
-
-- (BOOL)notifyDoublePressEventData:(BOOL)notify {
-    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_doubleAlarmData == nil) {
-        return NO;
-    }
-    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_doubleAlarmData];
-    return YES;
-}
-
-- (BOOL)notifyLongPressEventData:(BOOL)notify {
-    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_longAlarmData == nil) {
-        return NO;
-    }
-    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_longAlarmData];
-    return YES;
-}
-
 - (BOOL)notifyThreeAxisData:(BOOL)notify {
     if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_threeAxisData == nil) {
         return NO;
     }
     [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_threeAxisData];
+    return YES;
+}
+
+- (BOOL)notifyLongConModeData:(BOOL)notify {
+    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_longConModeData == nil) {
+        return NO;
+    }
+    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_longConModeData];
     return YES;
 }
 

@@ -17,12 +17,12 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskReadMacAddressOperation,                 //读取mac地址
     mk_bxd_taskReadThreeAxisDataParamsOperation,        //读取3轴传感器数据
     mk_bxd_taskReadConnectableOperation,                //读取设备的可连接状态
-    mk_bxd_taskReadPasswordVerificationOperation,       //读取设备密码验证状态
     mk_bxd_taskReadConnectPasswordOperation,            //读取设备的连接密码
     mk_bxd_taskReadEffectiveClickIntervalOperation,     //读取连续按键有效时长
     mk_bxd_taskReadScanResponsePacketOperation,         //读取回应包开关
     mk_bxd_taskReadResetDeviceByButtonStatusOperation,  //读取按键是否可以恢复出厂设置
     mk_bxd_taskReadTriggerChannelStateOperation,        //读取各通道广播使能情况
+    mk_bxd_taskReadChannelAdvContentOperation,          //读取通道广播帧内容
     mk_bxd_taskReadTriggerChannelAdvParamsOperation,    //读取活跃通道广播参数
     mk_bxd_taskReadChannelTriggerParamsOperation,       //读取活跃通道触发广播参数
     mk_bxd_taskReadStayAdvertisingBeforeTriggeredOperation,     //读取活跃通道触发前广播开关
@@ -50,13 +50,13 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
 #pragma mark - custom write
     mk_bxd_taskConfigThreeAxisDataParamsOperation,      //设置3轴传感器参数
     mk_bxd_taskConfigConnectableOperation,              //设置设备的可连接性
-    mk_bxd_taskConfigPasswordVerificationOperation,     //设置设备密码验证
     mk_bxd_taskConfigConnectPasswordOperation,          //设置连接密码
     mk_bxd_taskConfigEffectiveClickIntervalOperation,   //设置连续按键有效时长
     mk_bxd_taskConfigPowerOffOperation,                 //关机
     mk_bxd_taskConfigFactoryResetOperation,             //恢复出厂设置
     mk_bxd_taskConfigScanResponsePacketOperation,       //设置回应包开关
     mk_bxd_taskConfigResetDeviceByButtonStatusOperation,    //设置按键是否可以恢复出厂设置
+    mk_bxd_taskConfigChannelContentOperation,               //设置通道广播帧类型
     mk_bxd_taskConfigTriggerChannelAdvParamsOperation,  //设置活跃通道广播参数
     mk_bxd_taskConfigChannelTriggerParamsOperation,     //设置活跃通道触发广播参数
     mk_bxd_taskConfigStayAdvertisingBeforeTriggeredOperation,       //设置活跃通道触发前广播开关
@@ -78,4 +78,8 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskClearLongPressEventDataOperation,        //删除长按通道触发记录
     mk_bxd_taskConfigDeviceIDOperation,                 //设置deviceID
     mk_bxd_taskConfigDeviceNameOperation,               //设置设备名称
+    mk_bxd_taskBatteryResetOperation,                   //重置电池
+    
+#pragma mark - password
+    mk_bxd_taskConfigPasswordVerificationOperation,     //设置设备密码验证
 };

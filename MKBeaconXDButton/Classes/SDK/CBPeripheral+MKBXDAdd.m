@@ -12,11 +12,9 @@
 
 static const char *bxd_customKey = "bxd_customKey";
 static const char *bxd_disconnectTypeKey = "bxd_disconnectTypeKey";
-static const char *bxd_singleAlarmDataKey = "bxd_singleAlarmDataKey";
-static const char *bxd_doubleAlarmDataKey = "bxd_doubleAlarmDataKey";
-static const char *bxd_longAlarmDataKey = "bxd_longAlarmDataKey";
-static const char *bxd_threeAxisDataKey = "bxd_threeAxisDataKey";
 static const char *bxd_passwordKey = "bxd_passwordKey";
+static const char *bxd_threeAxisDataKey = "bxd_threeAxisDataKey";
+static const char *bxd_longConModeDataKey = "bxd_longConModeDataKey";
 
 static const char *bxd_manufacturerKey = "bxd_manufacturerKey";
 static const char *bxd_deviceModelKey = "bxd_deviceModelKey";
@@ -61,17 +59,13 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA02"]]) {
                 objc_setAssociatedObject(self, &bxd_disconnectTypeKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                 [self setNotifyValue:YES forCharacteristic:characteristic];
-            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
-                objc_setAssociatedObject(self, &bxd_singleAlarmDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]) {
-                objc_setAssociatedObject(self, &bxd_doubleAlarmDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
-                objc_setAssociatedObject(self, &bxd_longAlarmDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
                 objc_setAssociatedObject(self, &bxd_threeAxisDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA07"]]) {
                 objc_setAssociatedObject(self, &bxd_passwordKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                 [self setNotifyValue:YES forCharacteristic:characteristic];
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA08"]]) {
+                objc_setAssociatedObject(self, &bxd_longConModeDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }
         }
         return;
@@ -97,9 +91,12 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     if (![objc_getAssociatedObject(self, &bxd_disconnectTypeSuccessKey) boolValue] || ![objc_getAssociatedObject(self, &bxd_customSuccessKey) boolValue] || ![objc_getAssociatedObject(self, &bxd_passwordSuccessKey) boolValue]) {
         return NO;
     }
-    if (![self bxd_customServiceSuccess] || ![self bxd_deviceInfoServiceSuccess]) {
+    if (![self bxd_customServiceSuccess]) {
         return NO;
     }
+//    if (![self bxd_customServiceSuccess] || ![self bxd_deviceInfoServiceSuccess]) {
+//        return NO;
+//    }
     return YES;
 }
 
@@ -113,11 +110,9 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     
     objc_setAssociatedObject(self, &bxd_customKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_disconnectTypeKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(self, &bxd_singleAlarmDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(self, &bxd_doubleAlarmDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(self, &bxd_longAlarmDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(self, &bxd_threeAxisDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_passwordKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_threeAxisDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_longConModeDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     objc_setAssociatedObject(self, &bxd_customSuccessKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_disconnectTypeSuccessKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -158,29 +153,21 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     return objc_getAssociatedObject(self, &bxd_disconnectTypeKey);
 }
 
-- (CBCharacteristic *)bxd_singleAlarmData {
-    return objc_getAssociatedObject(self, &bxd_singleAlarmDataKey);
-}
-
-- (CBCharacteristic *)bxd_doubleAlarmData {
-    return objc_getAssociatedObject(self, &bxd_doubleAlarmDataKey);
-}
-
-- (CBCharacteristic *)bxd_longAlarmData {
-    return objc_getAssociatedObject(self, &bxd_longAlarmDataKey);
+- (CBCharacteristic *)bxd_password {
+    return objc_getAssociatedObject(self, &bxd_passwordKey);
 }
 
 - (CBCharacteristic *)bxd_threeAxisData {
     return objc_getAssociatedObject(self, &bxd_threeAxisDataKey);
 }
 
-- (CBCharacteristic *)bxd_password {
-    return objc_getAssociatedObject(self, &bxd_passwordKey);
+- (CBCharacteristic *)bxd_longConModeData {
+    return objc_getAssociatedObject(self, &bxd_longConModeDataKey);
 }
 
 #pragma mark - private method
 - (BOOL)bxd_customServiceSuccess {
-    if (!self.bxd_custom || !self.bxd_disconnectType || !self.bxd_singleAlarmData || !self.bxd_doubleAlarmData || !self.bxd_longAlarmData || !self.bxd_threeAxisData || !self.bxd_password) {
+    if (!self.bxd_custom || !self.bxd_disconnectType || !self.bxd_password || !self.bxd_threeAxisData) {
         return NO;
     }
     return YES;

@@ -10,7 +10,6 @@
 #endif
 #endif
 
-#import "MKBaseModule.h"
 #import "MKBaseCell.h"
 #import "MKBaseViewController.h"
 #import "MKBaseNavigationController.h"
@@ -44,7 +43,10 @@
 #import "MKRegularsDefine.h"
 #import "MKClassInfo.h"
 #import "MKDateFormatter.h"
-#import "MKModuleManager.h"
+#import "MKExcelCell.h"
+#import "MKExcelSheet.h"
+#import "MKExcelWookbook.h"
+#import "MKXMLReader.h"
 
 FOUNDATION_EXPORT double MKBaseModuleLibraryVersionNumber;
 FOUNDATION_EXPORT const unsigned char MKBaseModuleLibraryVersionString[];

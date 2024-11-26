@@ -115,13 +115,6 @@
         resultDic = @{
             @"connectable":@(connectable)
         };
-    }else if ([cmd isEqualToString:@"23"]) {
-        //读取密码验证状态
-        operationID = mk_bxd_taskReadPasswordVerificationOperation;
-        BOOL isOn = [content isEqualToString:@"01"];
-        resultDic = @{
-            @"isOn":@(isOn)
-        };
     }else if ([cmd isEqualToString:@"24"]) {
         //读取设备连接密码
         operationID = mk_bxd_taskReadConnectPasswordOperation;
@@ -136,6 +129,46 @@
         NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(0, 4)];
         resultDic = @{
             @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
+        };
+    }else if ([cmd isEqualToString:@"2a"]) {
+        //读取厂商信息
+        operationID = mk_bxd_taskReadManufacturerOperation;
+        NSData *manufacturerData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
+        NSString *manufacturer = [[NSString alloc] initWithData:manufacturerData encoding:NSUTF8StringEncoding];
+        resultDic = @{
+            @"manufacturer":(MKValidStr(manufacturer) ? manufacturer : @""),
+        };
+    }else if ([cmd isEqualToString:@"2b"]) {
+        //读取厂商信息
+        operationID = mk_bxd_taskReadFirmwareOperation;
+        NSData *firmwareData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
+        NSString *firmware = [[NSString alloc] initWithData:firmwareData encoding:NSUTF8StringEncoding];
+        resultDic = @{
+            @"firmware":(MKValidStr(firmware) ? firmware : @""),
+        };
+    }else if ([cmd isEqualToString:@"2c"]) {
+        //读取软件版本
+        operationID = mk_bxd_taskReadSoftwareOperation;
+        NSData *softwareData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
+        NSString *software = [[NSString alloc] initWithData:softwareData encoding:NSUTF8StringEncoding];
+        resultDic = @{
+            @"software":(MKValidStr(software) ? software : @""),
+        };
+    }else if ([cmd isEqualToString:@"2d"]) {
+        //读取硬件版本
+        operationID = mk_bxd_taskReadHardwareOperation;
+        NSData *hardwareData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
+        NSString *hardware = [[NSString alloc] initWithData:hardwareData encoding:NSUTF8StringEncoding];
+        resultDic = @{
+            @"hardware":(MKValidStr(hardware) ? hardware : @""),
+        };
+    }else if ([cmd isEqualToString:@"2e"]) {
+        //读取产品型号
+        operationID = mk_bxd_taskReadDeviceModelOperation;
+        NSData *modeIDData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
+        NSString *modeID = [[NSString alloc] initWithData:modeIDData encoding:NSUTF8StringEncoding];
+        resultDic = @{
+            @"modeID":(MKValidStr(modeID) ? modeID : @""),
         };
     }else if ([cmd isEqualToString:@"2f"]) {
         //读取回应包开关
@@ -164,6 +197,11 @@
             @"longPressMode":@([longState isEqualToString:@"01"]),
             @"abnormalInactivityMode":@([inactivityState isEqualToString:@"01"]),
         };
+    }else if ([cmd isEqualToString:@"33"]) {
+        //读取通道广播帧内容
+        operationID = mk_bxd_taskReadChannelAdvContentOperation;
+        
+        resultDic = [MKBXDAdopter parseChannelContent:content];
     }else if ([cmd isEqualToString:@"34"]) {
         //读取活跃通道广播参数
         operationID = mk_bxd_taskReadTriggerChannelAdvParamsOperation;
@@ -391,6 +429,21 @@
         resultDic = @{
             @"deviceType":content,
         };
+    }else if ([cmd isEqualToString:@"5a"]) {
+        //读取生产日期
+        operationID = mk_bxd_taskReadProductionDateOperation;
+        NSString *year = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *month = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 2)];
+        if (month.length == 1) {
+            month = [@"0" stringByAppendingString:month];
+        }
+        NSString *day = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 2)];
+        if (day.length == 1) {
+            day = [@"0" stringByAppendingString:day];
+        }
+        resultDic = @{
+            @"productionDate":[NSString stringWithFormat:@"%@.%@.%@",year,month,day],
+        };
     }
     
     return [self dataParserGetDataSuccess:resultDic operationID:operationID];
@@ -406,9 +459,6 @@
     }else if ([cmd isEqualToString:@"22"]) {
         //设置可连接性
         operationID = mk_bxd_taskConfigConnectableOperation;
-    }else if ([cmd isEqualToString:@"23"]) {
-        //设置密码验证状态
-        operationID = mk_bxd_taskConfigPasswordVerificationOperation;
     }else if ([cmd isEqualToString:@"24"]) {
         //设置连接密码
         operationID = mk_bxd_taskConfigConnectPasswordOperation;
@@ -427,6 +477,9 @@
     }else if ([cmd isEqualToString:@"31"]) {
         //设置按键是否可以恢复出厂设置
         operationID = mk_bxd_taskConfigResetDeviceByButtonStatusOperation;
+    }else if ([cmd isEqualToString:@"33"]) {
+        //设置通道广播帧类型
+        operationID = mk_bxd_taskConfigChannelContentOperation;
     }else if ([cmd isEqualToString:@"34"]) {
         //设置活跃通道广播参数
         operationID = mk_bxd_taskConfigTriggerChannelAdvParamsOperation;
@@ -490,6 +543,9 @@
     }else if ([cmd isEqualToString:@"51"]) {
         //设置设备名称
         operationID = mk_bxd_taskConfigDeviceNameOperation;
+    }else if ([cmd isEqualToString:@"5d"]) {
+        //重置电池
+        operationID = mk_bxd_taskBatteryResetOperation;
     }
     
     return [self dataParserGetDataSuccess:@{@"success":@(success)} operationID:operationID];
@@ -504,25 +560,41 @@
     if (readData.length != dataLen + 4) {
         return @{};
     }
+    NSString *flag = [readString substringWithRange:NSMakeRange(2, 2)];
     NSString *cmd = [readString substringWithRange:NSMakeRange(4, 2)];
     NSString *content = [readString substringWithRange:NSMakeRange(8, dataLen * 2)];
     
     mk_bxd_taskOperationID operationID = mk_bxd_defaultTaskOperationID;
     NSDictionary *resultDic = @{};
-    if ([cmd isEqualToString:@"23"]) {
-        //读取设备连接是否需要密码
-        operationID = mk_bxd_taskReadNeedPasswordOperation;
-        resultDic = @{
-            @"state":content
-        };
-    }else if ([cmd isEqualToString:@"55"]) {
-        //验证密码
-        operationID = mk_bxd_connectPasswordOperation;
-        
-        resultDic = @{
-            @"success":@([content isEqualToString:@"aa"]),
-        };
+    
+    if ([flag isEqualToString:@"00"]) {
+        //读取
+        if ([cmd isEqualToString:@"23"]) {
+            //读取设备连接是否需要密码
+            operationID = mk_bxd_taskReadNeedPasswordOperation;
+            resultDic = @{
+                @"state":content
+            };
+        }
+    }else if ([flag isEqualToString:@"01"]) {
+        BOOL success = [content isEqualToString:@"aa"];
+        if ([cmd isEqualToString:@"55"]) {
+            //验证密码
+            operationID = mk_bxd_connectPasswordOperation;
+            
+            resultDic = @{
+                @"success":@(success),
+            };
+        }else if ([cmd isEqualToString:@"23"]) {
+            //设置密码验证状态
+            operationID = mk_bxd_taskConfigPasswordVerificationOperation;
+            
+            resultDic = @{
+                @"success":@(success),
+            };
+        }
     }
+    
     return [self dataParserGetDataSuccess:resultDic operationID:operationID];
 }
 

@@ -25,6 +25,14 @@
 
 + (void)bxd_readDeviceModelWithSucBlock:(void (^)(id returnData))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral.bxd_deviceModel) {
+        //新版本自定义
+        [self readDataWithTaskID:mk_bxd_taskReadDeviceModelOperation
+                         cmdFlag:@"2e"
+                        sucBlock:sucBlock
+                     failedBlock:failedBlock];
+        return;
+    }
     [centralManager addReadTaskWithTaskID:mk_bxd_taskReadDeviceModelOperation
                            characteristic:peripheral.bxd_deviceModel
                              successBlock:sucBlock
@@ -33,6 +41,14 @@
 
 + (void)bxd_readProductionDateWithSucBlock:(void (^)(id returnData))sucBlock
                                failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral.bxd_productionDate) {
+        //新版本自定义
+        [self readDataWithTaskID:mk_bxd_taskReadProductionDateOperation
+                         cmdFlag:@"5a"
+                        sucBlock:sucBlock
+                     failedBlock:failedBlock];
+        return;
+    }
     [centralManager addReadTaskWithTaskID:mk_bxd_taskReadProductionDateOperation
                            characteristic:peripheral.bxd_productionDate
                              successBlock:sucBlock
@@ -41,6 +57,14 @@
 
 + (void)bxd_readFirmwareWithSucBlock:(void (^)(id returnData))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral.bxd_firmware) {
+        //新版本自定义
+        [self readDataWithTaskID:mk_bxd_taskReadFirmwareOperation
+                         cmdFlag:@"2b"
+                        sucBlock:sucBlock
+                     failedBlock:failedBlock];
+        return;
+    }
     [centralManager addReadTaskWithTaskID:mk_bxd_taskReadFirmwareOperation
                            characteristic:peripheral.bxd_firmware
                              successBlock:sucBlock
@@ -49,6 +73,14 @@
 
 + (void)bxd_readHardwareWithSucBlock:(void (^)(id returnData))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral.bxd_hardware) {
+        //新版本自定义
+        [self readDataWithTaskID:mk_bxd_taskReadHardwareOperation
+                         cmdFlag:@"2d"
+                        sucBlock:sucBlock
+                     failedBlock:failedBlock];
+        return;
+    }
     [centralManager addReadTaskWithTaskID:mk_bxd_taskReadHardwareOperation
                            characteristic:peripheral.bxd_hardware
                              successBlock:sucBlock
@@ -57,6 +89,14 @@
 
 + (void)bxd_readSoftwareWithSucBlock:(void (^)(id returnData))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral.bxd_software) {
+        //新版本自定义
+        [self readDataWithTaskID:mk_bxd_taskReadSoftwareOperation
+                         cmdFlag:@"2c"
+                        sucBlock:sucBlock
+                     failedBlock:failedBlock];
+        return;
+    }
     [centralManager addReadTaskWithTaskID:mk_bxd_taskReadSoftwareOperation
                            characteristic:peripheral.bxd_software
                              successBlock:sucBlock
@@ -65,6 +105,14 @@
 
 + (void)bxd_readManufacturerWithSucBlock:(void (^)(id returnData))sucBlock
                              failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral.bxd_manufacturer) {
+        //新版本自定义
+        [self readDataWithTaskID:mk_bxd_taskReadManufacturerOperation
+                         cmdFlag:@"2a"
+                        sucBlock:sucBlock
+                     failedBlock:failedBlock];
+        return;
+    }
     [centralManager addReadTaskWithTaskID:mk_bxd_taskReadManufacturerOperation
                            characteristic:peripheral.bxd_manufacturer
                              successBlock:sucBlock
@@ -92,14 +140,6 @@
                             failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadConnectableOperation
                      cmdFlag:@"22"
-                    sucBlock:sucBlock
-                 failedBlock:failedBlock];
-}
-
-+ (void)bxd_readPasswordVerificationWithSucBlock:(void (^)(id returnData))sucBlock
-                                     failedBlock:(void (^)(NSError *error))failedBlock {
-    [self readDataWithTaskID:mk_bxd_taskReadPasswordVerificationOperation
-                     cmdFlag:@"23"
                     sucBlock:sucBlock
                  failedBlock:failedBlock];
 }
@@ -144,6 +184,18 @@
                  failedBlock:failedBlock];
 }
 
++ (void)bxd_readChannelAdvContent:(MKBXDChannelAlarmType)channelType
+                         sucBlock:(void (^)(id returnData))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *commandString = [@"ea003301" stringByAppendingString:type];
+    [centralManager addTaskWithTaskID:mk_bxd_taskReadChannelAdvContentOperation
+                       characteristic:peripheral.bxd_custom
+                          commandData:commandString
+                         successBlock:sucBlock
+                         failureBlock:failedBlock];
+}
+
 + (void)bxd_readTriggerChannelAdvParams:(MKBXDChannelAlarmType)channelType
                                sucBlock:(void (^)(id returnData))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
@@ -180,7 +232,7 @@
                          failureBlock:failedBlock];
 }
 
-+ (void)bxd_readAlarmNotificationType:(MKBXDChannelAlarmType)channelType
++ (void)bxd_readAlarmNotificationType:(MKBXDChannelAlarmNotifyType)channelType
                              sucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock {
     NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
@@ -350,6 +402,17 @@
                      cmdFlag:@"57"
                     sucBlock:sucBlock
                  failedBlock:failedBlock];
+}
+
+#pragma mark - password
++ (void)bxd_readPasswordVerificationWithSucBlock:(void (^)(id returnData))sucBlock
+                                     failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = @"ea002300";
+    [centralManager addTaskWithTaskID:mk_bxd_taskReadNeedPasswordOperation
+                       characteristic:peripheral.bxd_password
+                          commandData:commandString
+                         successBlock:sucBlock
+                         failureBlock:failedBlock];
 }
 
 #pragma mark - private method

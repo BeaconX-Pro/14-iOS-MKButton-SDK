@@ -35,14 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
                      sucBlock:(void (^)(void))sucBlock
                   failedBlock:(void (^)(NSError *error))failedBlock;
 
-/// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.
-/// @param isOn isOn
-/// @param sucBlock Success callback
-/// @param failedBlock Failure callback
-+ (void)bxd_configPasswordVerification:(BOOL)isOn
-                              sucBlock:(void (^)(void))sucBlock
-                           failedBlock:(void (^)(NSError *error))failedBlock;
-
 /// Configure the current connection password of the device.
 /// @param password 1~16 ascii characters.
 /// @param sucBlock Success callback
@@ -87,6 +79,40 @@ NS_ASSUME_NONNULL_BEGIN
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Configure the channel broadcast content as alarm info.
+/// @param channelType channelType
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configChannelContentAlarmInfo:(MKBXDChannelAlarmType)channelType
+                                 sucBlock:(void (^)(void))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure the channel broadcast content as UID.
+/// @param channelType channelType
+/// @param namespaceID 10 Bytes.
+/// @param instanceID 6 Bytes.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configChannelContentUID:(MKBXDChannelAlarmType)channelType
+                        namespaceID:(NSString *)namespaceID
+                         instanceID:(NSString *)instanceID
+                           sucBlock:(void (^)(void))sucBlock
+                        failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure the channel broadcast content as iBeacon.
+/// @param channelType channelType
+/// @param major 0~65535
+/// @param minor 0~65535
+/// @param uuid 16 Bytes.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configChannelContentBeacon:(MKBXDChannelAlarmType)channelType
+                                 major:(NSInteger)major
+                                 minor:(NSInteger)minor
+                                  uuid:(NSString *)uuid
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Configure the channel broadcast parameters that trigger the alarm function.
 /// @param protocol protocol
 /// @param sucBlock Success callback
@@ -116,7 +142,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param type type
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
-+ (void)bxd_configAlarmNotificationType:(MKBXDChannelAlarmType)channelType
++ (void)bxd_configAlarmNotificationType:(MKBXDChannelAlarmNotifyType)channelType
                            reminderType:(mk_bxd_reminderType)reminderType
                                sucBlock:(void (^)(void))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock;
@@ -265,7 +291,20 @@ NS_ASSUME_NONNULL_BEGIN
                     sucBlock:(void (^)(void))sucBlock
                  failedBlock:(void (^)(NSError *error))failedBlock;
 
-#pragma mark - FEE3
+/// Reset the battery.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_batteryResetWithSucBlock:(void (^)(void))sucBlock
+                         failedBlock:(void (^)(NSError *error))failedBlock;
+
+#pragma mark - password
+/// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configPasswordVerification:(BOOL)isOn
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock;
 
 @end
 

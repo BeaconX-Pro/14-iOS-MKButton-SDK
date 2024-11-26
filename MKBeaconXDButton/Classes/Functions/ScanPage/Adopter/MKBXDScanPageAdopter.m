@@ -14,6 +14,9 @@
 
 #import "MKMacroDefines.h"
 
+#import "MKBXScanBeaconCell.h"
+#import "MKBXScanUIDCell.h"
+
 #import "MKBXDScanDeviceDataCell.h"
 #import "MKBXDScanAdvCell.h"
 #import "MKBXDScanDeviceInfoCell.h"
@@ -27,7 +30,7 @@
 static const char *indexKey = "indexKey";
 static const char *frameTypeKey = "frameTypeKey";
 
-@interface NSObject (MKBXScanAdd)
+@interface NSObject (MKBXDcanAdd)
 
 /// 用来标示数据model在设备列表或者设备信息广播帧数组里的index
 @property (nonatomic, assign)NSInteger index;
@@ -39,12 +42,14 @@ static const char *frameTypeKey = "frameTypeKey";
  MKBXDAdvAlarmType_long,(MKBXDAdvFrameType)
  MKBXDAdvAlarmType_abnormalInactivity,(MKBXDAdvFrameType)
  MKBXDRespondFrameType,
+ MKBXDUIDFrameType,
+ MKBXDBeaconFrameType
  */
 @property (nonatomic, assign)NSInteger frameIndex;
 
 @end
 
-@implementation NSObject (MKBXScanAdd)
+@implementation NSObject (MKBXDcanAdd)
 
 - (void)setIndex:(NSInteger)index {
     objc_setAssociatedObject(self, &indexKey, @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -73,6 +78,28 @@ static const char *frameTypeKey = "frameTypeKey";
 @implementation MKBXDScanPageAdopter
 
 + (NSObject *)parseAdvDatas:(MKBXDBaseAdvModel *)advModel {
+    if ([advModel isKindOfClass:MKBXDBeacon.class]) {
+        //iBeacon
+        MKBXDBeacon *tempModel = (MKBXDBeacon *)advModel;
+        MKBXScanBeaconCellModel *cellModel = [[MKBXScanBeaconCellModel alloc] init];
+        cellModel.rssi = [NSString stringWithFormat:@"%ld",(long)[tempModel.rssi integerValue]];
+        cellModel.rssi1M = [NSString stringWithFormat:@"%ld",(long)[tempModel.rssi1M integerValue]];
+        cellModel.txPower = [NSString stringWithFormat:@"%ld",(long)[tempModel.txPower integerValue]];
+        cellModel.interval = tempModel.interval;
+        cellModel.major = tempModel.major;
+        cellModel.minor = tempModel.minor;
+        cellModel.uuid = [tempModel.uuid lowercaseString];
+        return cellModel;
+    }
+    if ([advModel isKindOfClass:MKBXDUIDBeacon.class]) {
+        //UID
+        MKBXDUIDBeacon *tempModel = (MKBXDUIDBeacon *)advModel;
+        MKBXScanUIDCellModel *cellModel = [[MKBXScanUIDCellModel alloc] init];
+        cellModel.txPower = [NSString stringWithFormat:@"%ld",(long)[tempModel.txPower integerValue]];
+        cellModel.namespaceId = tempModel.namespaceId;
+        cellModel.instanceId = tempModel.instanceId;
+        return cellModel;
+    }
     if ([advModel isKindOfClass:MKBXDAdvDataModel.class]) {
         //触发数据包
         MKBXDAdvDataModel *tempModel = (MKBXDAdvDataModel *)advModel;
@@ -121,7 +148,12 @@ static const char *frameTypeKey = "frameTypeKey";
         deviceModel.deviceName = SafeStr(tempDataModel.deviceName);
         frameType = tempDataModel.alarmType;
         deviceModel.deviceID = tempDataModel.deviceID;
+    }else if ([advData isKindOfClass:MKBXDUIDBeacon.class]) {
+        frameType = 5;
+    }else if ([advData isKindOfClass:MKBXDBeacon.class]) {
+        frameType = 6;
     }
+    
     NSObject *obj = [self parseAdvDatas:advData];
     if (!obj) {
         return deviceModel;
@@ -157,6 +189,10 @@ static const char *frameTypeKey = "frameTypeKey";
         exsitModel.deviceName = SafeStr(tempDataModel.deviceName);
         frameType = tempDataModel.alarmType;
         exsitModel.deviceID = tempDataModel.deviceID;
+    }else if ([advData isKindOfClass:MKBXDUIDBeacon.class]) {
+        frameType = 5;
+    }else if ([advData isKindOfClass:MKBXDBeacon.class]) {
+        frameType = 6;
     }
     NSObject *tempModel = [self parseAdvDatas:advData];
     if (!tempModel) {
@@ -188,6 +224,57 @@ static const char *frameTypeKey = "frameTypeKey";
         tempModel.index = i;
         [exsitModel.advertiseList addObject:tempModel];
     }
+}
+
++ (UITableViewCell *)loadCellWithTableView:(UITableView *)tableView dataModel:(NSObject *)dataModel {
+    if ([dataModel isKindOfClass:MKBXScanUIDCellModel.class]) {
+        //UID
+        MKBXScanUIDCell *cell = [MKBXScanUIDCell initCellWithTableView:tableView];
+        cell.dataModel = dataModel;
+        return cell;
+    }
+    if ([dataModel isKindOfClass:MKBXScanBeaconCellModel.class]){
+        //iBeacon
+        MKBXScanBeaconCell *cell = [MKBXScanBeaconCell initCellWithTableView:tableView];
+        cell.dataModel = dataModel;
+        return cell;
+    }
+    if ([dataModel isKindOfClass:MKBXDScanDeviceInfoCellModel.class]) {
+        //Device Info
+        MKBXDScanDeviceInfoCell *cell = [MKBXDScanDeviceInfoCell initCellWithTableView:tableView];
+        cell.dataModel = dataModel;
+        return cell;
+    }
+    if ([dataModel isKindOfClass:MKBXDScanAdvCellModel.class]) {
+        //Adv Data
+        MKBXDScanAdvCell *cell = [MKBXDScanAdvCell initCellWithTableView:tableView];
+        cell.dataModel = dataModel;
+        return cell;
+    }
+    
+    return [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MKBXDScanPageAdopterIdenty"];
+}
+
++ (CGFloat)loadCellHeightWithDataModel:(NSObject *)dataModel {
+    if ([dataModel isKindOfClass:MKBXScanUIDCellModel.class]) {
+        //UID
+        return 85.f;
+    }
+    if ([dataModel isKindOfClass:MKBXScanBeaconCellModel.class]){
+        //iBeacon
+        MKBXScanBeaconCellModel *model = (MKBXScanBeaconCellModel *)dataModel;
+        return [MKBXScanBeaconCell getCellHeightWithUUID:model.uuid];
+    }
+    if ([dataModel isKindOfClass:MKBXDScanDeviceInfoCellModel.class]) {
+        //Device Info
+        return 105.f;
+    }
+    if ([dataModel isKindOfClass:MKBXDScanAdvCellModel.class]) {
+        //Adv Data
+        return 70.f;
+    }
+    
+    return 0;
 }
 
 @end

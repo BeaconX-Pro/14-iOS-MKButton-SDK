@@ -57,10 +57,10 @@
             [self operationFailedMsg:dic[@"msg"] completeBlock:failedBlock];
             return ;
         }
-//        if (![self readDeviceType]) {
-//            [self operationFailedMsg:@"Read Device Type Error" completeBlock:failedBlock];
-//            return;
-//        }
+        if (![self readDeviceType]) {
+            [self operationFailedMsg:@"Read Device Type Error" completeBlock:failedBlock];
+            return;
+        }
         NSString *software = [self readSoftwareVersion];
         if (!ValidStr(software)) {
             [self operationFailedMsg:@"Read Software Failed!" completeBlock:failedBlock];

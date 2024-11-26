@@ -72,7 +72,7 @@
     __block BOOL success = NO;
     [MKBXDInterface bxd_readPasswordVerificationWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.passwordVerification = [returnData[@"result"][@"isOn"] boolValue];
+        self.passwordVerification = [returnData[@"result"][@"state"] isEqualToString:@"01"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);

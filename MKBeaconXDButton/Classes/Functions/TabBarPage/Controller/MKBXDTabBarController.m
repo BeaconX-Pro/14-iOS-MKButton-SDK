@@ -17,7 +17,10 @@
 
 #import "MKBXDCentralManager.h"
 
+#import "MKBXDConnectManager.h"
+
 #import "MKBXDAlarmController.h"
+#import "MKBXDAlarmV2Controller.h"
 #import "MKBXDSettingController.h"
 #import "MKBXDDeviceController.h"
 
@@ -153,12 +156,20 @@
 }
 
 - (void)loadSubPages {
-    MKBXDAlarmController *alarmPage = [[MKBXDAlarmController alloc] init];
+    UIViewController *alarmPage = nil;
+    if ([[MKBXDConnectManager shared].deviceType integerValue] == 1) {
+        //1  新固件
+        alarmPage = [[MKBXDAlarmV2Controller alloc] init];
+        
+    }else {
+        //0  旧固件
+        alarmPage = [[MKBXDAlarmController alloc] init];
+    }
     alarmPage.tabBarItem.title = @"ALARM";
     alarmPage.tabBarItem.image = LOADICON(@"MKBeaconXDButton", @"MKBXDTabBarController", @"bxd_slotTabBarItemUnselected.png");
     alarmPage.tabBarItem.selectedImage = LOADICON(@"MKBeaconXDButton", @"MKBXDTabBarController", @"bxd_slotTabBarItemSelected.png");
     MKBaseNavigationController *alarmNav = [[MKBaseNavigationController alloc] initWithRootViewController:alarmPage];
-
+    
     MKBXDSettingController *settingPage = [[MKBXDSettingController alloc] init];
     settingPage.tabBarItem.title = @"SETTING";
     settingPage.tabBarItem.image = LOADICON(@"MKBeaconXDButton", @"MKBXDTabBarController", @"bxd_settingTabBarItemUnselected.png");

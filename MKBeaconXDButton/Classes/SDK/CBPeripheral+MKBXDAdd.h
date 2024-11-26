@@ -34,11 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Custom Characteristic
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_custom;
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_disconnectType;
-@property (nonatomic, strong, readonly)CBCharacteristic *bxd_singleAlarmData;
-@property (nonatomic, strong, readonly)CBCharacteristic *bxd_doubleAlarmData;
-@property (nonatomic, strong, readonly)CBCharacteristic *bxd_longAlarmData;
-@property (nonatomic, strong, readonly)CBCharacteristic *bxd_threeAxisData;
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_password;
+@property (nonatomic, strong, readonly)CBCharacteristic *bxd_threeAxisData;
+@property (nonatomic, strong, readonly)CBCharacteristic *bxd_longConModeData;
 
 - (void)bxd_updateCharacterWithService:(CBService *)service;
 

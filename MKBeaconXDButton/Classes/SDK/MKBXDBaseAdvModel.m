@@ -27,42 +27,74 @@
     if (!MKValidDict(advDic)) {
         return @[];
     }
+    
+    NSMutableArray *beaconList = [NSMutableArray array];
+    NSArray *keys = [advDic allKeys];
+    
+    for (id key in keys) {
+        if ([key isEqual:[CBUUID UUIDWithString:@"FEAA"]]) {
+            NSData *feaaData = advDic[[CBUUID UUIDWithString:@"FEAA"]];
+            if (MKValidData(feaaData)) {
+                MKBXDDataFrameType frameType = [self fetchFEAAFrameType:feaaData];
+                if (frameType == MKBXDUIDFrameType) {
+                    MKBXDUIDBeacon *beacon = [[MKBXDUIDBeacon alloc] initWithAdvertiseData:feaaData];
+                    beacon.frameType = MKBXDUIDFrameType;
+                    if (beacon) {
+                        [beaconList addObject:beacon];
+                    }
+                }
+            }
+        }else if ([key isEqual:[CBUUID UUIDWithString:@"FEAB"]]) {
+            NSData *feabData = advDic[[CBUUID UUIDWithString:@"FEAB"]];
+            if (MKValidData(feabData)) {
+                MKBXDDataFrameType frameType = [self fetchFEABFrameType:feabData];
+                if (frameType == MKBXDBeaconFrameType) {
+                    MKBXDBeacon *beacon = [[MKBXDBeacon alloc] initWithAdvertiseData:feabData];
+                    beacon.frameType = MKBXDBeaconFrameType;
+                    if (beacon) {
+                        beacon.txPower = advData[CBAdvertisementDataTxPowerLevelKey];
+                        [beaconList addObject:beacon];
+                    }
+                }
+            }
+        }else if ([key isEqual:[CBUUID UUIDWithString:@"FEE0"]]) {
+            NSArray *tempList = [self parseAdvDataList:advData peripheral:peripheral RSSI:RSSI];
+            if (tempList.count > 0) {
+                [beaconList addObjectsFromArray:tempList];
+            }
+        }
+    }
+    
+    return beaconList;
+}
+
++ (NSArray <MKBXDBaseAdvModel *>*)parseAdvDataList:(NSDictionary *)advData
+                                        peripheral:(CBPeripheral *)peripheral
+                                              RSSI:(NSNumber *)RSSI {
+    NSDictionary *advDic = advData[CBAdvertisementDataServiceDataKey];
+    NSMutableArray *beaconList = [NSMutableArray array];
     NSData *scanData = advDic[[CBUUID UUIDWithString:@"FEE0"]];
     NSData *respondData = advDic[[CBUUID UUIDWithString:@"EA00"]];
-    
+    if (!MKValidData(scanData)) {
+        return beaconList;
+    }
     [MKBLEBaseLogManager saveDataWithFileName:@"BXP-B-D" dataList:@[[MKBLEBaseSDKAdopter hexStringFromData:scanData],
                                                                     [MKBLEBaseSDKAdopter hexStringFromData:respondData]]];
-    if (!MKValidData(scanData)) {
-        return @[];
-    }
-    NSMutableArray *dataList = [NSMutableArray array];
     MKBXDBaseAdvModel *scanModel = [self parseAdvModeWithData:scanData];
     MKBXDBaseAdvModel *respondModel = [self parseAdvModeWithData:respondData];
     if (respondModel && [respondModel isKindOfClass:MKBXDAdvRespondDataModel.class]) {
         //回应包内容
         MKBXDAdvRespondDataModel *tempModel = (MKBXDAdvRespondDataModel *)respondModel;
         tempModel.txPower = advData[CBAdvertisementDataTxPowerLevelKey];
-        tempModel.rssi = RSSI;
-        tempModel.connectEnable = [advData[CBAdvertisementDataIsConnectable] boolValue];
-        tempModel.identifier = peripheral.identifier.UUIDString;
-        tempModel.peripheral = peripheral;
-        tempModel.advertiseData = respondData;
-        tempModel.deviceName = advData[CBAdvertisementDataLocalNameKey];
-        [dataList addObject:tempModel];
+        [beaconList addObject:tempModel];
     }
     if (scanModel && [scanModel isKindOfClass:MKBXDAdvDataModel.class]) {
         //触发广播包
         MKBXDAdvDataModel *tempModel = (MKBXDAdvDataModel *)scanModel;
-        tempModel.rssi = RSSI;
-        tempModel.connectEnable = [advData[CBAdvertisementDataIsConnectable] boolValue];
-        tempModel.identifier = peripheral.identifier.UUIDString;
-        tempModel.peripheral = peripheral;
-        tempModel.advertiseData = respondData;
-        tempModel.deviceName = advData[CBAdvertisementDataLocalNameKey];
-        [dataList addObject:tempModel];
+        [beaconList addObject:tempModel];
     }
     
-    return dataList;
+    return beaconList;
 }
 
 + (MKBXDBaseAdvModel *)parseAdvModeWithData:(NSData *)advData {
@@ -88,6 +120,36 @@
         return tempModel;
     }
     return nil;
+}
+
++ (MKBXDDataFrameType)fetchFEAAFrameType:(NSData *)stoneData {
+    if (!MKValidData(stoneData)) {
+        return MKBXDUnknownFrameType;
+    }
+    //Eddystone信息帧
+    if (stoneData.length == 0) {
+        return MKBXDUnknownFrameType;
+    }
+    const unsigned char *cData = [stoneData bytes];
+    switch (*cData) {
+        case 0x00:
+            return MKBXDUIDFrameType;
+        default:
+            return MKBXDUnknownFrameType;
+    }
+}
+
++ (MKBXDDataFrameType)fetchFEABFrameType:(NSData *)customData {
+    if (!MKValidData(customData) || customData.length == 0) {
+        return MKBXDUnknownFrameType;
+    }
+    const unsigned char *cData = [customData bytes];
+    switch (*cData) {
+        case 0x50:
+            return MKBXDBeaconFrameType;
+        default:
+            return MKBXDUnknownFrameType;
+    }
 }
 
 @end
@@ -157,6 +219,91 @@
         [tempMac substringWithRange:NSMakeRange(8, 2)],
         [tempMac substringWithRange:NSMakeRange(10, 2)]];
         self.macAddress = macAddress;
+    }
+    return self;
+}
+
+@end
+
+
+
+@implementation MKBXDBeacon
+
+- (MKBXDBeacon *)initWithAdvertiseData:(NSData *)advData {
+    if (self = [super init]) {
+        NSAssert1(!(advData.length < 7), @"Invalid advertiseData:%@", advData);
+
+        const unsigned char *cData = [advData bytes];
+        unsigned char *data;
+        // Malloc advertise data for char*
+        data = malloc(sizeof(unsigned char) * 2);
+        if (!data) {
+            return nil;
+        }
+        for (int i = 0; i < 2; i++) {
+            data[i] = *cData++;
+        }
+        unsigned char txPowerChar = *(data+1);
+        if (txPowerChar & 0x80) {
+            self.rssi1M = [NSNumber numberWithInt:(- 0x100 + txPowerChar)];
+        }
+        else {
+            self.rssi1M = [NSNumber numberWithInt:txPowerChar];
+        }
+        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:advData];
+        NSString *temp = [content substringWithRange:NSMakeRange(4, content.length - 4)];
+        self.interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:temp range:NSMakeRange(0, 2)];
+        NSMutableArray *array = [NSMutableArray arrayWithObjects:[temp substringWithRange:NSMakeRange(2, 8)],
+                                 [temp substringWithRange:NSMakeRange(10, 4)],
+                                 [temp substringWithRange:NSMakeRange(14, 4)],
+                                 [temp substringWithRange:NSMakeRange(18,4)],
+                                 [temp substringWithRange:NSMakeRange(22, 12)], nil];
+        [array insertObject:@"-" atIndex:1];
+        [array insertObject:@"-" atIndex:3];
+        [array insertObject:@"-" atIndex:5];
+        [array insertObject:@"-" atIndex:7];
+        NSString *uuid = @"";
+        for (NSString *string in array) {
+            uuid = [uuid stringByAppendingString:string];
+        }
+        self.uuid = [uuid uppercaseString];
+        self.major = [NSString stringWithFormat:@"%ld",(long)strtoul([[temp substringWithRange:NSMakeRange(34, 4)] UTF8String],0,16)];
+        self.minor = [NSString stringWithFormat:@"%ld",(long)strtoul([[temp substringWithRange:NSMakeRange(38, 4)] UTF8String],0,16)];
+        free(data);
+    }
+    return self;
+}
+
+@end
+
+
+@implementation MKBXDUIDBeacon
+
+- (MKBXDUIDBeacon *)initWithAdvertiseData:(NSData *)advData {
+    if (self = [super init]) {
+        // On the spec, its 20 bytes. But some beacons doesn't advertise the last 2 RFU bytes.
+        if (advData.length < 18) {
+            return nil;
+        }
+        const unsigned char *cData = [advData bytes];
+        unsigned char *data;
+        // Malloc advertise data for char*
+        data = malloc(sizeof(unsigned char) * advData.length);
+        NSAssert(data, @"failed to malloc");
+        for (int i = 0; i < advData.length; i++) {
+            data[i] = *cData++;
+        }
+        unsigned char txPowerChar = *(data+1);
+        if (txPowerChar & 0x80) {
+            self.txPower = [NSNumber numberWithInt:(- 0x100 + txPowerChar)];
+        }
+        else {
+            self.txPower = [NSNumber numberWithInt:txPowerChar];
+        }
+        self.namespaceId = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",*(data+2), *(data+3), *(data+4), *(data+5), *(data+6), *(data+7), *(data+8), *(data+9), *(data+10), *(data+11)];
+        self.instanceId = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x",*(data+12), *(data+13), *(data+14), *(data+15), *(data+16), *(data+17)];
+        // Free advertise data for char*
+        free(data);
     }
     return self;
 }
