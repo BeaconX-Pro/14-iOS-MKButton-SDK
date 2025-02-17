@@ -404,6 +404,14 @@
                  failedBlock:failedBlock];
 }
 
++ (void)bxd_readDeviceBatteryPercentWithSucBlock:(void (^)(id returnData))sucBlock
+                                     failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadDeviceBatteryPercentOperation
+                     cmdFlag:@"62"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
 #pragma mark - password
 + (void)bxd_readPasswordVerificationWithSucBlock:(void (^)(id returnData))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock {

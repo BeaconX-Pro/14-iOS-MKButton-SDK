@@ -46,6 +46,7 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskReadDoublePressEventCountOperation,      //读取双击触发次数
     mk_bxd_taskReadLongPressEventCountOperation,        //读取长按触发次数
     mk_bxd_taskReadDeviceTypeOperation,                 //读取设备类型
+    mk_bxd_taskReadDeviceBatteryPercentOperation,       //读取电池实时百分比
 
 #pragma mark - custom write
     mk_bxd_taskConfigThreeAxisDataParamsOperation,      //设置3轴传感器参数

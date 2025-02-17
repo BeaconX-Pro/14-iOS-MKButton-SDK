@@ -127,6 +127,9 @@ MKBXDAlarmTypePickCellDelegate>
     if (indexPath.section == 3 && indexPath.row == 0) {
         return 180.f;
     }
+    if (indexPath.section == 5 && indexPath.row == 0) {
+        return 95.f;
+    }
     if (indexPath.section == 7) {
         return 60.f;
     }

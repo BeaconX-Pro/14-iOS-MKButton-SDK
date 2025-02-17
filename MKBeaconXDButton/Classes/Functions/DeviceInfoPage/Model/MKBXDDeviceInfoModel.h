@@ -30,6 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 电压
 @property (nonatomic, copy)NSString *voltage;
 
+/// 电池电量百分比，仅对新版本固件有效
+@property (nonatomic, copy)NSString *batteryPercent;
+
 /**
  mac地址
  */

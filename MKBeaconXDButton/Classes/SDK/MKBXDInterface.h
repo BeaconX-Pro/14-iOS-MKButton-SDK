@@ -446,6 +446,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readDeviceTypeWithSucBlock:(void (^)(id returnData))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Read device's battery percent.
+/*
+ @{
+ @"percent":@"100", //Unit:%
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readDeviceBatteryPercentWithSucBlock:(void (^)(id returnData))sucBlock
+                                     failedBlock:(void (^)(NSError *error))failedBlock;
+
 
 #pragma mark - password
 /// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.

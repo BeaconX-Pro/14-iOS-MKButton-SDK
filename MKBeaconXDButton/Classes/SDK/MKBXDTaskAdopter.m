@@ -444,6 +444,13 @@
         resultDic = @{
             @"productionDate":[NSString stringWithFormat:@"%@.%@.%@",year,month,day],
         };
+    }else if ([cmd isEqualToString:@"62"]) {
+        //读取电池实时百分比
+        operationID = mk_bxd_taskReadDeviceBatteryPercentOperation;
+        NSString *percent = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        resultDic = @{
+            @"percent":percent,
+        };
     }
     
     return [self dataParserGetDataSuccess:resultDic operationID:operationID];

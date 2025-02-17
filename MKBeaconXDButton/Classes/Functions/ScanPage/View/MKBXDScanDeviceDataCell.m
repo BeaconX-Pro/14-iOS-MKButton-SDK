@@ -198,7 +198,7 @@ static CGFloat const batteryIconHeight = 25.f;
     
     [self.txPowerLabel mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(self.nameLabel.mas_left);
-        make.width.mas_equalTo(47.f);
+        make.width.mas_equalTo(60.f);
         make.centerY.mas_equalTo(self.batteryLabel.mas_centerY);
         make.height.mas_equalTo(MKFont(10.f).lineHeight);
     }];

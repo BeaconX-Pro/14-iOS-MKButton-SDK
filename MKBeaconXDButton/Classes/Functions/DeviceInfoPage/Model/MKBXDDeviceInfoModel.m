@@ -10,6 +10,8 @@
 
 #import "MKMacroDefines.h"
 
+#import "MKBXDConnectManager.h"
+
 #import "MKBXDInterface.h"
 
 @interface MKBXDDeviceInfoModel ()
@@ -30,6 +32,13 @@
         if (![self readBatteryVoltage]) {
             [self operationFailedBlockWithMsg:@"Read battery voltage error" block:failedBlock];
             return ;
+        }
+        if ([[MKBXDConnectManager shared].deviceType integerValue] == 1) {
+            //新固件
+            if (![self readBatteryPercent]) {
+                [self operationFailedBlockWithMsg:@"Read battery percent error" block:failedBlock];
+                return ;
+            }
         }
         if (![self readDeviceModel]) {
             [self operationFailedBlockWithMsg:@"Read device model error" block:failedBlock];
@@ -158,6 +167,19 @@
     [MKBXDInterface bxd_readProductionDateWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
         self.manuDate = returnData[@"result"][@"productionDate"];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
+
+- (BOOL)readBatteryPercent {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_readDeviceBatteryPercentWithSucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.batteryPercent = returnData[@"result"][@"percent"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);

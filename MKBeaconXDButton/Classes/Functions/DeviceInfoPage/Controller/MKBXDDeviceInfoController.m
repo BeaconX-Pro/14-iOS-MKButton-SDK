@@ -17,6 +17,8 @@
 #import "MKHudManager.h"
 #import "MKNormalTextCell.h"
 
+#import "MKBXDConnectManager.h"
+
 #import "MKBXDDeviceInfoModel.h"
 
 @interface MKBXDDeviceInfoController ()<UITableViewDelegate, UITableViewDataSource>
@@ -78,6 +80,14 @@
     cellModel1.leftMsg = @"Battery voltage";
     cellModel1.rightMsg = [self.dataModel.voltage stringByAppendingString:@"mV"];
     [self.dataList addObject:cellModel1];
+    
+    if ([[MKBXDConnectManager shared].deviceType integerValue] == 1) {
+        //新固件
+        MKNormalTextCellModel *percentCellModel = [[MKNormalTextCellModel alloc] init];
+        percentCellModel.leftMsg = @"Battery Percentage";
+        percentCellModel.rightMsg = [self.dataModel.batteryPercent stringByAppendingString:@"%"];
+        [self.dataList addObject:percentCellModel];
+    }
     
     MKNormalTextCellModel *cellModel2 = [[MKNormalTextCellModel alloc] init];
     cellModel2.leftMsg = @"MAC address";

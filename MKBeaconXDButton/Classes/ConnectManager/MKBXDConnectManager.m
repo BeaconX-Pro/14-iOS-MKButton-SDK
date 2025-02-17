@@ -66,7 +66,13 @@
             [self operationFailedMsg:@"Read Software Failed!" completeBlock:failedBlock];
             return;
         }
-        if (![software isEqualToString:@"BXP-B-D"]) {
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^BXP-B(\\d)*-D$"
+                                                                               options:0
+                                                                                 error:nil];
+        NSUInteger numberOfMatches = [regex numberOfMatchesInString:software
+                                                            options:0
+                                                              range:NSMakeRange(0, [software length])];
+        if (numberOfMatches <= 0) {
             [self operationFailedMsg:@"Opps:The current app only supports BXP-B-D type devices!" completeBlock:failedBlock];
             return;
             return;
