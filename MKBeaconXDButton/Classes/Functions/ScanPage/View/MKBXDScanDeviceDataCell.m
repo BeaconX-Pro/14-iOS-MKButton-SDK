@@ -242,7 +242,13 @@ static CGFloat const batteryIconHeight = 25.f;
     self.nameLabel.text = (ValidStr(_dataModel.deviceName) ? _dataModel.deviceName : @"N/A");
     NSString *macAddress = (ValidStr(_dataModel.macAddress) ? _dataModel.macAddress : @"N/A");
     self.macLabel.text = [NSString stringWithFormat:@"MAC:%@",macAddress];
-    self.batteryLabel.text = (ValidStr(_dataModel.battery) ? [_dataModel.battery stringByAppendingString:@"mV"] : @"N/A");
+    if (!ValidStr(_dataModel.battery)) {
+        self.batteryLabel.text = @"N/A";
+    }else {
+        NSString *unitString = ([_dataModel.battery integerValue] > 100) ? @"mV" : @"%";
+        self.batteryLabel.text = [_dataModel.battery stringByAppendingString:unitString];
+    }
+    
     if (ValidStr(_dataModel.deviceID)) {
         self.devieIDLabel.text = [NSString stringWithFormat:@"Device ID:0x%@",_dataModel.deviceID];
     }
