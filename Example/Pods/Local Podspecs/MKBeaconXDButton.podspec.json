@@ -1,6 +1,6 @@
 {
   "name": "MKBeaconXDButton",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "summary": "A short description of MKBeaconXDButton.",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/aadyx2007@163.com/MKBeaconXDButton",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/aadyx2007@163.com/MKBeaconXDButton.git",
-    "tag": "0.0.1"
+    "tag": "0.0.2"
   },
   "platforms": {
     "ios": "14.0"
@@ -78,15 +78,27 @@
       },
       "subspecs": [
         {
+          "name": "ExcelManager",
+          "source_files": "MKBeaconXDButton/Classes/Expand/ExcelManager/**"
+        },
+        {
           "name": "View",
           "subspecs": [
+            {
+              "name": "AlarmSyncTimeView",
+              "source_files": "MKBeaconXDButton/Classes/Expand/View/AlarmSyncTimeView/**"
+            },
+            {
+              "name": "DeviceIDCell",
+              "source_files": "MKBeaconXDButton/Classes/Expand/View/DeviceIDCell/**"
+            },
             {
               "name": "NTPickerView",
               "source_files": "MKBeaconXDButton/Classes/Expand/View/NTPickerView/**"
             },
             {
-              "name": "DeviceIDCell",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/DeviceIDCell/**"
+              "name": "SyncEventHeaderView",
+              "source_files": "MKBeaconXDButton/Classes/Expand/View/SyncEventHeaderView/**"
             }
           ]
         }
@@ -155,6 +167,36 @@
             {
               "name": "View",
               "source_files": "MKBeaconXDButton/Classes/Functions/AccelerationPage/View/**"
+            }
+          ]
+        },
+        {
+          "name": "AlarmEventForCRPage",
+          "dependencies": {
+            "MKBeaconXDButton/Functions/ExportEventDataPage/Controller": [
+
+            ]
+          },
+          "subspecs": [
+            {
+              "name": "Controller",
+              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/Controller/**",
+              "dependencies": {
+                "MKBeaconXDButton/Functions/AlarmEventForCRPage/Model": [
+
+                ],
+                "MKBeaconXDButton/Functions/AlarmEventForCRPage/View": [
+
+                ]
+              }
+            },
+            {
+              "name": "Model",
+              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/Model/**"
+            },
+            {
+              "name": "View",
+              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/View/**"
             }
           ]
         },
@@ -435,6 +477,15 @@
           ]
         },
         {
+          "name": "ExportEventDataPage",
+          "subspecs": [
+            {
+              "name": "Controller",
+              "source_files": "MKBeaconXDButton/Classes/Functions/ExportEventDataPage/Controller/**"
+            }
+          ]
+        },
+        {
           "name": "PowerSavePage",
           "subspecs": [
             {
@@ -561,6 +612,9 @@
 
                 ],
                 "MKBeaconXDButton/Functions/AlarmEventPage/Controller": [
+
+                ],
+                "MKBeaconXDButton/Functions/AlarmEventForCRPage/Controller": [
 
                 ],
                 "MKBeaconXDButton/Functions/DismissConfigPage/Controller": [

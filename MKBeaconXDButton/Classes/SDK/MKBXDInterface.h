@@ -221,7 +221,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*
  @{
  @"channelType":@"00",           //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.  @"04":Long Connection Mode
-    @"alarmNotificationType":@"0"           //0:Silent  1:LED 2:Buzzer 3:LED+Buzzer
+    @"alarmNotificationType":@"0"           //0:Silent  1:LED 2:Vibration 3:Buzzer 4:LED+Vibration 5:LED+Buzzer
  }
  */
 /// @param sucBlock Success callback
@@ -273,6 +273,21 @@ NS_ASSUME_NONNULL_BEGIN
                           sucBlock:(void (^)(id returnData))sucBlock
                        failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Trigger Vibration reminder parameters.(BXP-CR only.)
+/*
+ @{
+ @"channelType":@"00",           //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.
+ @"time":@"10",         //x100ms
+ @"interval":@"5",      //x100ms
+ }
+ */
+/// @param channelType channelType
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readAlarmVibrateNotiParams:(MKBXDChannelAlarmType)channelType
+                              sucBlock:(void (^)(id returnData))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Buzzer Vibration reminder parameters.
 /*
  @{
@@ -299,6 +314,18 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_readRemoteReminderLEDNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
                                             failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Remote Vibration reminder parameters.(BXP-CR only)
+/*
+ @{
+ @"time":@"10",         //x100ms
+ @"interval":@"5",      //x100ms
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readRemoteReminderVibrationNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
+                                                  failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Remote Buzzer reminder parameters.
 /*
@@ -335,6 +362,18 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readDismissAlarmLEDNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
                                           failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Read Vibration dismissal alarm parameter.(BXP-CR only)
+/*
+ @{
+ @"time":@"10",         //x100ms
+ @"interval":@"5",      //x100ms
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readDismissAlarmVibrationNotiParamsWithSucBlock:(void (^)(id returnData))sucBlock
+                                                failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Read Buzzer dismissal alarm parameter.
 /*
  @{
@@ -350,7 +389,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Dismiss alarm notification type.
 /*
  @{
-    @"type":@"0"           //0:Silent  1:LED 2:Buzzer 3:LED+Buzzer
+    @"type":@"0"           //BXP-B-D:  0:Silent  1:LED 2:Buzzer 3:LED+Buzzer
+                            //BXP-CR:   0:Silent  1:LED 2:Vibration 3:Buzzer 4:LED+Vibration 5:LED+Buzzer
  }
  */
 /// @param sucBlock Success callback
@@ -368,6 +408,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_readBatteryVoltageWithSucBlock:(void (^)(id returnData))sucBlock
                                failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read the timestamp of the device.(BXP-CR only)
+/*
+ @{
+ @"timestamp":@"1202214545214",        //
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readDeviceTimestampWithSucBlock:(void (^)(id returnData))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Read sensor status.
 /*

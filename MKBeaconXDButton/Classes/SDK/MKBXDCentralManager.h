@@ -68,9 +68,21 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
 
 @end
 
+@protocol mk_bxd_centralManagerAlarmEventDelegate <NSObject>
+
+/// Receive Alarm Event Data.
+/// - Parameters:
+///   - content: content
+///   - alarmType: 0:Single press mode 1:Double press mode 2:Long press mode 3:Long connection Mode
+- (void)mk_bxd_receiveAlarmEventData:(NSString *)content alarmType:(NSInteger)alarmType;
+
+@end
+
 @interface MKBXDCentralManager : NSObject<MKBLEBaseCentralManagerProtocol>
 
 @property (nonatomic, weak)id <mk_bxd_centralManagerScanDelegate>delegate;
+
+@property (nonatomic, weak)id <mk_bxd_centralManagerAlarmEventDelegate>eventDelegate;
 
 /// Current connection status
 @property (nonatomic, assign, readonly)mk_bxd_centralConnectStatus connectStatus;
@@ -151,6 +163,22 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
                characteristic:(CBCharacteristic *)characteristic
                  successBlock:(void (^)(id returnData))successBlock
                  failureBlock:(void (^)(NSError *error))failureBlock;
+
+/// Single click record data.(BXP-CR only)
+/// @param notify notify
+- (BOOL)notifySingleClickData:(BOOL)notify;
+
+/// Double click record data.(BXP-CR only)
+/// @param notify notify
+- (BOOL)notifyDoubleClickData:(BOOL)notify;
+
+/// Long click record data.(BXP-CR only)
+/// @param notify notify
+- (BOOL)notifyLongClickData:(BOOL)notify;
+
+/// Long connection click record data.(BXP-CR only)
+/// @param notify notify
+- (BOOL)notifyLongConnectClickData:(BOOL)notify;
 
 /// Three axis data.
 /// @param notify notify

@@ -12,6 +12,10 @@
 
 static const char *bxd_customKey = "bxd_customKey";
 static const char *bxd_disconnectTypeKey = "bxd_disconnectTypeKey";
+static const char *bxd_singleRecordKey = "bxd_singleRecordKey";
+static const char *bxd_doubleRecordKey = "bxd_doubleRecordKey";
+static const char *bxd_longRecordKey = "bxd_longRecordKey";
+static const char *bxd_longConnectRecordKey = "bxd_longConnectRecordKey";
 static const char *bxd_passwordKey = "bxd_passwordKey";
 static const char *bxd_threeAxisDataKey = "bxd_threeAxisDataKey";
 static const char *bxd_longConModeDataKey = "bxd_longConModeDataKey";
@@ -59,6 +63,12 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA02"]]) {
                 objc_setAssociatedObject(self, &bxd_disconnectTypeKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
                 [self setNotifyValue:YES forCharacteristic:characteristic];
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
+                objc_setAssociatedObject(self, &bxd_singleRecordKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]) {
+                objc_setAssociatedObject(self, &bxd_doubleRecordKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
+                objc_setAssociatedObject(self, &bxd_longRecordKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
                 objc_setAssociatedObject(self, &bxd_threeAxisDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA07"]]) {
@@ -66,6 +76,8 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
                 [self setNotifyValue:YES forCharacteristic:characteristic];
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA08"]]) {
                 objc_setAssociatedObject(self, &bxd_longConModeDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
+                objc_setAssociatedObject(self, &bxd_longConnectRecordKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }
         }
         return;
@@ -94,9 +106,6 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     if (![self bxd_customServiceSuccess]) {
         return NO;
     }
-//    if (![self bxd_customServiceSuccess] || ![self bxd_deviceInfoServiceSuccess]) {
-//        return NO;
-//    }
     return YES;
 }
 
@@ -107,6 +116,11 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     objc_setAssociatedObject(self, &bxd_hardwareKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_softwareKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_firmwareKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    objc_setAssociatedObject(self, &bxd_singleRecordKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_doubleRecordKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_longRecordKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_longConnectRecordKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     objc_setAssociatedObject(self, &bxd_customKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_disconnectTypeKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -163,6 +177,22 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
 
 - (CBCharacteristic *)bxd_longConModeData {
     return objc_getAssociatedObject(self, &bxd_longConModeDataKey);
+}
+
+- (CBCharacteristic *)bxd_singleRecord {
+    return objc_getAssociatedObject(self, &bxd_singleRecordKey);
+}
+
+- (CBCharacteristic *)bxd_doubleRecord {
+    return objc_getAssociatedObject(self, &bxd_doubleRecordKey);
+}
+
+- (CBCharacteristic *)bxd_longRecord {
+    return objc_getAssociatedObject(self, &bxd_longRecordKey);
+}
+
+- (CBCharacteristic *)bxd_longConnectRecord {
+    return objc_getAssociatedObject(self, &bxd_longConnectRecordKey);
 }
 
 #pragma mark - private method

@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否带有光感传感器
 @property (nonatomic, assign)BOOL lightSensor;
 
+/// 是否是BXP-CR
+@property (nonatomic, assign)BOOL isCR;
+
 + (MKBXDConnectManager *)shared;
 
 /// 连接设备

@@ -57,7 +57,7 @@
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(15.f);
         make.right.mas_equalTo(-15.f);
-        make.bottom.mas_equalTo(-10.f);
+        make.bottom.mas_equalTo(-20.f);
         make.height.mas_equalTo(MKFont(15.f).lineHeight);
     }];
 }

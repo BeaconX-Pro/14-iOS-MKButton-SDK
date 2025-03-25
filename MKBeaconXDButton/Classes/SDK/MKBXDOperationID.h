@@ -31,14 +31,18 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskReadPowerSavingModeOperation,            //读取省电模式开关
     mk_bxd_taskReadStaticTriggerTimeOperation,          //读取省电模式静止时间
     mk_bxd_taskReadAlarmLEDNotiParamsOperation,         //读取通道触发LED提醒参数
+    mk_bxd_taskReadAlarmVibrateNotiParamsOperation,     //读取通道触发马达提醒参数
     mk_bxd_taskReadAlarmBuzzerNotiParamsOperation,      //读取通道触发蜂鸣器提醒参数
     mk_bxd_taskReadRemoteReminderLEDNotiParamsOperation,    //读取远程LED提醒参数
+    mk_bxd_taskReadRemoteReminderVibrationNotiParamsOperation,  //读取远程马达提醒参数
     mk_bxd_taskReadRemoteReminderBuzzerNotiParamsOperation,     //读取远程蜂鸣器提醒参数
     mk_bxd_taskReadDismissAlarmByButtonOperation,               //读取按键消警使能
     mk_bxd_taskReadDismissAlarmLEDNotiParamsOperation,  //读取LED消警参数
+    mk_bxd_taskReadDismissAlarmVibrationNotiParamsOperation,    //读取马达消警参数
     mk_bxd_taskReadDismissAlarmBuzzerNotiParamsOperation,       //读取蜂鸣器消警参数
     mk_bxd_taskReadDismissAlarmNotificationTypeOperation,   //读取消警提醒模式
     mk_bxd_taskReadBatteryVoltageOperation,             //读取电池电压
+    mk_bxd_taskReadDeviceTimestampOperation,            //读取设备当前时间戳
     mk_bxd_taskReadSensorStatusOperation,               //读取传感器状态
     mk_bxd_taskReadDeviceIDOperation,                   //读取deviceID
     mk_bxd_taskReadDeviceNameOperation,                 //读取设备名称
@@ -66,17 +70,22 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskConfigPowerSavingModeOperation,          //设置省电模式开关
     mk_bxd_taskConfigStaticTriggerTimeOperation,        //设置省电模式静止时间
     mk_bxd_taskConfigAlarmLEDNotiParamsOperation,       //设置通道触发LED提醒参数
+    mk_bxd_taskConfigAlarmVibrateNotiParamsOperation,   //设置通道触发马达提醒参数
     mk_bxd_taskConfigAlarmBuzzerNotiParamsOperation,    //设置通道触发蜂鸣器提醒参数
     mk_bxd_taskConfigRemoteReminderLEDNotiParamsOperation,  //设置远程LED提醒参数
+    mk_bxd_taskConfigRemoteReminderVibrationNotiParamsOperation,    //设置远程马达提醒参数
     mk_bxd_taskConfigRemoteReminderBuzzerNotiParamsOperation,       //设置远程蜂鸣器提醒参数
     mk_bxd_taskConfigDismissAlarmOperation,             //设置远程消警
     mk_bxd_taskConfigDismissAlarmByButtonOperation,     //设置按键消警使能
     mk_bxd_taskConfigDismissAlarmLEDNotiParamsOperation,    //设置远程LED消警参数
+    mk_bxd_taskConfigDismissAlarmVibrationNotiParamsOperation,  //设置远程马达消警参数
     mk_bxd_taskConfigDismissAlarmBuzzerNotiParamsOperation,     //设置远程蜂鸣器消警参数
     mk_bxd_taskConfigDismissAlarmNotificationTypeOperation,     //设置消警提醒模式
     mk_bxd_taskClearSinglePressEventDataOperation,      //删除单击通道触发记录
     mk_bxd_taskClearDoublePressEventDataOperation,      //删除双击通道触发记录
     mk_bxd_taskClearLongPressEventDataOperation,        //删除长按通道触发记录
+    mk_bxd_taskConfigDeviceTimestampOperation,          //设置设备当前系统时间
+    mk_bxd_taskClearLongConnectionModeEventDataOperation,   //删除长链接模式通道触发记录
     mk_bxd_taskConfigDeviceIDOperation,                 //设置deviceID
     mk_bxd_taskConfigDeviceNameOperation,               //设置设备名称
     mk_bxd_taskBatteryResetOperation,                   //重置电池

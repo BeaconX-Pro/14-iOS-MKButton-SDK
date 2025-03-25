@@ -66,17 +66,24 @@
             [self operationFailedMsg:@"Read Software Failed!" completeBlock:failedBlock];
             return;
         }
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^BXP-B(\\d)*-D$"
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-(D|CR)$"
                                                                                options:0
                                                                                  error:nil];
         NSUInteger numberOfMatches = [regex numberOfMatchesInString:software
                                                             options:0
                                                               range:NSMakeRange(0, [software length])];
         if (numberOfMatches <= 0) {
-            [self operationFailedMsg:@"Opps:The current app only supports BXP-B-D type devices!" completeBlock:failedBlock];
-            return;
+            [self operationFailedMsg:@"Opps:The current app only supports BXP-B type devices!" completeBlock:failedBlock];
             return;
         }
+        
+        NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-CR$"
+                                                                               options:0
+                                                                                 error:nil];
+        NSUInteger crMatches = [regex1 numberOfMatchesInString:software
+                                                       options:0
+                                                         range:NSMakeRange(0, [software length])];
+        self.isCR = (crMatches > 0);
         
         if (![self readSensorStatus]) {
             [self operationFailedMsg:@"Read Sensor Error" completeBlock:failedBlock];

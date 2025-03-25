@@ -24,6 +24,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// pickerView一行的label显示内容
 @property (nonatomic, copy)NSString *typeLabelMsg;
 
+/// BXP-B-D:    @[@"Silent",@"LED",@"Buzzer",@"LED+Buzzer"]
+/// BXP-CR:     @[@"Silent",@"LED",@"Vibration",@"Buzzer",@"LED+Vibration",@"LED+Buzzer"]
+@property (nonatomic, strong)NSArray *typeList;
+
 @end
 
 @protocol MKBXDNotificationTypePickerViewDelegate <NSObject>
@@ -44,10 +48,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// 更新pickerView
 /// @param notiType 参见下面
 /*
-0:Silent
-1:LED
-2:Buzzer
-3:LED+Buzzer
+ BXP-B-D:
+ 0:Silent
+ 1:LED
+ 2:Buzzer
+ 3:LED+Buzzer
+ 
+ BXP-CR:
+ 0:Silent
+ 1:LED
+ 2:Vibaration
+ 3:Buzzer
+ 4:LED+Vibaration
+ 5:LED+Buzzer
 */
 - (void)updateNotificationType:(NSInteger)notiType;
 

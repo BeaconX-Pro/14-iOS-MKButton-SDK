@@ -13,12 +13,25 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKBXDAlarmTypePickCellModel : NSObject
 
 /*
+ BXP-B-D:
  0:Silent
  1:LED
  2:Buzzer
  3:LED+Buzzer
+ 
+ BXP-CR:
+ 0:Silent
+ 1:LED
+ 2:Vibaration
+ 3:Buzzer
+ 4:LED+Vibaration
+ 5:LED+Buzzer
  */
 @property (nonatomic, assign)NSInteger triggerAlarmType;
+
+/// BXP-B-D:    @[@"Silent",@"LED",@"Buzzer",@"LED+Buzzer"]
+/// BXP-CR:     @[@"Silent",@"LED",@"Vibration",@"Buzzer",@"LED+Vibration",@"LED+Buzzer"]
+@property (nonatomic, strong)NSArray *typeList;
 
 @end
 

@@ -29,8 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 根据不同的dataModel加载cell
 /*
  目前支持
- MKBXDcanBeaconCell:        iBeacon广播帧(对应的dataModel是MKBXDcanBeaconCellModel类型)
- MKBXDcanUIDCell:           UID广播帧(对应的dataModel是MKBXDcanUIDCellModel类型)
+ MKBXScanBeaconCell:        iBeacon广播帧(对应的dataModel是MKBXScanBeaconCellModel类型)
+ MKBXScanUIDCell:           UID广播帧(对应的dataModel是MKBXScanUIDCellModel类型)
  MKBXDScanDeviceInfoCell:   设备信息帧
  MKBXDScanAdvCell:          广播帧
  如果不是其中的一种，则返回一个初始化的UITableViewCell
@@ -42,8 +42,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 根据不同的dataModel返回cell的高度
 /*
  目前支持
- 根据UUID动态计算:        iBeacon广播帧(对应的dataModel是MKBXDcanBeaconCellModel类型)
- 85.f:                  UID广播帧(对应的dataModel是MKBXDcanUIDCellModel类型)
+ 根据UUID动态计算:        iBeacon广播帧(对应的dataModel是MKBXScanBeaconCellModel类型)
+ 85.f:                  UID广播帧(对应的dataModel是MKBXScanUIDCellModel类型)
  105.f:                 Device Info信息帧(对应的dataModel是MKBXDScanDeviceInfoCellModel类型)
  70.f:                  Adv广播帧(对应的dataModel是MKBXDScanAdvCellModel类型)
  如果不是其中的一种，则返回0

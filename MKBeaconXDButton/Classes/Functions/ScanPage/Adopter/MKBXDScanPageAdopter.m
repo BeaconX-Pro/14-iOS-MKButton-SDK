@@ -30,7 +30,7 @@
 static const char *indexKey = "indexKey";
 static const char *frameTypeKey = "frameTypeKey";
 
-@interface NSObject (MKBXDcanAdd)
+@interface NSObject (MKBXScanAdd)
 
 /// 用来标示数据model在设备列表或者设备信息广播帧数组里的index
 @property (nonatomic, assign)NSInteger index;
@@ -49,7 +49,7 @@ static const char *frameTypeKey = "frameTypeKey";
 
 @end
 
-@implementation NSObject (MKBXDcanAdd)
+@implementation NSObject (MKBXScanAdd)
 
 - (void)setIndex:(NSInteger)index {
     objc_setAssociatedObject(self, &indexKey, @(index), OBJC_ASSOCIATION_RETAIN_NONATOMIC);

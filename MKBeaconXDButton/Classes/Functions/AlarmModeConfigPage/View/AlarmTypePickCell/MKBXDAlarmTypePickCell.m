@@ -148,6 +148,8 @@
     if (!_dataModel || ![_dataModel isKindOfClass:MKBXDAlarmTypePickCellModel.class]) {
         return;
     }
+    [self.dataList removeAllObjects];
+    [self.dataList addObjectsFromArray:_dataModel.typeList];
     [self.pickerView reloadAllComponents];
     self.triggerAlarmType = _dataModel.triggerAlarmType;
     [self.pickerView selectRow:_dataModel.triggerAlarmType inComponent:0 animated:YES];
@@ -203,7 +205,7 @@
 
 - (NSMutableArray *)dataList {
     if (!_dataList) {
-        _dataList = [NSMutableArray arrayWithObjects:@"Silent",@"LED",@"Buzzer",@"LED+Buzzer", nil];
+        _dataList = [NSMutableArray array];
     }
     return _dataList;
 }

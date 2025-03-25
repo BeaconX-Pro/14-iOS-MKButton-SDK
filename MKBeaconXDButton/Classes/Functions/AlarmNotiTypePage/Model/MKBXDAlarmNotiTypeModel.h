@@ -16,10 +16,19 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign)NSInteger alarmType;
 
 /*
+ BXP-B-D:
  0:Silent
  1:LED
  2:Buzzer
  3:LED+Buzzer
+ 
+ BXP-CR:
+ 0:Silent
+ 1:LED
+ 2:Vibaration
+ 3:Buzzer
+ 4:LED+Vibaration
+ 5:LED+Buzzer
  */
 @property (nonatomic, assign)NSInteger alarmNotiType;
 
@@ -27,6 +36,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy)NSString *blinkingTime;
 
 @property (nonatomic, copy)NSString *blinkingInterval;
+
+#pragma mark - Vibration notification
+@property (nonatomic, copy)NSString *vibratingTime;
+
+@property (nonatomic, copy)NSString *vibratingInterval;
 
 #pragma mark - Buzzer notification
 @property (nonatomic, copy)NSString *ringingTime;

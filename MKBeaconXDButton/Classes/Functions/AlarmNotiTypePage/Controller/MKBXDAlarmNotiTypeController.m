@@ -21,6 +21,8 @@
 #import "MKNormalTextCell.h"
 #import "MKTextFieldCell.h"
 
+#import "MKBXDConnectManager.h"
+
 #import "MKBXDNotificationTypePickerView.h"
 
 #import "MKBXDAlarmNotiTypeModel.h"
@@ -43,6 +45,10 @@ MKBXDNotificationTypePickerViewDelegate>
 @property (nonatomic, strong)NSMutableArray *section2List;
 
 @property (nonatomic, strong)NSMutableArray *section3List;
+
+@property (nonatomic, strong)NSMutableArray *section4List;
+
+@property (nonatomic, strong)NSMutableArray *section5List;
 
 @property (nonatomic, strong)NSMutableArray *headerList;
 
@@ -111,13 +117,25 @@ MKBXDNotificationTypePickerViewDelegate>
         return cell;
     }
     if (indexPath.section == 2) {
-        //Buzzer notification
+        //Vibration notification
         MKNormalTextCell *cell = [MKNormalTextCell initCellWithTableView:tableView];
         cell.dataModel = self.section2List[indexPath.row];
         return cell;
     }
+    if (indexPath.section == 3) {
+        MKTextFieldCell *cell = [MKTextFieldCell initCellWithTableView:tableView];
+        cell.dataModel = self.section3List[indexPath.row];
+        cell.delegate = self;
+        return cell;
+    }
+    if (indexPath.section == 4) {
+        //Buzzer notification
+        MKNormalTextCell *cell = [MKNormalTextCell initCellWithTableView:tableView];
+        cell.dataModel = self.section4List[indexPath.row];
+        return cell;
+    }
     MKTextFieldCell *cell = [MKTextFieldCell initCellWithTableView:tableView];
-    cell.dataModel = self.section3List[indexPath.row];
+    cell.dataModel = self.section5List[indexPath.row];
     cell.delegate = self;
     return cell;
 }
@@ -142,16 +160,30 @@ MKBXDNotificationTypePickerViewDelegate>
         return;
     }
     if (index == 2) {
-        //Ringing time
-        self.dataModel.ringingTime = value;
+        //Vibration time
+        self.dataModel.vibratingTime = value;
         MKTextFieldCellModel *cellModel = self.section3List[0];
         cellModel.textFieldValue = value;
         return;
     }
     if (index == 3) {
+        //Vibration Interval
+        self.dataModel.vibratingInterval = value;
+        MKTextFieldCellModel *cellModel = self.section3List[1];
+        cellModel.textFieldValue = value;
+        return;
+    }
+    if (index == 4) {
+        //Ringing time
+        self.dataModel.ringingTime = value;
+        MKTextFieldCellModel *cellModel = self.section5List[0];
+        cellModel.textFieldValue = value;
+        return;
+    }
+    if (index == 5) {
         //Ringing Interval
         self.dataModel.ringingInterval = value;
-        MKTextFieldCellModel *cellModel = self.section3List[0];
+        MKTextFieldCellModel *cellModel = self.section5List[1];
         cellModel.textFieldValue = value;
         return;
     }
@@ -165,52 +197,90 @@ MKBXDNotificationTypePickerViewDelegate>
 
 #pragma mark - loadCellDatas
 - (NSInteger)loadNumberOfRows:(NSInteger)section {
-    if (section == 0) {
-        if (self.dataModel.alarmNotiType == 1 || self.dataModel.alarmNotiType == 3) {
-            //LED/LED+Buzzer
-            return self.section0List.count;
+    if (section == 0 || section == 1) {
+        BOOL need = NO;
+        if (self.dataModel.alarmNotiType == 1) {
+            //LED
+            need = YES;
+        }else if ([MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 4 || self.dataModel.alarmNotiType == 5)) {
+            //BXP-C:  LED+Vibration/LED+Buzzer
+            need = YES;
+        }else if (![MKBXDConnectManager shared].isCR && self.dataModel.alarmNotiType == 3) {
+            //BXP-B-D:  LED+Buzzer
+            need = YES;
         }
-    }
-    if (section == 1) {
-        if (self.dataModel.alarmNotiType == 1 || self.dataModel.alarmNotiType == 3) {
-            //LED/LED+Vibration/LED+Buzzer
-            return self.section1List.count;
+        if (section == 0) {
+            return (need ? self.section0List.count : 0);
         }
+        return (need ? self.section1List.count : 0);
     }
-    if (section == 2) {
-        if (self.dataModel.alarmNotiType == 2 || self.dataModel.alarmNotiType == 3) {
-            //Buzzer/LED+Buzzer
-            return self.section2List.count;
+    if (section == 2 || section == 3) {
+        BOOL need = NO;
+        if ([MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 2 || self.dataModel.alarmNotiType == 4)) {
+            //Vibaration/LED+Vibration
+            need = YES;
         }
-    }
-    if (section == 3) {
-        if (self.dataModel.alarmNotiType == 2 || self.dataModel.alarmNotiType == 3) {
-            //Buzzer/LED+Buzzer
-            return self.section3List.count;
+        if (section == 2) {
+            return (need ? self.section2List.count : 0);
         }
+        return (need ? self.section3List.count : 0);
     }
+    if (section == 4 || section == 5) {
+        BOOL need = NO;
+        if ([MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 3 || self.dataModel.alarmNotiType == 5)) {
+            //BXP-C:  Buzzer/LED+Buzzer
+            need = YES;
+        }else if (![MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 2 || self.dataModel.alarmNotiType == 3)) {
+            //BXP-B-D:  Buzzer/LED+Buzzer
+            need = YES;
+        }
+        if (section == 4) {
+            return (need ? self.section4List.count : 0);
+        }
+        return (need ? self.section5List.count : 0);
+    }
+    
     return 0;
 }
 
 - (CGFloat)heightForHeaderInSection:(NSInteger)section {
-    if (self.dataModel.alarmNotiType == 1) {
-        //LED
-        if (section == 0) {
-            return 10.f;
+    if (section == 0) {
+        //LED notification
+        BOOL need = NO;
+        if (self.dataModel.alarmNotiType == 1) {
+            //LED
+            need = YES;
+        }else if ([MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 4 || self.dataModel.alarmNotiType == 5)) {
+            //BXP-C:  LED+Vibration/LED+Buzzer
+            need = YES;
+        }else if (![MKBXDConnectManager shared].isCR && self.dataModel.alarmNotiType == 3) {
+            //BXP-B-D:  LED+Buzzer
+            need = YES;
         }
+        return (need ? 10.f : 0.f);
     }
-    if (self.dataModel.alarmNotiType == 2) {
+    if (section == 2) {
+        //Vibration notification
+        BOOL need = NO;
+        if ([MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 2 || self.dataModel.alarmNotiType == 4)) {
+            //Vibaration/LED+Vibration
+            need = YES;
+        }
+        return (need ? 10.f : 0.f);
+    }
+    if (section == 4) {
         //Buzzer
-        if (section == 2) {
-            return 10.f;
+        BOOL need = NO;
+        if ([MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 3 || self.dataModel.alarmNotiType == 5)) {
+            //BXP-C:  Buzzer/LED+Buzzer
+            need = YES;
+        }else if (![MKBXDConnectManager shared].isCR && (self.dataModel.alarmNotiType == 2 || self.dataModel.alarmNotiType == 3)) {
+            //BXP-B-D:  Buzzer/LED+Buzzer
+            need = YES;
         }
+        return (need ? 10.f : 0.f);
     }
-    if (self.dataModel.alarmNotiType == 3) {
-        //LED+Buzzer
-        if (section == 0 || section == 2) {
-            return 10.f;
-        }
-    }
+    
     return 0.f;
 }
 
@@ -250,8 +320,10 @@ MKBXDNotificationTypePickerViewDelegate>
     [self loadSection1Datas];
     [self loadSection2Datas];
     [self loadSection3Datas];
+    [self loadSection4Datas];
+    [self loadSection5Datas];
     
-    for (NSInteger i = 0; i < 4; i ++) {
+    for (NSInteger i = 0; i < 6; i ++) {
         MKTableSectionLineHeaderModel *headerModel = [[MKTableSectionLineHeaderModel alloc] init];
         [self.headerList addObject:headerModel];
     }
@@ -289,16 +361,16 @@ MKBXDNotificationTypePickerViewDelegate>
 
 - (void)loadSection2Datas {
     MKNormalTextCellModel *cellModel = [[MKNormalTextCellModel alloc] init];
-    cellModel.leftMsg = @"Buzzer notification";
+    cellModel.leftMsg = @"Vibration notification";
     [self.section2List addObject:cellModel];
 }
 
 - (void)loadSection3Datas {
     MKTextFieldCellModel *cellModel1 = [[MKTextFieldCellModel alloc] init];
     cellModel1.index = 2;
-    cellModel1.msg = @"Ringing time";
+    cellModel1.msg = @"Vibrating time";
     cellModel1.textPlaceholder = @"1~6000";
-    cellModel1.textFieldValue = self.dataModel.ringingTime;
+    cellModel1.textFieldValue = self.dataModel.vibratingTime;
     cellModel1.textFieldType = mk_realNumberOnly;
     cellModel1.unit = @"x100ms";
     cellModel1.maxLength = 4;
@@ -306,13 +378,41 @@ MKBXDNotificationTypePickerViewDelegate>
     
     MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
     cellModel2.index = 3;
+    cellModel2.msg = @"Vibrating interval";
+    cellModel2.textPlaceholder = @"0~100";
+    cellModel2.textFieldValue = self.dataModel.vibratingInterval;
+    cellModel2.textFieldType = mk_realNumberOnly;
+    cellModel2.unit = @"x100ms";
+    cellModel2.maxLength = 3;
+    [self.section3List addObject:cellModel2];
+}
+
+- (void)loadSection4Datas {
+    MKNormalTextCellModel *cellModel = [[MKNormalTextCellModel alloc] init];
+    cellModel.leftMsg = @"Buzzer notification";
+    [self.section4List addObject:cellModel];
+}
+
+- (void)loadSection5Datas {
+    MKTextFieldCellModel *cellModel1 = [[MKTextFieldCellModel alloc] init];
+    cellModel1.index = 4;
+    cellModel1.msg = @"Ringing time";
+    cellModel1.textPlaceholder = @"1~6000";
+    cellModel1.textFieldValue = self.dataModel.ringingTime;
+    cellModel1.textFieldType = mk_realNumberOnly;
+    cellModel1.unit = @"x100ms";
+    cellModel1.maxLength = 4;
+    [self.section5List addObject:cellModel1];
+    
+    MKTextFieldCellModel *cellModel2 = [[MKTextFieldCellModel alloc] init];
+    cellModel2.index = 5;
     cellModel2.msg = @"Ringing interval";
     cellModel2.textPlaceholder = @"0~100";
     cellModel2.textFieldValue = self.dataModel.ringingInterval;
     cellModel2.textFieldType = mk_realNumberOnly;
     cellModel2.unit = @"x100ms";
     cellModel2.maxLength = 3;
-    [self.section3List addObject:cellModel2];
+    [self.section5List addObject:cellModel2];
 }
 
 #pragma mark - UI
@@ -356,6 +456,7 @@ MKBXDNotificationTypePickerViewDelegate>
         _headerViewModel = [[MKBXDNotificationTypePickerViewModel alloc] init];
         _headerViewModel.needButton = NO;
         _headerViewModel.typeLabelMsg = @"Alarm notification type";
+        _headerViewModel.typeList = ([MKBXDConnectManager shared].isCR ? @[@"Silent",@"LED",@"Vibration",@"Buzzer",@"LED+Vibration",@"LED+Buzzer"] : @[@"Silent",@"LED",@"Buzzer",@"LED+Buzzer"]);
     }
     return _headerViewModel;
 }
@@ -386,6 +487,20 @@ MKBXDNotificationTypePickerViewDelegate>
         _section3List = [NSMutableArray array];
     }
     return _section3List;
+}
+
+- (NSMutableArray *)section4List {
+    if (!_section4List) {
+        _section4List = [NSMutableArray array];
+    }
+    return _section4List;
+}
+
+- (NSMutableArray *)section5List {
+    if (!_section5List) {
+        _section5List = [NSMutableArray array];
+    }
+    return _section5List;
 }
 
 - (NSMutableArray *)headerList {

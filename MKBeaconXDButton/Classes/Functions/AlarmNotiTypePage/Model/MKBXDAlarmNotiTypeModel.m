@@ -10,6 +10,8 @@
 
 #import "MKMacroDefines.h"
 
+#import "MKBXDConnectManager.h"
+
 #import "MKBXDInterface.h"
 #import "MKBXDInterface+MKBXDConfig.h"
 
@@ -33,6 +35,12 @@
             [self operationFailedBlockWithMsg:@"Read LED Params Error" block:failedBlock];
             return;
         }
+        if ([MKBXDConnectManager shared].isCR) {
+            if (![self readVibrateParams]) {
+                [self operationFailedBlockWithMsg:@"Read Vibration Params Error" block:failedBlock];
+                return;
+            }
+        }
         if (![self readBuzzerParams]) {
             [self operationFailedBlockWithMsg:@"Read Buzzer Params Error" block:failedBlock];
             return;
@@ -55,18 +63,42 @@
             [self operationFailedBlockWithMsg:@"Config Alarm Type Error" block:failedBlock];
             return;
         }
-        if (self.alarmNotiType == 1 || self.alarmNotiType == 3) {
-            //LED/LED+Buzzer
-            if (![self configLEDParams]) {
-                [self operationFailedBlockWithMsg:@"Config LED Params Error" block:failedBlock];
-                return;
+        if ([MKBXDConnectManager shared].isCR) {
+            if (self.alarmNotiType == 1 || self.alarmNotiType == 4 || self.alarmNotiType == 5) {
+                //LED/LED+Vibration/LED+Buzzer
+                if (![self configLEDParams]) {
+                    [self operationFailedBlockWithMsg:@"Config LED Params Error" block:failedBlock];
+                    return;
+                }
             }
-        }
-        if (self.alarmNotiType == 2 || self.alarmNotiType == 3) {
-            //Buzzer/LED+Buzzer
-            if (![self configBuzzerParams]) {
-                [self operationFailedBlockWithMsg:@"Config Buzzer Params Error" block:failedBlock];
-                return;
+            if (self.alarmNotiType == 2 || self.alarmNotiType == 4) {
+                //Vibaration/LED+Vibration
+                if (![self configVibrateParams]) {
+                    [self operationFailedBlockWithMsg:@"Config Vibration Params Error" block:failedBlock];
+                    return;
+                }
+            }
+            if (self.alarmNotiType == 3 || self.alarmNotiType == 5) {
+                //Buzzer/LED+Buzzer
+                if (![self configBuzzerParams]) {
+                    [self operationFailedBlockWithMsg:@"Config Buzzer Params Error" block:failedBlock];
+                    return;
+                }
+            }
+        }else {
+            if (self.alarmNotiType == 1 || self.alarmNotiType == 3) {
+                //LED/LED+Buzzer
+                if (![self configLEDParams]) {
+                    [self operationFailedBlockWithMsg:@"Config LED Params Error" block:failedBlock];
+                    return;
+                }
+            }
+            if (self.alarmNotiType == 2 || self.alarmNotiType == 3) {
+                //Buzzer/LED+Buzzer
+                if (![self configBuzzerParams]) {
+                    [self operationFailedBlockWithMsg:@"Config Buzzer Params Error" block:failedBlock];
+                    return;
+                }
             }
         }
         moko_dispatch_main_safe(^{
@@ -129,6 +161,32 @@
     return success;
 }
 
+- (BOOL)readVibrateParams {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_readAlarmVibrateNotiParams:self.alarmType sucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.vibratingTime = returnData[@"result"][@"time"];
+        self.vibratingInterval = returnData[@"result"][@"interval"];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
+
+- (BOOL)configVibrateParams {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_configAlarmVibrateNotiParams:self.alarmType vibratingTime:[self.vibratingTime integerValue] vibratingInterval:[self.vibratingInterval integerValue] sucBlock:^{
+        success = YES;
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
+
 - (BOOL)readBuzzerParams {
     __block BOOL success = NO;
     [MKBXDInterface bxd_readAlarmBuzzerNotiParams:self.alarmType sucBlock:^(id  _Nonnull returnData) {
@@ -170,20 +228,43 @@
         //Silent
         return YES;
     }
-    if (self.alarmNotiType == 1) {
-        //LED
-        return [self validLEDParams];
-    }
-    if (self.alarmNotiType == 2) {
-        //Buzzer
-        return [self validBuzzerParams];
-    }
-    if (self.alarmNotiType == 3) {
-        //LED+Buzzer
-        if (![self validLEDParams] || ![self validBuzzerParams]) {
-            return NO;
+    BOOL needValidLed = NO;
+    BOOL needValidVibration = NO;
+    BOOL needValidBuzzer = NO;
+    if ([MKBXDConnectManager shared].isCR) {
+        if (self.alarmNotiType == 1 || self.alarmNotiType == 4 || self.alarmNotiType == 5) {
+            //LED/LED+Vibration/LED+Buzzer
+            needValidLed = YES;
         }
-        return YES;
+        if (self.alarmNotiType == 2 || self.alarmNotiType == 4) {
+            //Vibaration/LED+Vibration
+            needValidVibration = YES;
+        }
+        if (self.alarmNotiType == 3 || self.alarmNotiType == 5) {
+            //Buzzer/LED+Buzzer
+            needValidBuzzer = YES;
+        }
+    }else {
+        if (self.alarmNotiType == 1 || self.alarmNotiType == 3) {
+            //LED/LED+Buzzer
+            needValidLed = YES;
+        }
+        if (self.alarmNotiType == 2 || self.alarmNotiType == 3) {
+            //Buzzer/LED+Buzzer
+            needValidBuzzer = YES;
+        }
+    }
+    if (needValidLed && ![self validLEDParams]) {
+        //LED
+        return NO;
+    }
+    if (needValidVibration && ![self validVibrationParams]) {
+        //Vibration
+        return NO;
+    }
+    if (needValidBuzzer && ![self validBuzzerParams]) {
+        //Buzzer
+        return NO;
     }
     return YES;
 }
@@ -193,6 +274,16 @@
         return NO;
     }
     if (!ValidStr(self.blinkingInterval) || [self.blinkingInterval integerValue] < 0 || [self.blinkingInterval integerValue] > 100) {
+        return NO;
+    }
+    return YES;
+}
+
+- (BOOL)validVibrationParams {
+    if (!ValidStr(self.vibratingTime) || [self.vibratingTime integerValue] < 1 || [self.vibratingTime integerValue] > 6000) {
+        return NO;
+    }
+    if (!ValidStr(self.vibratingInterval) || [self.vibratingInterval integerValue] < 0 || [self.vibratingInterval integerValue] > 100) {
         return NO;
     }
     return YES;

@@ -63,12 +63,23 @@ TODO: Add long description of the pod here.
     end
     
     s.subspec 'Expand' do |ss|
+      
+      ss.subspec 'ExcelManager' do |sss|
+        sss.source_files = 'MKBeaconXDButton/Classes/Expand/ExcelManager/**'
+      end
+      
       ss.subspec 'View' do |sss|
-        sss.subspec 'NTPickerView' do |ssss|
-          ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/NTPickerView/**'
+        sss.subspec 'AlarmSyncTimeView' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/AlarmSyncTimeView/**'
         end
         sss.subspec 'DeviceIDCell' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/DeviceIDCell/**'
+        end
+        sss.subspec 'NTPickerView' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/NTPickerView/**'
+        end
+        sss.subspec 'SyncEventHeaderView' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/SyncEventHeaderView/**'
         end
       end
       
@@ -101,6 +112,25 @@ TODO: Add long description of the pod here.
       
         sss.subspec 'View' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AccelerationPage/View/**'
+        end
+      end
+      
+      ss.subspec 'AlarmEventForCRPage' do |sss|
+        sss.subspec 'Controller' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/Controller/**'
+        
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForCRPage/Model'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForCRPage/View'
+        
+          sss.dependency 'MKBeaconXDButton/Functions/ExportEventDataPage/Controller'
+        end
+      
+        sss.subspec 'Model' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/Model/**'
+        end
+      
+        sss.subspec 'View' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/View/**'
         end
       end
       
@@ -292,6 +322,12 @@ TODO: Add long description of the pod here.
         end
       end
       
+      ss.subspec 'ExportEventDataPage' do |sss|
+        sss.subspec 'Controller' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/ExportEventDataPage/Controller/**'
+        end
+      end
+      
       ss.subspec 'PowerSavePage' do |sss|
         sss.subspec 'Controller' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/PowerSavePage/Controller/**'
@@ -374,6 +410,7 @@ TODO: Add long description of the pod here.
           ssss.dependency 'MKBeaconXDButton/Functions/SettingPage/Model'
           
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventPage/Controller'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForCRPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/DismissConfigPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/RemoteReminderPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/AccelerationPage/Controller'

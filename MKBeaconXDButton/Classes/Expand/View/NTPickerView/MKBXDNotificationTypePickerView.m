@@ -178,6 +178,8 @@ static CGFloat const pickerViewWidth = 110.f;
     if (!_dataModel || ![_dataModel isKindOfClass:MKBXDNotificationTypePickerViewModel.class]) {
         return;
     }
+    [self.dataList removeAllObjects];
+    [self.dataList addObjectsFromArray:_dataModel.typeList];
     self.msgLabel.text = SafeStr(_dataModel.msg);
     [self.dismissButton setTitle:SafeStr(_dataModel.buttonTitle) forState:UIControlStateNormal];
     self.msgLabel.hidden = !_dataModel.needButton;
@@ -251,7 +253,7 @@ static CGFloat const pickerViewWidth = 110.f;
 
 - (NSMutableArray *)dataList {
     if (!_dataList) {
-        _dataList = [NSMutableArray arrayWithObjects:@"Silent",@"LED",@"Buzzer",@"LED+Buzzer", nil];
+        _dataList = [NSMutableArray array];
     }
     return _dataList;
 }

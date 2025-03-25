@@ -182,6 +182,25 @@ static dispatch_once_t onceToken;
                                                           userInfo:@{@"type":[content substringWithRange:NSMakeRange(8, 2)]}];
         return;
     }
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
+        //单击数据/双击数据/长按数据/长连接模式数据
+        NSInteger alarmType = 0;
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
+            alarmType = 0;
+        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]) {
+            alarmType = 1;
+        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
+            alarmType = 2;
+        }else {
+            alarmType = 3;
+        }
+        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        [self saveToLogData:content appToDevice:NO];
+        if ([self.eventDelegate respondsToSelector:@selector(mk_bxd_receiveAlarmEventData:alarmType:)]) {
+            [self.eventDelegate mk_bxd_receiveAlarmEventData:[content substringFromIndex:8] alarmType:alarmType];
+        }
+        return;
+    }
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
         //三轴数据
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
@@ -374,6 +393,38 @@ static dispatch_once_t onceToken;
         return;
     }
     [[MKBLEBaseCentralManager shared] addOperation:operation];
+}
+
+- (BOOL)notifySingleClickData:(BOOL)notify {
+    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_singleRecord == nil) {
+        return NO;
+    }
+    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_singleRecord];
+    return YES;
+}
+
+- (BOOL)notifyDoubleClickData:(BOOL)notify {
+    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_doubleRecord == nil) {
+        return NO;
+    }
+    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_doubleRecord];
+    return YES;
+}
+
+- (BOOL)notifyLongClickData:(BOOL)notify {
+    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_longRecord == nil) {
+        return NO;
+    }
+    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_longRecord];
+    return YES;
+}
+
+- (BOOL)notifyLongConnectClickData:(BOOL)notify {
+    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_longConnectRecord == nil) {
+        return NO;
+    }
+    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_longConnectRecord];
+    return YES;
 }
 
 - (BOOL)notifyThreeAxisData:(BOOL)notify {

@@ -139,7 +139,8 @@ NS_ASSUME_NONNULL_BEGIN
                                      failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Alarm notification type.
-/// @param type type
+/// @param channelType  channelType
+/// @param reminderType reminderType
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configAlarmNotificationType:(MKBXDChannelAlarmNotifyType)channelType
@@ -183,6 +184,18 @@ NS_ASSUME_NONNULL_BEGIN
                             sucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Trigger Vibrate reminder parameters.
+/// @param channelType channelType
+/// @param vibratingTime Blinking time.1 ~ 6000(Unit:100ms)
+/// @param vibratingInterval Blinking interval.0 ~ 100(Unit:100ms)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configAlarmVibrateNotiParams:(MKBXDChannelAlarmType)channelType
+                           vibratingTime:(NSInteger)vibratingTime
+                       vibratingInterval:(NSInteger)vibratingInterval
+                                sucBlock:(void (^)(void))sucBlock
+                             failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Trigger Buzzer reminder parameters.
 /// @param channelType channelType
 /// @param ringingTime Ringing time.1 ~ 6000(Unit:100ms)
@@ -204,6 +217,16 @@ NS_ASSUME_NONNULL_BEGIN
                              blinkingInterval:(NSInteger)blinkingInterval
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Remote Vibration reminder parameters.(BXP-CR only)
+/// @param vibratingTime Vibrating time.1 ~ 6000(Unit:100ms)
+/// @param vibraingInterval Vibrating interval.0 ~ 100(Unit:100ms)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configRemoteReminderVibrationNotiParams:(NSInteger)vibratingTime
+                                   vibraingInterval:(NSInteger)vibraingInterval
+                                           sucBlock:(void (^)(void))sucBlock
+                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Remote Buzzer reminder parameters.
 /// @param ringingTime Ringing time.1 ~ 6000(Unit:100ms)
@@ -239,6 +262,16 @@ NS_ASSUME_NONNULL_BEGIN
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Configure Vibration dismissal alarm parameter.(BXP-CR only)
+/// @param time 1~6000 (unit:100ms)
+/// @param interval 0~100(unit:100ms)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configDismissAlarmVibrationNotiParams:(NSInteger)time
+                                         interval:(NSInteger)interval
+                                         sucBlock:(void (^)(void))sucBlock
+                                      failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Configure Buzzer dismissal alarm parameter.
 /// @param time 1~6000 (unit:100ms)
 /// @param interval 0~100(unit:100ms)
@@ -250,7 +283,7 @@ NS_ASSUME_NONNULL_BEGIN
                                    failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Dismiss alarm notification type.
-/// @param type type
+/// @param type mk_bxd_reminderType
 /// @param sucBlock Success callback
 /// @param failedBlock Failure callback
 + (void)bxd_configDismissAlarmNotificationType:(mk_bxd_reminderType)type
@@ -274,6 +307,20 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_clearLongPressEventDataWithSucBlock:(void (^)(void))sucBlock
                                     failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Configure the device's timestamp.(BXP-CR only)
+/// @param timestamp ms.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configDeviceTimestamp:(long long)timestamp
+                         sucBlock:(void (^)(void))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Delete the long connection mode event data.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_clearLongConnectionModeEventDataWithSucBlock:(void (^)(void))sucBlock
+                                             failedBlock:(void (^)(NSError *error))failedBlock;
 
 /// Configure the device' ID.
 /// @param deviceID 1 ~ 6 Bytes.(HEX)

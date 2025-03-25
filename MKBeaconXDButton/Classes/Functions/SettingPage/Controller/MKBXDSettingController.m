@@ -32,6 +32,7 @@
 #import "MKBXDRemoteReminderController.h"
 #import "MKBXDAccelerationController.h"
 #import "MKBXDPowerSaveController.h"
+#import "MKBXDAlarmEventCRController.h"
 
 @interface MKBXDSettingController ()<UITableViewDelegate,
 UITableViewDataSource,
@@ -87,6 +88,11 @@ MKTextFieldCellDelegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0 && indexPath.row == 0) {
         //Alarm event
+        if ([MKBXDConnectManager shared].isCR) {
+            MKBXDAlarmEventCRController *vc = [[MKBXDAlarmEventCRController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
+            return;
+        }
         MKBXDAlarmEventController *vc = [[MKBXDAlarmEventController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
         return;
