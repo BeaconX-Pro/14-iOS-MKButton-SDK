@@ -477,9 +477,6 @@
     }else if ([cmd isEqualToString:@"22"]) {
         //设置可连接性
         operationID = mk_bxd_taskConfigConnectableOperation;
-    }else if ([cmd isEqualToString:@"24"]) {
-        //设置连接密码
-        operationID = mk_bxd_taskConfigConnectPasswordOperation;
     }else if ([cmd isEqualToString:@"25"]) {
         //设置连续按键有效时长
         operationID = mk_bxd_taskConfigEffectiveClickIntervalOperation;
@@ -625,6 +622,9 @@
             resultDic = @{
                 @"success":@(success),
             };
+        }else if ([cmd isEqualToString:@"24"]) {
+            //设置连接密码
+            operationID = mk_bxd_taskConfigConnectPasswordOperation;
         }
     }
     

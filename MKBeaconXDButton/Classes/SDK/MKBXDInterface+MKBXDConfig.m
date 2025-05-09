@@ -66,10 +66,16 @@
         lenString = [@"0" stringByAppendingString:lenString];
     }
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea0124",lenString,commandData];
-    [self configDataWithTaskID:mk_bxd_taskConfigConnectPasswordOperation
-                          data:commandString
-                      sucBlock:sucBlock
-                   failedBlock:failedBlock];
+    [centralManager addTaskWithTaskID:mk_bxd_taskConfigConnectPasswordOperation characteristic:centralManager.peripheral.bxd_password commandData:commandString successBlock:^(id  _Nonnull returnData) {
+        BOOL success = [returnData[@"result"][@"success"] boolValue];
+        if (!success) {
+            [MKBLEBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
+            return ;
+        }
+        if (sucBlock) {
+            sucBlock();
+        }
+    } failureBlock:failedBlock];
 }
 
 + (void)bxd_configEffectiveClickInterval:(NSInteger)interval

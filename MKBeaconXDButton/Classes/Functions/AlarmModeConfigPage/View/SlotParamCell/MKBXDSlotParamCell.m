@@ -308,7 +308,7 @@
 
 - (UILabel *)intervalUnitLabel {
     if (!_intervalUnitLabel) {
-        _intervalUnitLabel = [self loadLabelWithMsg:@"x100ms"];
+        _intervalUnitLabel = [self loadLabelWithMsg:@"x20ms"];
     }
     return _intervalUnitLabel;
 }
