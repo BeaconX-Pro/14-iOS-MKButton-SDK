@@ -61,6 +61,8 @@ static dispatch_once_t onceToken;
 
 @property (nonatomic, assign)BOOL readingNeedPassword;
 
+@property (nonatomic, strong)NSDateFormatter *dateFormatter;
+
 @end
 
 @implementation MKBXDCentralManager
@@ -195,7 +197,7 @@ static dispatch_once_t onceToken;
             alarmType = 3;
         }
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
-        NSLog(@"%@-%@",characteristic.UUID.UUIDString,content);
+        NSLog(@"%@-%@-%@",[self.dateFormatter stringFromDate:[NSDate date]],characteristic.UUID.UUIDString,content);
         [self saveToLogData:content appToDevice:NO];
         if ([self.eventDelegate respondsToSelector:@selector(mk_bxd_receiveAlarmEventData:alarmType:)]) {
             [self.eventDelegate mk_bxd_receiveAlarmEventData:[content substringFromIndex:8] alarmType:alarmType];
@@ -648,6 +650,14 @@ static dispatch_once_t onceToken;
         return;
     }
     [MKBLEBaseLogManager saveDataWithFileName:mk_bxp_button_d_logName dataList:@[string]];
+}
+
+- (NSDateFormatter *)dateFormatter {
+    if (!_dateFormatter) {
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];  // SSS表示毫秒
+    }
+    return _dateFormatter;
 }
 
 @end
