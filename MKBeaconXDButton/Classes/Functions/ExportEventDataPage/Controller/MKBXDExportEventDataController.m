@@ -124,6 +124,11 @@ mk_bxd_centralManagerAlarmEventDelegate>
 
 #pragma mark - MKBXDSyncEventHeaderViewDelegate
 - (void)bxd_syncEventHeaderView_syncBtnPressed:(BOOL)selected {
+    if (selected) {
+        //开始监听
+        [self.textView setText:@""];
+        [self.dataList removeAllObjects];
+    }
     if (self.vcType == MKBXDExportEventDataControllerTypeSingle) {
         [[MKBXDCentralManager shared] notifySingleClickData:selected];
         return;

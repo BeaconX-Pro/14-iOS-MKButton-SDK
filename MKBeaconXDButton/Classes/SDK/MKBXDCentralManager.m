@@ -195,6 +195,7 @@ static dispatch_once_t onceToken;
             alarmType = 3;
         }
         NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        NSLog(@"%@-%@",characteristic.UUID.UUIDString,content);
         [self saveToLogData:content appToDevice:NO];
         if ([self.eventDelegate respondsToSelector:@selector(mk_bxd_receiveAlarmEventData:alarmType:)]) {
             [self.eventDelegate mk_bxd_receiveAlarmEventData:[content substringFromIndex:8] alarmType:alarmType];
