@@ -1,6 +1,6 @@
 //
-//  MKBLEBaseSDKAdopter.h
-//  Pods-MKBLEBaseModule_Example
+//  MKBXDBaseSDKAdopter.h
+//  Pods-MKBXDModule_Example
 //
 //  Created by aa on 2019/11/14.
 //
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MKBLEBaseSDKAdopter : NSObject
+@interface MKBXDBaseSDKAdopter : NSObject
 
 + (NSError *)getErrorWithCode:(NSInteger)code message:(NSString *)message;
 + (void)operationCentralBlePowerOffBlock:(void (^)(NSError *error))block;
@@ -40,10 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
  @return number
  */
 + (NSNumber *)signedHexTurnString:(NSString *)content;
-
-/// 获取CRC16校验码
-/// @param data data
-+ (NSData *)getCrc16VerifyCode:(NSData *)data;
 
 /// 将NSData转换成对应的16进制字符
 /// @param sourceData sourceData
@@ -83,8 +79,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 将一个十进制的数据转换成对应byteLen字节长度的十六进制数据，
 /*
- [MKBLEBaseSDKAdopter fetchHexValue:10 byteLen:4] ==>@"0000000a"
- [MKBLEBaseSDKAdopter fetchHexValue:10 byteLen:1] ==>@"0a"
+ [MKBXDBaseSDKAdopter fetchHexValue:10 byteLen:4] ==>@"0000000a"
+ [MKBXDBaseSDKAdopter fetchHexValue:10 byteLen:1] ==>@"0a"
  */
 /// @param value 十进制
 /// @param byteLen 字节长度

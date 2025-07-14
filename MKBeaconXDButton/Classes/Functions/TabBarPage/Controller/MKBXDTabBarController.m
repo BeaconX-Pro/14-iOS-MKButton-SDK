@@ -13,7 +13,7 @@
 
 #import "MKAlertView.h"
 
-#import "MKBLEBaseLogManager.h"
+#import "MKBXDBaseLogManager.h"
 
 #import "MKBXDCentralManager.h"
 

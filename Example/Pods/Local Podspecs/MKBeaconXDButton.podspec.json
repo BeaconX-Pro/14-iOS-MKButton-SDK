@@ -50,12 +50,21 @@
     },
     {
       "name": "SDK",
-      "source_files": "MKBeaconXDButton/Classes/SDK/**",
-      "dependencies": {
-        "MKBaseBleModule": [
+      "subspecs": [
+        {
+          "name": "Base",
+          "source_files": "MKBeaconXDButton/Classes/SDK/Base/**"
+        },
+        {
+          "name": "BXD",
+          "source_files": "MKBeaconXDButton/Classes/SDK/BXD/**",
+          "dependencies": {
+            "MKBeaconXDButton/SDK/Base": [
 
-        ]
-      }
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Target",

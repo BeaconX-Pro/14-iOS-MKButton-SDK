@@ -1,6 +1,6 @@
 //
-//  MKBLEBaseDataProtocol.h
-//  Pods-MKBLEBaseModule_Example
+//  MKBXDBaseDataProtocol.h
+//  Pods-MKBXDModule_Example
 //
 //  Created by aa on 2019/11/14.
 //
@@ -9,22 +9,22 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, MKPeripheralConnectState) {
-    MKPeripheralConnectStateUnknow,                                           //未知状态
-    MKPeripheralConnectStateConnecting,                                       //正在连接
-    MKPeripheralConnectStateConnected,                                        //连接成功
-    MKPeripheralConnectStateConnectedFailed,                                  //连接失败
-    MKPeripheralConnectStateDisconnect,                                       //连接断开
+typedef NS_ENUM(NSInteger, MKBXDPeripheralConnectState) {
+    MKBXDPeripheralConnectStateUnknow,                                           //未知状态
+    MKBXDPeripheralConnectStateConnecting,                                       //正在连接
+    MKBXDPeripheralConnectStateConnected,                                        //连接成功
+    MKBXDPeripheralConnectStateConnectedFailed,                                  //连接失败
+    MKBXDPeripheralConnectStateDisconnect,                                       //连接断开
 };
-typedef NS_ENUM(NSInteger, MKCentralManagerState) {
-    MKCentralManagerStateUnable,                           //不可用
-    MKCentralManagerStateEnable,                           //可用状态
+typedef NS_ENUM(NSInteger, MKBXDCentralManagerState) {
+    MKBXDCentralManagerStateUnable,                           //不可用
+    MKBXDCentralManagerStateEnable,                           //可用状态
 };
 
 @class CBPeripheral,CBService,CBCharacteristic,CBUUID;
 
 #pragma mark - 中心扫描部分
-@protocol MKBLEBaseScanProtocol <NSObject>
+@protocol MKBXDScanProtocol <NSObject>
 
 @required
 
@@ -32,37 +32,37 @@ typedef NS_ENUM(NSInteger, MKCentralManagerState) {
 /// @param peripheral 搜索到的设备
 /// @param advertisementData 设备广播数据
 /// @param RSSI 设备当前RSSI
-- (void)MKBLEBaseCentralManagerDiscoverPeripheral:(CBPeripheral *)peripheral
-                                advertisementData:(NSDictionary<NSString *,id> *)advertisementData
-                                             RSSI:(NSNumber *)RSSI;
+- (void)MKBXDCentralManagerDiscoverPeripheral:(CBPeripheral *)peripheral
+                            advertisementData:(NSDictionary<NSString *,id> *)advertisementData
+                                         RSSI:(NSNumber *)RSSI;
 
 @optional
 
 /// 中心开始扫描
-- (void)MKBLEBaseCentralManagerStartScan;
+- (void)MKBXDCentralManagerStartScan;
 
 /// 中心停止扫描
-- (void)MKBLEBaseCentralManagerStopScan;
+- (void)MKBXDCentralManagerStopScan;
 
 @end
 
 
 #pragma mark - 中心蓝牙状态和外设连接状态
-@protocol MKBLEBaseCentralManagerStateProtocol <NSObject>
+@protocol MKBXDCentralManagerStateProtocol <NSObject>
 
 @required
 
 /// 当前蓝牙中心状态发生改变
 /// @param centralManagerState centralManagerState
-- (void)MKBLEBaseCentralManagerStateChanged:(MKCentralManagerState)centralManagerState;
+- (void)MKBXDCentralManagerStateChanged:(MKBXDCentralManagerState)centralManagerState;
 
 /// 当前中心的外设连接状态发生改变
 /// @param connectState connectState
-- (void)MKBLEBasePeripheralConnectStateChanged:(MKPeripheralConnectState)connectState;
+- (void)MKBXDPeripheralConnectStateChanged:(MKBXDPeripheralConnectState)connectState;
 
 @end
 
-@protocol MKBLEBaseCentralManagerProtocol <NSObject,MKBLEBaseScanProtocol,MKBLEBaseCentralManagerStateProtocol>
+@protocol MKBXDCentralManagerProtocol <NSObject,MKBXDScanProtocol,MKBXDCentralManagerStateProtocol>
 
 @required
 
@@ -80,7 +80,7 @@ typedef NS_ENUM(NSInteger, MKCentralManagerState) {
 
 @end
 
-@protocol MKBLEBasePeripheralProtocol <NSObject>
+@protocol MKBXDPeripheralProtocol <NSObject>
 
 @required
 
@@ -106,23 +106,6 @@ typedef NS_ENUM(NSInteger, MKCentralManagerState) {
 
 /// 连接过程或者已经连接上的设备出现断开连接或者连接出错的情况下，目标设备需要清空当前已经设备的服务和特征值
 - (void)setNil;
-
-@end
-
-
-
-@protocol MKBLEBaseOperationProtocol <NSObject>
-
-@required
-/// 蓝牙中心接收到特征发过来的数据
-/// @param peripheral 发送数据的外设
-/// @param characteristic 数据交互特征
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic;
-
-/// 中心蓝牙使用某个特征发送数据结果
-/// @param peripheral 接收数据的外设
-/// @param characteristic 数据交互特征
-- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic;
 
 @end
 

@@ -10,7 +10,7 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 
-#import <MKBaseBleModule/MKBLEBaseSDKDefines.h>
+#import "MKBXDBaseDataProtocol.h"
 
 #import "MKBXDTaskAdopter.h"
 
@@ -46,8 +46,6 @@
 @end
 
 @implementation MKBXDOperation
-@synthesize executing = _executing;
-@synthesize finished = _finished;
 
 #pragma mark - life circle
 
@@ -59,8 +57,6 @@
                        commandBlock:(void (^)(void))commandBlock
                       completeBlock:(void (^)(NSError * _Nullable error, id _Nullable returnData))completeBlock {
     if (self = [super init]) {
-        _executing = NO;
-        _finished = NO;
         _completeBlock = completeBlock;
         _commandBlock = commandBlock;
         _operationID = operationID;
@@ -68,35 +64,16 @@
     return self;
 }
 
-#pragma mark - super method
-
-- (void)start{
-    if (self.isFinished || self.isCancelled) {
-        [self willChangeValueForKey:@"isFinished"];
-        _finished = YES;
-        [self didChangeValueForKey:@"isFinished"];
-        return;
-    }
-    [self willChangeValueForKey:@"isExecuting"];
-    _executing = YES;
-    [self didChangeValueForKey:@"isExecuting"];
-    [self startCommunication];
-}
-
-#pragma mark - MKBLEBaseOperationProtocol
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic {
+#pragma mark - Public Methods
+- (void)didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic {
     [self dataParserReceivedData:[MKBXDTaskAdopter parseReadDataWithCharacteristic:characteristic]];
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic {
+- (void)didWriteValueForCharacteristic:(CBCharacteristic *)characteristic {
     [self dataParserReceivedData:[MKBXDTaskAdopter parseWriteDataWithCharacteristic:characteristic]];
 }
 
-#pragma mark - Private method
 - (void)startCommunication{
-    if (self.isCancelled) {
-        return;
-    }
     if (self.commandBlock) {
         self.commandBlock();
     }
@@ -123,19 +100,7 @@
         }
         sself.receiveTimerCount ++;
     });
-    if (self.isCancelled) {
-        return;
-    }
     dispatch_resume(self.receiveTimer);
-}
-
-- (void)finishOperation{
-    [self willChangeValueForKey:@"isExecuting"];
-    _executing = NO;
-    [self didChangeValueForKey:@"isExecuting"];
-    [self willChangeValueForKey:@"isFinished"];
-    _finished = YES;
-    [self didChangeValueForKey:@"isFinished"];
 }
 
 - (void)communicationTimeout{
@@ -143,7 +108,6 @@
     if (self.receiveTimer) {
         dispatch_cancel(self.receiveTimer);
     }
-    [self finishOperation];
     if (self.completeBlock) {
         NSError *error = [[NSError alloc] initWithDomain:@"com.moko.operationError"
                                                     code:-999
@@ -153,7 +117,7 @@
 }
 
 - (void)dataParserReceivedData:(NSDictionary *)dataDic{
-    if (self.isCancelled || !_executing || !MKValidDict(dataDic) || self.timeout) {
+    if (![dataDic isKindOfClass:NSDictionary.class] || self.timeout) {
         return;
     }
     mk_bxd_taskOperationID operationID = [dataDic[@"operationID"] integerValue];
@@ -161,30 +125,16 @@
         return;
     }
     NSDictionary *returnData = dataDic[@"returnData"];
-    if (!MKValidDict(returnData)) {
+    if (![returnData isKindOfClass:NSDictionary.class]) {
         return;
     }
     if (self.receiveTimer) {
         dispatch_cancel(self.receiveTimer);
     }
-    [self finishOperation];
     //接受数据成功
     if (self.completeBlock) {
         self.completeBlock(nil, returnData);
     }
-}
-
-#pragma mark - getter
-- (BOOL)isConcurrent{
-    return YES;
-}
-
-- (BOOL)isFinished{
-    return _finished;
-}
-
-- (BOOL)isExecuting{
-    return _executing;
 }
 
 @end

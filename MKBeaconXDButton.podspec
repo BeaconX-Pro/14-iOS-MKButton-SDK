@@ -51,9 +51,14 @@ TODO: Add long description of the pod here.
     end
     
     s.subspec 'SDK' do |ss|
-      ss.source_files = 'MKBeaconXDButton/Classes/SDK/**'
-      
-      ss.dependency 'MKBaseBleModule'
+      ss.subspec 'Base' do |sss|
+        sss.source_files = 'MKBeaconXDButton/Classes/SDK/Base/**'
+      end
+      ss.subspec 'BXD' do |sss|
+        sss.source_files = 'MKBeaconXDButton/Classes/SDK/BXD/**'
+        
+        sss.dependency 'MKBeaconXDButton/SDK/Base'
+      end
     end
     
     s.subspec 'Target' do |ss|

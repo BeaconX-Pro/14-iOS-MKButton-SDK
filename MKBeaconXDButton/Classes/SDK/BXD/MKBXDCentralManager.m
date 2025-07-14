@@ -8,10 +8,9 @@
 
 #import "MKBXDCentralManager.h"
 
-#import "MKBLEBaseCentralManager.h"
-#import "MKBLEBaseSDKDefines.h"
-#import "MKBLEBaseSDKAdopter.h"
-#import "MKBLEBaseLogManager.h"
+#import "MKBXDBaseCentralManager.h"
+#import "MKBXDBaseSDKAdopter.h"
+#import "MKBXDBaseLogManager.h"
 
 #import "MKBXDPeripheral.h"
 #import "MKBXDOperation.h"
@@ -61,7 +60,9 @@ static dispatch_once_t onceToken;
 
 @property (nonatomic, assign)BOOL readingNeedPassword;
 
-@property (nonatomic, strong)NSDateFormatter *dateFormatter;
+@property (nonatomic, strong)NSMutableArray *operationList;
+
+@property (nonatomic, assign)BOOL isAction;
 
 @end
 
@@ -75,7 +76,7 @@ static dispatch_once_t onceToken;
 - (instancetype)init {
     if (self = [super init]) {
         [self logToLocal:@"MKBXDCentralManager初始化"];
-        [[MKBLEBaseCentralManager shared] loadDataManager:self];
+        [[MKBXDBaseCentralManager shared] loadDataManager:self];
     }
     return self;
 }
@@ -90,149 +91,176 @@ static dispatch_once_t onceToken;
 }
 
 + (void)sharedDealloc {
-    [MKBLEBaseCentralManager singleDealloc];
+    [MKBXDBaseCentralManager singleDealloc];
     manager = nil;
     onceToken = 0;
 }
 
 + (void)removeFromCentralList {
-    [[MKBLEBaseCentralManager shared] removeDataManager:manager];
+    [[MKBXDBaseCentralManager shared] removeDataManager];
     manager = nil;
     onceToken = 0;
 }
 
-#pragma mark - MKBLEBaseScanProtocol
-- (void)MKBLEBaseCentralManagerDiscoverPeripheral:(CBPeripheral *)peripheral
+#pragma mark - MKBXDScanProtocol
+- (void)MKBXDCentralManagerDiscoverPeripheral:(CBPeripheral *)peripheral
                                 advertisementData:(NSDictionary<NSString *,id> *)advertisementData
                                              RSSI:(NSNumber *)RSSI {
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSArray *deviceList = [MKBXDBaseAdvModel parseAdvData:advertisementData
-                                                   peripheral:peripheral
-                                                         RSSI:RSSI];
-        for (NSInteger i = 0; i < deviceList.count; i ++) {
-            MKBXDBaseAdvModel *beaconModel = deviceList[i];
-            beaconModel.identifier = peripheral.identifier.UUIDString;
-            beaconModel.rssi = RSSI;
-            beaconModel.peripheral = peripheral;
-            beaconModel.deviceName = advertisementData[CBAdvertisementDataLocalNameKey];
-            beaconModel.connectEnable = [advertisementData[CBAdvertisementDataIsConnectable] boolValue];
-        }
-        if (!MKValidArray(deviceList)) {
-            return;
-        }
-        if ([self.delegate respondsToSelector:@selector(mk_bxd_receiveAdvData:)]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.delegate mk_bxd_receiveAdvData:deviceList];
-            });
+    NSArray *deviceList = [MKBXDBaseAdvModel parseAdvData:advertisementData
+                                               peripheral:peripheral
+                                                     RSSI:RSSI];
+    for (NSInteger i = 0; i < deviceList.count; i ++) {
+        MKBXDBaseAdvModel *beaconModel = deviceList[i];
+        beaconModel.identifier = peripheral.identifier.UUIDString;
+        beaconModel.rssi = RSSI;
+        beaconModel.peripheral = peripheral;
+        beaconModel.deviceName = advertisementData[CBAdvertisementDataLocalNameKey];
+        beaconModel.connectEnable = [advertisementData[CBAdvertisementDataIsConnectable] boolValue];
+    }
+    if (deviceList.count == 0) {
+        return;
+    }
+    if ([self.delegate respondsToSelector:@selector(mk_bxd_receiveAdvData:)]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate mk_bxd_receiveAdvData:deviceList];
+        });
+    }
+}
+
+- (void)MKBXDCentralManagerStartScan {
+    [self logToLocal:@"开始扫描"];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.delegate respondsToSelector:@selector(mk_bxd_startScan)]) {
+            [self.delegate mk_bxd_startScan];
         }
     });
 }
 
-- (void)MKBLEBaseCentralManagerStartScan {
-    [self logToLocal:@"开始扫描"];
-    if ([self.delegate respondsToSelector:@selector(mk_bxd_startScan)]) {
-        [self.delegate mk_bxd_startScan];
-    }
-}
-
-- (void)MKBLEBaseCentralManagerStopScan {
+- (void)MKBXDCentralManagerStopScan {
     [self logToLocal:@"停止扫描"];
-    if ([self.delegate respondsToSelector:@selector(mk_bxd_stopScan)]) {
-        [self.delegate mk_bxd_stopScan];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([self.delegate respondsToSelector:@selector(mk_bxd_stopScan)]) {
+            [self.delegate mk_bxd_stopScan];
+        }
+    });
 }
 
-#pragma mark - MKBLEBaseCentralManagerStateProtocol
-- (void)MKBLEBaseCentralManagerStateChanged:(MKCentralManagerState)centralManagerState {
+#pragma mark - MKBXDCentralManagerStateProtocol
+- (void)MKBXDCentralManagerStateChanged:(MKBXDCentralManagerState)centralManagerState {
     NSString *string = [NSString stringWithFormat:@"蓝牙中心改变:%@",@(centralManagerState)];
+    [self.operationList removeAllObjects];
+    self.isAction = NO;
     [self logToLocal:string];
-    [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_centralManagerStateChangedNotification object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_centralManagerStateChangedNotification object:nil];
+    });
 }
 
-- (void)MKBLEBasePeripheralConnectStateChanged:(MKPeripheralConnectState)connectState {
+- (void)MKBXDPeripheralConnectStateChanged:(MKBXDPeripheralConnectState)connectState {
+    [self.operationList removeAllObjects];
+    self.isAction = NO;
     if (self.readingNeedPassword) {
         //正在读取lockState的时候不对连接状态做出回调
         return;
     }
     //连接成功的判断必须是发送密码成功之后
-    if (connectState == MKPeripheralConnectStateUnknow) {
+    if (connectState == MKBXDPeripheralConnectStateUnknow) {
         self.connectStatus = mk_bxd_centralConnectStatusUnknow;
-    }else if (connectState == MKPeripheralConnectStateConnecting) {
+    }else if (connectState == MKBXDPeripheralConnectStateConnecting) {
         self.connectStatus = mk_bxd_centralConnectStatusConnecting;
-    }else if (connectState == MKPeripheralConnectStateDisconnect) {
+    }else if (connectState == MKBXDPeripheralConnectStateDisconnect) {
         self.connectStatus = mk_bxd_centralConnectStatusDisconnect;
-    }else if (connectState == MKPeripheralConnectStateConnectedFailed) {
+    }else if (connectState == MKBXDPeripheralConnectStateConnectedFailed) {
         self.connectStatus = mk_bxd_centralConnectStatusConnectedFailed;
     }
     NSString *string = [NSString stringWithFormat:@"连接状态发生改变:%@",@(connectState)];
     [self logToLocal:string];
-    [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
+    });
 }
 
-#pragma mark - MKBLEBaseCentralManagerProtocol
+#pragma mark - MKBXDCentralManagerProtocol
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     if (error) {
         NSLog(@"+++++++++++++++++接收数据出错");
         return;
     }
-    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA02"]]) {
-        //引起设备断开连接的类型
-        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
-        [self saveToLogData:content appToDevice:NO];
-        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_deviceDisconnectTypeNotification
-                                                            object:nil
-                                                          userInfo:@{@"type":[content substringWithRange:NSMakeRange(8, 2)]}];
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
+//        //单击数据/双击数据/长按数据/长连接模式数据
+        NSString *alarmType = @"0";
+        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
+            alarmType = @"0";
+        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]) {
+            alarmType = @"1";
+        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
+            alarmType = @"2";
+        }else {
+            alarmType = @"3";
+        }
+        NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
+        NSDictionary *dic = @{
+            @"alarmType":alarmType,
+            @"content":[content substringFromIndex:8]
+        };
+        if ([self.eventDelegate respondsToSelector:@selector(mk_bxd_receiveAlarmEventData:)]) {
+            [self.eventDelegate mk_bxd_receiveAlarmEventData:dic];
+        }
         return;
     }
-    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
-        //单击数据/双击数据/长按数据/长连接模式数据
-        NSInteger alarmType = 0;
-        if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
-            alarmType = 0;
-        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]]) {
-            alarmType = 1;
-        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
-            alarmType = 2;
-        }else {
-            alarmType = 3;
-        }
-        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
-        NSLog(@"%@-%@-%@",[self.dateFormatter stringFromDate:[NSDate date]],characteristic.UUID.UUIDString,content);
+    
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA02"]]) {
+        //引起设备断开连接的类型
+        NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
-        if ([self.eventDelegate respondsToSelector:@selector(mk_bxd_receiveAlarmEventData:alarmType:)]) {
-            [self.eventDelegate mk_bxd_receiveAlarmEventData:[content substringFromIndex:8] alarmType:alarmType];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_deviceDisconnectTypeNotification
+                                                                object:nil
+                                                              userInfo:@{@"type":[content substringWithRange:NSMakeRange(8, 2)]}];
+        });
         return;
     }
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
         //三轴数据
-        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
-        NSNumber *xData = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(8, 4)]];
+        NSNumber *xData = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(8, 4)]];
         NSString *xDataString = [NSString stringWithFormat:@"%ld",(long)[xData integerValue]];
-        NSNumber *yData = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(12, 4)]];
+        NSNumber *yData = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(12, 4)]];
         NSString *yDataString = [NSString stringWithFormat:@"%ld",(long)[yData integerValue]];
-        NSNumber *zData = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(16, 4)]];
+        NSNumber *zData = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(16, 4)]];
         NSString *zDataString = [NSString stringWithFormat:@"%ld",(long)[zData integerValue]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveThreeAxisDataNotification
-                                                            object:nil
-                                                          userInfo:@{@"x-Data":xDataString,
-                                                                     @"y-Data":yDataString,
-                                                                     @"z-Data":zDataString,
-                                                                   }];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveThreeAxisDataNotification
+                                                                object:nil
+                                                              userInfo:@{@"x-Data":xDataString,
+                                                                         @"y-Data":yDataString,
+                                                                         @"z-Data":zDataString,
+                                                                       }];
+        });
         return;
     }
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA08"]]) {
-        NSString *content = [MKBLEBaseSDKAdopter hexStringFromData:characteristic.value];
+        NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
         //长连接按键触发次数
-        NSString *count = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 2)];
-        [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveLongConnectionModeDataNotification
-                                                            object:nil
-                                                          userInfo:@{@"count":count,
-                                                                   }];
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 2)];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveLongConnectionModeDataNotification
+                                                                object:nil
+                                                              userInfo:@{@"count":count,
+                                                                       }];
+        });
         return;
     }
+    
+    if (self.operationList.count == 0 || !self.isAction) {
+        return;
+    }
+    MKBXDOperation *currentOperation = self.operationList[0];
+    [currentOperation didUpdateValueForCharacteristic:characteristic];
 }
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
     if (error) {
@@ -245,21 +273,21 @@ static dispatch_once_t onceToken;
 
 #pragma mark - public method
 - (CBCentralManager *)centralManager {
-    return [MKBLEBaseCentralManager shared].centralManager;
+    return [MKBXDBaseCentralManager shared].centralManager;
 }
 
 - (CBPeripheral *)peripheral {
-    return [MKBLEBaseCentralManager shared].peripheral;
+    return [MKBXDBaseCentralManager shared].peripheral;
 }
 
 - (mk_bxd_centralManagerStatus )centralStatus {
-    return ([MKBLEBaseCentralManager shared].centralStatus == MKCentralManagerStateEnable)
+    return ([MKBXDBaseCentralManager shared].centralStatus == MKBXDCentralManagerStateEnable)
     ? mk_bxd_centralManagerStatusEnable
     : mk_bxd_centralManagerStatusUnable;
 }
 
 - (void)startScan {
-    [[MKBLEBaseCentralManager shared] scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"FEAA"],
+    [[MKBXDBaseCentralManager shared] scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"FEAA"],
                                                                        [CBUUID UUIDWithString:@"FEAB"],
                                                                        [CBUUID UUIDWithString:@"FEE0"],
                                                                        [CBUUID UUIDWithString:@"EA00"]]
@@ -267,7 +295,7 @@ static dispatch_once_t onceToken;
 }
 
 - (void)stopScan {
-    [[MKBLEBaseCentralManager shared] stopScan];
+    [[MKBXDBaseCentralManager shared] stopScan];
 }
 
 - (void)readNeedPasswordWithPeripheral:(nonnull CBPeripheral *)peripheral
@@ -284,18 +312,20 @@ static dispatch_once_t onceToken;
     __weak typeof(self) weakSelf = self;
     self.needPasswordBlock = ^(NSDictionary *result) {
         __strong typeof(self) sself = weakSelf;
-        if (!MKValidDict(result)) {
+        if (![result isKindOfClass:NSDictionary.class]) {
             [sself clearAllParams];
             [self operationFailedBlockWithMsg:@"Read Error" failedBlock:failedBlock];
             return;
         }
         [sself clearAllParams];
         if (sucBlock) {
-            MKBLEBase_main_safe(^{sucBlock(result);});
+            dispatch_async(dispatch_get_main_queue(), ^{
+                sucBlock(result);
+            });
         }
     };
     MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral];
-    [[MKBLEBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
+    [[MKBXDBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
         [self confirmNeedPassword];
     } failedBlock:^(NSError * _Nonnull error) {
         __strong typeof(self) sself = weakSelf;
@@ -311,10 +341,10 @@ static dispatch_once_t onceToken;
                  sucBlock:(void (^)(CBPeripheral * _Nonnull))sucBlock
               failedBlock:(void (^)(NSError * error))failedBlock {
     if (!peripheral) {
-        [MKBLEBaseSDKAdopter operationConnectFailedBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationConnectFailedBlock:failedBlock];
         return;
     }
-    if (!MKValidStr(password) || password.length > 16 || ![MKBLEBaseSDKAdopter asciiString:password]) {
+    if (![password isKindOfClass:NSString.class] || password.length == 0 || password.length > 16 || ![MKBXDBaseSDKAdopter asciiString:password]) {
         [self operationFailedBlockWithMsg:@"The password should be no more than 16 characters." failedBlock:failedBlock];
         return;
     }
@@ -342,7 +372,7 @@ static dispatch_once_t onceToken;
                  sucBlock:(void (^)(CBPeripheral *peripheral))sucBlock
               failedBlock:(void (^)(NSError *error))failedBlock {
     if (!peripheral) {
-        [MKBLEBaseSDKAdopter operationConnectFailedBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationConnectFailedBlock:failedBlock];
         return;
     }
     self.password = @"";
@@ -365,7 +395,7 @@ static dispatch_once_t onceToken;
 }
 
 - (void)disconnect {
-    [[MKBLEBaseCentralManager shared] disconnect];
+    [[MKBXDBaseCentralManager shared] disconnect];
 }
 
 - (void)addTaskWithTaskID:(mk_bxd_taskOperationID)operationID
@@ -373,29 +403,31 @@ static dispatch_once_t onceToken;
               commandData:(NSString *)commandData
              successBlock:(void (^)(id returnData))successBlock
              failureBlock:(void (^)(NSError *error))failureBlock {
-    MKBXDOperation <MKBLEBaseOperationProtocol>*operation = [self generateOperationWithOperationID:operationID
-                                                                                    characteristic:characteristic
-                                                                                       commandData:commandData
-                                                                                      successBlock:successBlock
-                                                                                      failureBlock:failureBlock];
+    MKBXDOperation *operation = [self generateOperationWithOperationID:operationID
+                                                        characteristic:characteristic
+                                                           commandData:commandData
+                                                          successBlock:successBlock
+                                                          failureBlock:failureBlock];
     if (!operation) {
         return;
     }
-    [[MKBLEBaseCentralManager shared] addOperation:operation];
+    [self.operationList addObject:operation];
+    [self operationAction];
 }
 
 - (void)addReadTaskWithTaskID:(mk_bxd_taskOperationID)operationID
                characteristic:(CBCharacteristic *)characteristic
                  successBlock:(void (^)(id returnData))successBlock
                  failureBlock:(void (^)(NSError *error))failureBlock {
-    MKBXDOperation <MKBLEBaseOperationProtocol>*operation = [self generateReadOperationWithOperationID:operationID
-                                                                                        characteristic:characteristic
-                                                                                          successBlock:successBlock
-                                                                                          failureBlock:failureBlock];
+    MKBXDOperation *operation = [self generateReadOperationWithOperationID:operationID
+                                                            characteristic:characteristic
+                                                              successBlock:successBlock
+                                                              failureBlock:failureBlock];
     if (!operation) {
         return;
     }
-    [[MKBLEBaseCentralManager shared] addOperation:operation];
+    [self.operationList addObject:operation];
+    [self operationAction];
 }
 
 - (BOOL)notifySingleClickData:(BOOL)notify {
@@ -455,8 +487,8 @@ static dispatch_once_t onceToken;
     self.failedBlock = nil;
     self.failedBlock = failedBlock;
     MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral];
-    [[MKBLEBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
-        if (MKValidStr(self.password) && self.password.length <= 16) {
+    [[MKBXDBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
+        if (self.password != nil && self.password.length <= 16) {
             //需要密码登录
             [self logToLocal:@"密码登录"];
             [self sendPasswordToDevice];
@@ -464,7 +496,7 @@ static dispatch_once_t onceToken;
         }
         //免密登录
         [self logToLocal:@"免密登录"];
-        MKBLEBase_main_safe(^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             self.connectStatus = mk_bxd_centralConnectStatusConnected;
             [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
             if (self.sucBlock) {
@@ -486,54 +518,66 @@ static dispatch_once_t onceToken;
     }
     __weak typeof(self) weakSelf = self;
     MKBXDOperation *operation = [[MKBXDOperation alloc] initOperationWithID:mk_bxd_connectPasswordOperation commandBlock:^{
-        [[MKBLEBaseCentralManager shared] sendDataToPeripheral:commandData characteristic:[MKBLEBaseCentralManager shared].peripheral.bxd_password type:CBCharacteristicWriteWithResponse];
+        [[MKBXDBaseCentralManager shared] sendDataToPeripheral:commandData characteristic:[MKBXDBaseCentralManager shared].peripheral.bxd_password type:CBCharacteristicWriteWithResponse];
     } completeBlock:^(NSError * _Nullable error, id  _Nullable returnData) {
         __strong typeof(self) sself = weakSelf;
-        if (error || !MKValidDict(returnData) || ![returnData[@"success"] boolValue]) {
+        sself.isAction = NO;
+        if (sself.operationList.count > 0) {
+            [sself.operationList removeObjectAtIndex:0];
+            [sself operationAction];
+        }
+        if (error || ![returnData isKindOfClass:NSDictionary.class] || ![returnData[@"success"] boolValue]) {
             //密码错误
             [sself operationFailedBlockWithMsg:@"Password Error" failedBlock:sself.failedBlock];
             return ;
         }
         //密码正确
-        MKBLEBase_main_safe(^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             sself.connectStatus = mk_bxd_centralConnectStatusConnected;
             [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
             if (sself.sucBlock) {
-                sself.sucBlock([MKBLEBaseCentralManager shared].peripheral);
+                sself.sucBlock([MKBXDBaseCentralManager shared].peripheral);
             }
         });
     }];
-    [[MKBLEBaseCentralManager shared] addOperation:operation];
+    [self.operationList addObject:operation];
+    [self operationAction];
 }
 
 - (void)confirmNeedPassword {
     NSString *commandData = @"ea002300";
     __weak typeof(self) weakSelf = self;
     MKBXDOperation *operation = [[MKBXDOperation alloc] initOperationWithID:mk_bxd_taskReadNeedPasswordOperation commandBlock:^{
-        [[MKBLEBaseCentralManager shared] sendDataToPeripheral:commandData characteristic:[MKBLEBaseCentralManager shared].peripheral.bxd_password type:CBCharacteristicWriteWithResponse];
+        [[MKBXDBaseCentralManager shared] sendDataToPeripheral:commandData characteristic:[MKBXDBaseCentralManager shared].peripheral.bxd_password type:CBCharacteristicWriteWithResponse];
     } completeBlock:^(NSError * _Nullable error, id  _Nullable returnData) {
         __strong typeof(self) sself = weakSelf;
+        sself.isAction = NO;
+        if (sself.operationList.count > 0) {
+            [sself.operationList removeObjectAtIndex:0];
+            [sself operationAction];
+        }
         //读取成功
-        MKBLEBase_main_safe(^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             if (sself.needPasswordBlock) {
                 sself.needPasswordBlock(returnData);
             }
         });
     }];
-    [[MKBLEBaseCentralManager shared] addOperation:operation];
+    [self.operationList addObject:operation];
+    [self operationAction];
 }
 
 #pragma mark - task method
-- (MKBXDOperation <MKBLEBaseOperationProtocol>*)generateOperationWithOperationID:(mk_bxd_taskOperationID)operationID
-                                                                  characteristic:(CBCharacteristic *)characteristic
-                                                                     commandData:(NSString *)commandData
-                                                                    successBlock:(void (^)(id returnData))successBlock
-                                                                    failureBlock:(void (^)(NSError *error))failureBlock{
-    if (![[MKBLEBaseCentralManager shared] readyToCommunication]) {
+- (MKBXDOperation *)generateOperationWithOperationID:(mk_bxd_taskOperationID)operationID
+                                      characteristic:(CBCharacteristic *)characteristic
+                                         commandData:(NSString *)commandData
+                                        successBlock:(void (^)(id returnData))successBlock
+                                        failureBlock:(void (^)(NSError *error))failureBlock {
+    if (![[MKBXDBaseCentralManager shared] readyToCommunication]) {
         [self operationFailedBlockWithMsg:@"The current connection device is in disconnect" failedBlock:failureBlock];
         return nil;
     }
-    if (!MKValidStr(commandData)) {
+    if (![commandData isKindOfClass:NSString.class] || commandData.length == 0) {
         [self operationFailedBlockWithMsg:@"The data sent to the device cannot be empty" failedBlock:failureBlock];
         return nil;
     }
@@ -542,12 +586,17 @@ static dispatch_once_t onceToken;
         return nil;
     }
     __weak typeof(self) weakSelf = self;
-    MKBXDOperation <MKBLEBaseOperationProtocol>*operation = [[MKBXDOperation alloc] initOperationWithID:operationID commandBlock:^{
-        [[MKBLEBaseCentralManager shared] sendDataToPeripheral:commandData characteristic:characteristic type:CBCharacteristicWriteWithResponse];
+    MKBXDOperation *operation = [[MKBXDOperation alloc] initOperationWithID:operationID commandBlock:^{
+        [[MKBXDBaseCentralManager shared] sendDataToPeripheral:commandData characteristic:characteristic type:CBCharacteristicWriteWithResponse];
     } completeBlock:^(NSError * _Nullable error, id  _Nullable returnData) {
         __strong typeof(self) sself = weakSelf;
+        sself.isAction = NO;
+        if (sself.operationList.count > 0) {
+            [sself.operationList removeObjectAtIndex:0];
+            [sself operationAction];
+        }
         if (error) {
-            MKBLEBase_main_safe(^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 if (failureBlock) {
                     failureBlock(error);
                 }
@@ -562,7 +611,7 @@ static dispatch_once_t onceToken;
                                     @"code":@"1",
                                     @"result":returnData,
                                     };
-        MKBLEBase_main_safe(^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             if (successBlock) {
                 successBlock(resultDic);
             }
@@ -571,11 +620,11 @@ static dispatch_once_t onceToken;
     return operation;
 }
 
-- (MKBXDOperation <MKBLEBaseOperationProtocol>*)generateReadOperationWithOperationID:(mk_bxd_taskOperationID)operationID
-                                                                      characteristic:(CBCharacteristic *)characteristic
-                                                                        successBlock:(void (^)(id returnData))successBlock
-                                                                        failureBlock:(void (^)(NSError *error))failureBlock{
-    if (![[MKBLEBaseCentralManager shared] readyToCommunication]) {
+- (MKBXDOperation *)generateReadOperationWithOperationID:(mk_bxd_taskOperationID)operationID
+                                          characteristic:(CBCharacteristic *)characteristic
+                                            successBlock:(void (^)(id returnData))successBlock
+                                            failureBlock:(void (^)(NSError *error))failureBlock {
+    if (![[MKBXDBaseCentralManager shared] readyToCommunication]) {
         [self operationFailedBlockWithMsg:@"The current connection device is in disconnect" failedBlock:failureBlock];
         return nil;
     }
@@ -584,12 +633,17 @@ static dispatch_once_t onceToken;
         return nil;
     }
     __weak typeof(self) weakSelf = self;
-    MKBXDOperation <MKBLEBaseOperationProtocol>*operation = [[MKBXDOperation alloc] initOperationWithID:operationID commandBlock:^{
-        [[MKBLEBaseCentralManager shared].peripheral readValueForCharacteristic:characteristic];
+    MKBXDOperation *operation = [[MKBXDOperation alloc] initOperationWithID:operationID commandBlock:^{
+        [[MKBXDBaseCentralManager shared].peripheral readValueForCharacteristic:characteristic];
     } completeBlock:^(NSError * _Nullable error, id  _Nullable returnData) {
         __strong typeof(self) sself = weakSelf;
+        sself.isAction = NO;
+        if (sself.operationList.count > 0) {
+            [sself.operationList removeObjectAtIndex:0];
+            [sself operationAction];
+        }
         if (error) {
-            MKBLEBase_main_safe(^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 if (failureBlock) {
                     failureBlock(error);
                 }
@@ -604,7 +658,7 @@ static dispatch_once_t onceToken;
                                     @"code":@"1",
                                     @"result":returnData,
                                     };
-        MKBLEBase_main_safe(^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             if (successBlock) {
                 successBlock(resultDic);
             }
@@ -623,13 +677,24 @@ static dispatch_once_t onceToken;
     [self disconnect];
     self.needPasswordBlock = nil;
     self.readingNeedPassword = NO;
+    [self.operationList removeAllObjects];
+    self.isAction = NO;
+}
+
+- (void)operationAction {
+    if (self.operationList.count == 0 || self.isAction) {
+        return;
+    }
+    self.isAction = YES;
+    MKBXDOperation *currentOperation = self.operationList[0];
+    [currentOperation startCommunication];
 }
 
 - (void)operationFailedBlockWithMsg:(NSString *)message failedBlock:(void (^)(NSError *error))failedBlock {
     NSError *error = [[NSError alloc] initWithDomain:@"com.moko.BXDCentralManager"
                                                 code:-999
                                             userInfo:@{@"errorInfo":message}];
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (failedBlock) {
             failedBlock(error);
         }
@@ -637,27 +702,20 @@ static dispatch_once_t onceToken;
 }
 
 - (void)saveToLogData:(NSString *)string appToDevice:(BOOL)app {
-    if (!MKValidStr(string)) {
-        return;
-    }
     NSString *fuction = (app ? @"App To Device" : @"Device To App");
     NSString *recordString = [NSString stringWithFormat:@"%@---->%@",fuction,string];
     [self logToLocal:recordString];
 }
 
 - (void)logToLocal:(NSString *)string {
-    if (!MKValidStr(string)) {
-        return;
-    }
-    [MKBLEBaseLogManager saveDataWithFileName:mk_bxp_button_d_logName dataList:@[string]];
+    [MKBXDBaseLogManager saveDataWithFileName:mk_bxp_button_d_logName dataList:@[string]];
 }
 
-- (NSDateFormatter *)dateFormatter {
-    if (!_dateFormatter) {
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss.SSS"];  // SSS表示毫秒
+- (NSMutableArray *)operationList {
+    if (!_operationList) {
+        _operationList = [NSMutableArray array];
     }
-    return _dateFormatter;
+    return _operationList;
 }
 
 @end

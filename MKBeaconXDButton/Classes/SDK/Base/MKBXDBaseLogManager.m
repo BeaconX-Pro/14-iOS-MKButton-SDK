@@ -1,25 +1,20 @@
 //
-//  MKBLEBaseLogManager.m
-//  Pods-MKBLEBaseModule_Example
+//  MKBXDBaseLogManager.m
+//  Pods-MKBXDModule_Example
 //
 //  Created by aa on 2019/11/19.
 //  Copyright © 2019 aadyx2007@163.com. All rights reserved.
 //
 
-#import "MKBLEBaseLogManager.h"
+#import "MKBXDBaseLogManager.h"
 #import <objc/runtime.h>
-
-#import "MKBLEBaseSDKDefines.h"
 
 static const char *formatterKey = "formatterKey";
 
-@implementation MKBLEBaseLogManager
+@implementation MKBXDBaseLogManager
 
 + (BOOL)saveDataWithFileName:(nonnull NSString *)fileName
                     dataList:(nonnull NSArray <NSString *>*)dataList {
-    if (!MKValidStr(fileName) || !MKValidArray(dataList)) {
-        return NO;
-    }
     NSString *path = [self cachesDirectory];
     NSString *localFileName = [NSString stringWithFormat:@"/%@.txt",fileName];
     NSString *filePath = [path stringByAppendingString:localFileName];
@@ -34,7 +29,7 @@ static const char *formatterKey = "formatterKey";
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error = nil;
     NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:filePath error:&error];
-    if (error || !MKValidDict(fileAttributes)) {
+    if (error || !fileAttributes || fileAttributes.allKeys.count == 0) {
         return NO;
     }
     NSString *datestr = [self.formatter stringFromDate:[NSDate date]];
@@ -57,7 +52,7 @@ static const char *formatterKey = "formatterKey";
     NSString *localFileName = [NSString stringWithFormat:@"/%@.txt",fileName];
     NSString *filePath = [path stringByAppendingString:localFileName];
     NSString *fileString = [self readFileInPath:filePath];
-    if (!MKValidStr(fileString)) {
+    if (!fileString || fileString.length == 0) {
         return nil;
     }
     NSData *fileData = [fileString dataUsingEncoding:NSUTF8StringEncoding];

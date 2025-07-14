@@ -8,8 +8,7 @@
 
 #import "MKBXDInterface+MKBXDConfig.h"
 
-#import "MKBLEBaseSDKDefines.h"
-#import "MKBLEBaseSDKAdopter.h"
+#import "MKBXDBaseSDKAdopter.h"
 
 #import "MKBXDCentralManager.h"
 #import "MKBXDOperationID.h"
@@ -26,12 +25,12 @@
                              sucBlock:(void (^)(void))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock {
     if (motionThreshold < 1 || motionThreshold > 2048) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
     NSString *rate = [MKBXDAdopter fetchThreeAxisDataRate:dataRate];
     NSString *ag = [MKBXDAdopter fetchThreeAxisDataAG:fullScale];
-    NSString *sen = [MKBLEBaseSDKAdopter fetchHexValue:motionThreshold byteLen:2];
+    NSString *sen = [MKBXDBaseSDKAdopter fetchHexValue:motionThreshold byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@",@"ea012104",rate,ag,sen];
     [self configDataWithTaskID:mk_bxd_taskConfigThreeAxisDataParamsOperation
                           data:commandString
@@ -52,8 +51,8 @@
 + (void)bxd_configConnectPassword:(NSString *)password
                          sucBlock:(void (^)(void))sucBlock
                       failedBlock:(void (^)(NSError *error))failedBlock {
-    if (!MKValidStr(password) || password.length > 16) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+    if (![password isKindOfClass:NSString.class] || password.length == 0 || password.length > 16) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
     NSString *commandData = @"";
@@ -69,7 +68,7 @@
     [centralManager addTaskWithTaskID:mk_bxd_taskConfigConnectPasswordOperation characteristic:centralManager.peripheral.bxd_password commandData:commandString successBlock:^(id  _Nonnull returnData) {
         BOOL success = [returnData[@"result"][@"success"] boolValue];
         if (!success) {
-            [MKBLEBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
+            [MKBXDBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
             return ;
         }
         if (sucBlock) {
@@ -82,10 +81,10 @@
                                 sucBlock:(void (^)(void))sucBlock
                              failedBlock:(void (^)(NSError *error))failedBlock {
     if (interval < 5 || interval > 15) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *intervalValue = [MKBLEBaseSDKAdopter fetchHexValue:(interval * 100) byteLen:2];
+    NSString *intervalValue = [MKBXDBaseSDKAdopter fetchHexValue:(interval * 100) byteLen:2];
     NSString *commandString = [@"ea012502" stringByAppendingString:intervalValue];
     [self configDataWithTaskID:mk_bxd_taskConfigEffectiveClickIntervalOperation
                           data:commandString
@@ -134,7 +133,7 @@
 + (void)bxd_configChannelContentAlarmInfo:(MKBXDChannelAlarmType)channelType
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013302",[MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"00"];
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013302",[MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"00"];
     [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
                           data:commandString
                       sucBlock:sucBlock
@@ -146,12 +145,12 @@
                          instanceID:(NSString *)instanceID
                            sucBlock:(void (^)(void))sucBlock
                         failedBlock:(void (^)(NSError *error))failedBlock {
-    if (namespaceID.length != 20 || ![MKBLEBaseSDKAdopter checkHexCharacter:namespaceID]
-        || instanceID.length != 12 || ![MKBLEBaseSDKAdopter checkHexCharacter:instanceID]) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+    if (namespaceID.length != 20 || ![MKBXDBaseSDKAdopter checkHexCharacter:namespaceID]
+        || instanceID.length != 12 || ![MKBXDBaseSDKAdopter checkHexCharacter:instanceID]) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@",@"ea013312",[MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"01",namespaceID,instanceID];
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@",@"ea013312",[MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"01",namespaceID,instanceID];
     [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
                           data:commandString
                       sucBlock:sucBlock
@@ -165,12 +164,12 @@
                               sucBlock:(void (^)(void))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock {
     if (major < 0 || major > 65535
-        || minor < 0 || minor > 65535 || !MKValidStr(uuid) || uuid.length != 32
-        || ![MKBLEBaseSDKAdopter checkHexCharacter:uuid]) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        || minor < 0 || minor > 65535 || ![uuid isKindOfClass:NSString.class] || uuid.length != 32
+        || ![MKBXDBaseSDKAdopter checkHexCharacter:uuid]) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@%@",@"ea013316",[MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"02",uuid,[MKBLEBaseSDKAdopter fetchHexValue:major byteLen:2],[MKBLEBaseSDKAdopter fetchHexValue:minor byteLen:2]];
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@%@",@"ea013316",[MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"02",uuid,[MKBXDBaseSDKAdopter fetchHexValue:major byteLen:2],[MKBXDBaseSDKAdopter fetchHexValue:minor byteLen:2]];
     [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
                           data:commandString
                       sucBlock:sucBlock
@@ -181,7 +180,7 @@
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock {
     if (![MKBXDAdopter validTriggerChannelAdvParamsProtocol:protocol]) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
     NSString *commandString = [MKBXDAdopter parseTriggerChannelAdvParamsProtocol:protocol];
@@ -195,7 +194,7 @@
                               sucBlock:(void (^)(void))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock {
     if (![MKBXDAdopter validChannelTriggerParamsProtocol:protocol]) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
     NSString *commandString = [MKBXDAdopter parseChannelTriggerParamsProtocol:protocol];
@@ -209,7 +208,7 @@
                                             isOn:(BOOL)isOn
                                         sucBlock:(void (^)(void))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013602",type,(isOn ? @"01" : @"00")];
     [self configDataWithTaskID:mk_bxd_taskConfigStayAdvertisingBeforeTriggeredOperation
                           data:commandString
@@ -221,8 +220,8 @@
                            reminderType:(mk_bxd_reminderType)reminderType
                                sucBlock:(void (^)(void))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *channleType = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
-    NSString *typeString = [MKBLEBaseSDKAdopter fetchHexValue:reminderType byteLen:1];
+    NSString *channleType = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *typeString = [MKBXDBaseSDKAdopter fetchHexValue:reminderType byteLen:1];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013702",channleType,typeString];
     [self configDataWithTaskID:mk_bxd_taskConfigAlarmNotificationTypeOperation
                           data:commandString
@@ -234,10 +233,10 @@
                                 sucBlock:(void (^)(void))sucBlock
                              failedBlock:(void (^)(NSError *error))failedBlock {
     if (time < 1 || time > 65535) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *timeString = [MKBLEBaseSDKAdopter fetchHexValue:time byteLen:2];
+    NSString *timeString = [MKBXDBaseSDKAdopter fetchHexValue:time byteLen:2];
     NSString *commandString = [@"ea013802" stringByAppendingString:timeString];
     [self configDataWithTaskID:mk_bxd_taskConfigAbnormalInactivityTimeOperation
                           data:commandString
@@ -259,10 +258,10 @@
                            sucBlock:(void (^)(void))sucBlock
                         failedBlock:(void (^)(NSError *error))failedBlock {
     if (time < 1 || time > 65535) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *timeString = [MKBLEBaseSDKAdopter fetchHexValue:time byteLen:2];
+    NSString *timeString = [MKBXDBaseSDKAdopter fetchHexValue:time byteLen:2];
     NSString *commandString = [@"ea013a02" stringByAppendingString:timeString];
     [self configDataWithTaskID:mk_bxd_taskConfigStaticTriggerTimeOperation
                           data:commandString
@@ -276,12 +275,12 @@
                             sucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
     if (blinkingTime < 1 || blinkingTime > 6000 || blinkingInterval < 0 || blinkingInterval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *channleType = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
-    NSString *time = [MKBLEBaseSDKAdopter fetchHexValue:blinkingTime byteLen:2];
-    NSString *interval = [MKBLEBaseSDKAdopter fetchHexValue:blinkingInterval byteLen:2];
+    NSString *channleType = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *time = [MKBXDBaseSDKAdopter fetchHexValue:blinkingTime byteLen:2];
+    NSString *interval = [MKBXDBaseSDKAdopter fetchHexValue:blinkingInterval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@",@"ea013b05",channleType,time,interval];
     [self configDataWithTaskID:mk_bxd_taskConfigAlarmLEDNotiParamsOperation
                           data:commandString
@@ -295,12 +294,12 @@
                                 sucBlock:(void (^)(void))sucBlock
                              failedBlock:(void (^)(NSError *error))failedBlock {
     if (vibratingTime < 1 || vibratingTime > 6000 || vibratingInterval < 0 || vibratingInterval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *channleType = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
-    NSString *time = [MKBLEBaseSDKAdopter fetchHexValue:vibratingTime byteLen:2];
-    NSString *interval = [MKBLEBaseSDKAdopter fetchHexValue:vibratingInterval byteLen:2];
+    NSString *channleType = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *time = [MKBXDBaseSDKAdopter fetchHexValue:vibratingTime byteLen:2];
+    NSString *interval = [MKBXDBaseSDKAdopter fetchHexValue:vibratingInterval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@",@"ea013c05",channleType,time,interval];
     [self configDataWithTaskID:mk_bxd_taskConfigAlarmVibrateNotiParamsOperation
                           data:commandString
@@ -314,12 +313,12 @@
                                sucBlock:(void (^)(void))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
     if (ringingTime < 1 || ringingTime > 6000 || ringingInterval < 0 || ringingInterval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *channleType = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
-    NSString *time = [MKBLEBaseSDKAdopter fetchHexValue:ringingTime byteLen:2];
-    NSString *interval = [MKBLEBaseSDKAdopter fetchHexValue:ringingInterval byteLen:2];
+    NSString *channleType = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *time = [MKBXDBaseSDKAdopter fetchHexValue:ringingTime byteLen:2];
+    NSString *interval = [MKBXDBaseSDKAdopter fetchHexValue:ringingInterval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@",@"ea013d05",channleType,time,interval];
     [self configDataWithTaskID:mk_bxd_taskConfigAlarmBuzzerNotiParamsOperation
                           data:commandString
@@ -332,11 +331,11 @@
                                      sucBlock:(void (^)(void))sucBlock
                                   failedBlock:(void (^)(NSError *error))failedBlock {
     if (blinkingTime < 1 || blinkingTime > 6000 || blinkingInterval < 0 || blinkingInterval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *time = [MKBLEBaseSDKAdopter fetchHexValue:blinkingTime byteLen:2];
-    NSString *interval = [MKBLEBaseSDKAdopter fetchHexValue:blinkingInterval byteLen:2];
+    NSString *time = [MKBXDBaseSDKAdopter fetchHexValue:blinkingTime byteLen:2];
+    NSString *interval = [MKBXDBaseSDKAdopter fetchHexValue:blinkingInterval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013e04",time,interval];
     [self configDataWithTaskID:mk_bxd_taskConfigRemoteReminderLEDNotiParamsOperation
                           data:commandString
@@ -349,11 +348,11 @@
                                            sucBlock:(void (^)(void))sucBlock
                                         failedBlock:(void (^)(NSError *error))failedBlock {
     if (vibratingTime < 1 || vibratingTime > 6000 || vibraingInterval < 0 || vibraingInterval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *time = [MKBLEBaseSDKAdopter fetchHexValue:vibratingTime byteLen:2];
-    NSString *interval = [MKBLEBaseSDKAdopter fetchHexValue:vibraingInterval byteLen:2];
+    NSString *time = [MKBXDBaseSDKAdopter fetchHexValue:vibratingTime byteLen:2];
+    NSString *interval = [MKBXDBaseSDKAdopter fetchHexValue:vibraingInterval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013f04",time,interval];
     [self configDataWithTaskID:mk_bxd_taskConfigRemoteReminderVibrationNotiParamsOperation
                           data:commandString
@@ -366,11 +365,11 @@
                                         sucBlock:(void (^)(void))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock {
     if (ringingTime < 1 || ringingTime > 6000 || ringingInterval < 0 || ringingInterval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *time = [MKBLEBaseSDKAdopter fetchHexValue:ringingTime byteLen:2];
-    NSString *interval = [MKBLEBaseSDKAdopter fetchHexValue:ringingInterval byteLen:2];
+    NSString *time = [MKBXDBaseSDKAdopter fetchHexValue:ringingTime byteLen:2];
+    NSString *interval = [MKBXDBaseSDKAdopter fetchHexValue:ringingInterval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea014004",time,interval];
     [self configDataWithTaskID:mk_bxd_taskConfigRemoteReminderBuzzerNotiParamsOperation
                           data:commandString
@@ -402,11 +401,11 @@
                                    sucBlock:(void (^)(void))sucBlock
                                 failedBlock:(void (^)(NSError *error))failedBlock {
     if (time < 1 || time > 6000 || interval < 0 || interval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *timeValue = [MKBLEBaseSDKAdopter fetchHexValue:time byteLen:2];
-    NSString *intervalValue = [MKBLEBaseSDKAdopter fetchHexValue:interval byteLen:2];
+    NSString *timeValue = [MKBXDBaseSDKAdopter fetchHexValue:time byteLen:2];
+    NSString *intervalValue = [MKBXDBaseSDKAdopter fetchHexValue:interval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea014304",timeValue,intervalValue];
     [self configDataWithTaskID:mk_bxd_taskConfigDismissAlarmLEDNotiParamsOperation
                           data:commandString
@@ -419,11 +418,11 @@
                                          sucBlock:(void (^)(void))sucBlock
                                       failedBlock:(void (^)(NSError *error))failedBlock {
     if (time < 1 || time > 6000 || interval < 0 || interval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *timeValue = [MKBLEBaseSDKAdopter fetchHexValue:time byteLen:2];
-    NSString *intervalValue = [MKBLEBaseSDKAdopter fetchHexValue:interval byteLen:2];
+    NSString *timeValue = [MKBXDBaseSDKAdopter fetchHexValue:time byteLen:2];
+    NSString *intervalValue = [MKBXDBaseSDKAdopter fetchHexValue:interval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea014404",timeValue,intervalValue];
     [self configDataWithTaskID:mk_bxd_taskConfigDismissAlarmVibrationNotiParamsOperation
                           data:commandString
@@ -436,11 +435,11 @@
                                       sucBlock:(void (^)(void))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock {
     if (time < 1 || time > 6000 || interval < 0 || interval > 100) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *timeValue = [MKBLEBaseSDKAdopter fetchHexValue:time byteLen:2];
-    NSString *intervalValue = [MKBLEBaseSDKAdopter fetchHexValue:interval byteLen:2];
+    NSString *timeValue = [MKBXDBaseSDKAdopter fetchHexValue:time byteLen:2];
+    NSString *intervalValue = [MKBXDBaseSDKAdopter fetchHexValue:interval byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea014504",timeValue,intervalValue];
     [self configDataWithTaskID:mk_bxd_taskConfigDismissAlarmBuzzerNotiParamsOperation
                           data:commandString
@@ -451,7 +450,7 @@
 + (void)bxd_configDismissAlarmNotificationType:(mk_bxd_reminderType)type
                                       sucBlock:(void (^)(void))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *typeString = [MKBLEBaseSDKAdopter fetchHexValue:type byteLen:1];
+    NSString *typeString = [MKBXDBaseSDKAdopter fetchHexValue:type byteLen:1];
     NSString *commandString = [@"ea014601" stringByAppendingString:typeString];
     [self configDataWithTaskID:mk_bxd_taskConfigDismissAlarmNotificationTypeOperation
                           data:commandString
@@ -489,7 +488,7 @@
 + (void)bxd_configDeviceTimestamp:(long long)timestamp
                          sucBlock:(void (^)(void))sucBlock
                       failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *value = [MKBLEBaseSDKAdopter fetchHexValue:timestamp byteLen:8];
+    NSString *value = [MKBXDBaseSDKAdopter fetchHexValue:timestamp byteLen:8];
     NSString *commandString = [@"ea014b08" stringByAppendingString:value];
     [self configDataWithTaskID:mk_bxd_taskConfigDeviceTimestampOperation
                           data:commandString
@@ -509,11 +508,11 @@
 + (void)bxd_configDeviceID:(NSString *)deviceID
                   sucBlock:(void (^)(void))sucBlock
                failedBlock:(void (^)(NSError *error))failedBlock {
-    if (!MKValidStr(deviceID) || deviceID.length > 12 || ![MKBLEBaseSDKAdopter checkHexCharacter:deviceID]) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+    if (![deviceID isKindOfClass:NSString.class] || deviceID.length == 0 || deviceID.length > 12 || ![MKBXDBaseSDKAdopter checkHexCharacter:deviceID]) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
-    NSString *len = [MKBLEBaseSDKAdopter fetchHexValue:(deviceID.length / 2) byteLen:1];
+    NSString *len = [MKBXDBaseSDKAdopter fetchHexValue:(deviceID.length / 2) byteLen:1];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea0150",len,deviceID];
     [self configDataWithTaskID:mk_bxd_taskConfigDeviceIDOperation
                           data:commandString
@@ -524,8 +523,8 @@
 + (void)bxd_configDeviceName:(NSString *)deviceName
                     sucBlock:(void (^)(void))sucBlock
                  failedBlock:(void (^)(NSError *error))failedBlock {
-    if (!MKValidStr(deviceName) || deviceName.length > 10) {
-        [MKBLEBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+    if (![deviceName isKindOfClass:NSString.class] || deviceName.length == 0 || deviceName.length > 10) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
         return;
     }
     NSString *tempString = @"";
@@ -562,7 +561,7 @@
     [centralManager addTaskWithTaskID:mk_bxd_taskConfigPasswordVerificationOperation characteristic:centralManager.peripheral.bxd_password commandData:commandString successBlock:^(id  _Nonnull returnData) {
         BOOL success = [returnData[@"result"][@"success"] boolValue];
         if (!success) {
-            [MKBLEBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
+            [MKBXDBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
             return ;
         }
         if (sucBlock) {
@@ -579,7 +578,7 @@
     [centralManager addTaskWithTaskID:taskID characteristic:centralManager.peripheral.bxd_custom commandData:data successBlock:^(id  _Nonnull returnData) {
         BOOL success = [returnData[@"result"][@"success"] boolValue];
         if (!success) {
-            [MKBLEBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
+            [MKBXDBaseSDKAdopter operationSetParamsErrorBlock:failedBlock];
             return ;
         }
         if (sucBlock) {

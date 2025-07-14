@@ -1,14 +1,13 @@
 //
-//  MKBLEBaseSDKAdopter.m
-//  Pods-MKBLEBaseModule_Example
+//  MKBXDBaseSDKAdopter.m
+//  Pods-MKBXDModule_Example
 //
 //  Created by aa on 2019/11/14.
 //
 
-#import "MKBLEBaseSDKAdopter.h"
-#import "MKBLEBaseSDKDefines.h"
+#import "MKBXDBaseSDKAdopter.h"
 
-@implementation MKBLEBaseSDKAdopter
+@implementation MKBXDBaseSDKAdopter
 
 + (NSError *)getErrorWithCode:(NSInteger)code message:(NSString *)message {
     NSError *error = [[NSError alloc] initWithDomain:@"com.moko.BLESDK"
@@ -18,7 +17,7 @@
 }
 
 + (void)operationCentralBlePowerOffBlock:(void (^)(NSError *error))block{
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (block) {
             NSError *error = [self getErrorWithCode:-10001 message:@"Mobile phone bluetooth is currently unavailable"];
             block(error);
@@ -27,7 +26,7 @@
 }
 
 + (void)operationConnectFailedBlock:(void (^)(NSError *error))block{
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (block) {
             NSError *error = [self getErrorWithCode:-10001 message:@"Connect Failed"];
             block(error);
@@ -36,7 +35,7 @@
 }
 
 + (void)operationConnectingErrorBlock:(void (^)(NSError *error))block {
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (block) {
             NSError *error = [self getErrorWithCode:-10001 message:@"The devices are connectting"];
             block(error);
@@ -45,7 +44,7 @@
 }
 
 + (void)operationProtocolErrorBlock:(void (^)(NSError *error))block {
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (block) {
             NSError *error = [self getErrorWithCode:-10001 message:@"The parameters passed in must conform to the protocol"];
             block(error);
@@ -54,7 +53,7 @@
 }
 
 + (void)operationParamsErrorBlock:(void (^)(NSError *error))block {
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (block) {
             NSError *error = [self getErrorWithCode:10001 message:@"Params error"];
             block(error);
@@ -63,7 +62,7 @@
 }
 
 + (void)operationSetParamsErrorBlock:(void (^)(NSError *error))block {
-    MKBLEBase_main_safe(^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         if (block) {
             NSError *error = [self getErrorWithCode:-10001 message:@"Set parameter error"];
             block(error);
@@ -72,7 +71,7 @@
 }
 
 + (NSInteger)getDecimalWithHex:(NSString *)content range:(NSRange)range{
-    if (!MKValidStr(content)) {
+    if (![content isKindOfClass:NSString.class] || content.length == 0) {
         return 0;
     }
     for (NSInteger i = 0; i < content.length; i ++) {
@@ -101,7 +100,7 @@
 }
 
 + (NSNumber *)signedHexTurnString:(NSString *)content{
-    if (!MKValidStr(content)) {
+    if (![content isKindOfClass:NSString.class] || content.length == 0) {
         return @(0);
     }
     NSData *tempData = [self stringToData:content];
@@ -116,34 +115,8 @@
     return [NSNumber numberWithLongLong:(maxValue - minValue - 1)];
 }
 
-+ (NSData *)getCrc16VerifyCode:(NSData *)data{
-    if (!MKValidData(data)) {
-        return [NSData data];
-    }
-    NSInteger crcWord = 0xffff;
-    Byte *dataArray = (Byte *)[data bytes];
-    for (NSInteger i = 0; i < data.length; i ++) {
-        Byte byte = dataArray[i];
-        crcWord ^= (NSInteger)byte & 0x00ff;
-        for (NSInteger j = 0; j < 8; j ++) {
-            if ((crcWord & 0x0001) == 1) {
-                crcWord = crcWord >> 1;
-                crcWord = crcWord ^ 0xA001;
-            }else{
-                crcWord = (crcWord >> 1);
-            }
-        }
-    }
-    
-    Byte crcL = (Byte)0xff & (crcWord >> 8);
-    Byte crcH = (Byte)0xff & (crcWord);
-    Byte arrayCrc[] = {crcH, crcL};
-    NSData *dataCrc = [NSData dataWithBytes:arrayCrc length:sizeof(arrayCrc)];
-    return dataCrc;
-}
-
 + (NSString *)hexStringFromData:(NSData *)sourceData{
-    if (!MKValidData(sourceData)) {
+    if (![sourceData isKindOfClass:NSData.class] || sourceData.length == 0) {
         return @"";
     }
     Byte *bytes = (Byte *)[sourceData bytes];
@@ -161,7 +134,7 @@
 }
 
 + (NSData *)stringToData:(NSString *)dataString{
-    if (!MKValidStr(dataString)) {
+    if (![dataString isKindOfClass:NSString.class] || dataString.length == 0) {
         return [NSData data];
     }
         
@@ -188,7 +161,7 @@
 }
 
 + (BOOL)checkHexCharacter:(NSString *)character {
-    if (!MKValidStr(character)) {
+    if (![character isKindOfClass:NSString.class] || character.length == 0) {
         return NO;
     }
     NSString *regex = @"[a-fA-F0-9]*";
@@ -197,7 +170,7 @@
 }
 
 + (NSString *)binaryByhex:(NSString *)hex {
-    if (!MKValidStr(hex) || ![self checkHexCharacter:hex]) {
+    if (![hex isKindOfClass:NSString.class] || hex.length == 0 || ![self checkHexCharacter:hex]) {
         return @"";
     }
     if (hex.length % 2 != 0) {
@@ -253,7 +226,7 @@
 }
 
 + (NSString *)getHexByBinary:(NSString *)binary {
-    if (!MKValidStr(binary) || ![self checkHexCharacter:binary]) {
+    if (![binary isKindOfClass:NSString.class] || binary.length == 0 || ![self checkHexCharacter:binary]) {
         return @"";
     }
     NSDictionary *binaryDic = @{

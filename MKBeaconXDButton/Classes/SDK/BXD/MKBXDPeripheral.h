@@ -7,13 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#import <MKBaseBleModule/MKBLEBaseDataProtocol.h>
+#import "MKBXDBaseDataProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class CBPeripheral;
-@interface MKBXDPeripheral : NSObject<MKBLEBasePeripheralProtocol>
+@interface MKBXDPeripheral : NSObject<MKBXDPeripheralProtocol>
 
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
 

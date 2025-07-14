@@ -1,6 +1,6 @@
 //
-//  MKBLEBaseLogManager.h
-//  Pods-MKBLEBaseModule_Example
+//  MKBXDBaseLogManager.h
+//  Pods-MKBXDModule_Example
 //
 //  Created by aa on 2019/11/19.
 //  Copyright © 2019 aadyx2007@163.com. All rights reserved.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MKBLEBaseLogManager : NSObject
+@interface MKBXDBaseLogManager : NSObject
 
 /// 将数据写到本地,最终生成的文件名字:"/fileName.txt",位于沙盒Library/Caches/fileName.txt
 /// @param fileName 数据要写入的文件名称

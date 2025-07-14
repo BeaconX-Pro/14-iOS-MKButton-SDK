@@ -8,8 +8,7 @@
 
 #import "MKBXDInterface.h"
 
-#import "MKBLEBaseSDKDefines.h"
-#import "MKBLEBaseSDKAdopter.h"
+#import "MKBXDBaseSDKAdopter.h"
 
 #import "MKBXDCentralManager.h"
 #import "MKBXDOperationID.h"
@@ -187,7 +186,7 @@
 + (void)bxd_readChannelAdvContent:(MKBXDChannelAlarmType)channelType
                          sucBlock:(void (^)(id returnData))sucBlock
                       failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003301" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadChannelAdvContentOperation
                        characteristic:peripheral.bxd_custom
@@ -199,7 +198,7 @@
 + (void)bxd_readTriggerChannelAdvParams:(MKBXDChannelAlarmType)channelType
                                sucBlock:(void (^)(id returnData))sucBlock
                             failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003401" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadTriggerChannelAdvParamsOperation
                        characteristic:peripheral.bxd_custom
@@ -211,7 +210,7 @@
 + (void)bxd_readChannelTriggerParams:(MKBXDChannelAlarmType)channelType
                             sucBlock:(void (^)(id returnData))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003501" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadChannelTriggerParamsOperation
                        characteristic:peripheral.bxd_custom
@@ -223,7 +222,7 @@
 + (void)bxd_readStayAdvertisingBeforeTriggered:(MKBXDChannelAlarmType)channelType
                                       sucBlock:(void (^)(id returnData))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003601" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadStayAdvertisingBeforeTriggeredOperation
                        characteristic:peripheral.bxd_custom
@@ -235,7 +234,7 @@
 + (void)bxd_readAlarmNotificationType:(MKBXDChannelAlarmNotifyType)channelType
                              sucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003701" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadAlarmNotificationTypeOperation
                        characteristic:peripheral.bxd_custom
@@ -271,7 +270,7 @@
 + (void)bxd_readAlarmLEDNotiParams:(MKBXDChannelAlarmType)channelType
                           sucBlock:(void (^)(id returnData))sucBlock
                        failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003b01" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadAlarmLEDNotiParamsOperation
                        characteristic:peripheral.bxd_custom
@@ -283,7 +282,7 @@
 + (void)bxd_readAlarmVibrateNotiParams:(MKBXDChannelAlarmType)channelType
                               sucBlock:(void (^)(id returnData))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003c01" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadAlarmVibrateNotiParamsOperation
                        characteristic:peripheral.bxd_custom
@@ -295,7 +294,7 @@
 + (void)bxd_readAlarmBuzzerNotiParams:(MKBXDChannelAlarmType)channelType
                              sucBlock:(void (^)(id returnData))sucBlock
                           failedBlock:(void (^)(NSError *error))failedBlock {
-    NSString *type = [MKBLEBaseSDKAdopter fetchHexValue:channelType byteLen:1];
+    NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003d01" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadAlarmBuzzerNotiParamsOperation
                        characteristic:peripheral.bxd_custom

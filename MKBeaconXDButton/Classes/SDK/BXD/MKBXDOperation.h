@@ -8,13 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-#import <MKBaseBleModule/MKBLEBaseDataProtocol.h>
-
 #import "MKBXDOperationID.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MKBXDOperation : NSOperation<MKBLEBaseOperationProtocol>
+@class CBPeripheral,CBCharacteristic;
+@interface MKBXDOperation : NSObject
 
 /**
  初始化通信线程
@@ -28,6 +27,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initOperationWithID:(mk_bxd_taskOperationID)operationID
                        commandBlock:(void (^)(void))commandBlock
                       completeBlock:(void (^)(NSError * _Nullable error, id _Nullable returnData))completeBlock;
+
+/// 蓝牙中心接收到特征发过来的数据
+/// @param characteristic 数据交互特征
+- (void)didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic;
+
+/// 中心蓝牙使用某个特征发送数据结果
+/// @param characteristic 数据交互特征
+- (void)didWriteValueForCharacteristic:(CBCharacteristic *)characteristic;
+
+- (void)startCommunication;
 
 @end
 

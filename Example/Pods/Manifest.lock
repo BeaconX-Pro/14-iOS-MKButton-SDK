@@ -7,7 +7,6 @@ PODS:
   - libxlsxwriter (1.2.1)
   - Masonry (1.1.0)
   - MJRefresh (3.7.9)
-  - MKBaseBleModule (1.1.4)
   - MKBaseModuleLibrary (2.0.9):
     - MKBaseModuleLibrary/Base (= 2.0.9)
     - MKBaseModuleLibrary/Category (= 2.0.9)
@@ -1166,7 +1165,11 @@ PODS:
     - MKCustomUIModule
     - MLInputDodger
   - MKBeaconXDButton/SDK (0.0.2):
-    - MKBaseBleModule
+    - MKBeaconXDButton/SDK/Base (= 0.0.2)
+    - MKBeaconXDButton/SDK/BXD (= 0.0.2)
+  - MKBeaconXDButton/SDK/Base (0.0.2)
+  - MKBeaconXDButton/SDK/BXD (0.0.2):
+    - MKBeaconXDButton/SDK/Base
   - MKBeaconXDButton/Target (0.0.2):
     - MKBeaconXDButton/Functions
   - MKCustomUIModule (2.1.7):
@@ -1549,7 +1552,6 @@ SPEC REPOS:
     - libxlsxwriter
     - Masonry
     - MJRefresh
-    - MKBaseBleModule
     - MKBaseModuleLibrary
     - MKBeaconXCustomUI
     - MKCustomUIModule
@@ -1571,10 +1573,9 @@ SPEC CHECKSUMS:
   libxlsxwriter: 58b8454485fa0936de8a8bce3df7bac9dce7730e
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MJRefresh: ff9e531227924c84ce459338414550a05d2aea78
-  MKBaseBleModule: 15aa067c4e408a473e025b1a768ebce00a7e5949
   MKBaseModuleLibrary: 2b79bcae588c755588413fbb643b510253271b23
   MKBeaconXCustomUI: 3cdea4a52442d432b2ebacd78460a890e7e644b6
-  MKBeaconXDButton: 974e04e4c6b005781e5682de0b18616987f364bb
+  MKBeaconXDButton: c0aa2880aa6eefeb9a2cfa33d3f06e6ab5cf7e74
   MKCustomUIModule: 8426eba1d3178b06d92741d31da32502920fb8fa
   MLInputDodger: 79a0e420a80d0d3bba122bf2639603cc76609ba8
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef

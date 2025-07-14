@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import <MKBaseBleModule/MKBLEBaseDataProtocol.h>
+#import "MKBXDBaseDataProtocol.h"
 
 #import "MKBXDOperationID.h"
 
@@ -72,13 +72,15 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
 
 /// Receive Alarm Event Data.
 /// - Parameters:
-///   - content: content
-///   - alarmType: 0:Single press mode 1:Double press mode 2:Long press mode 3:Long connection Mode
-- (void)mk_bxd_receiveAlarmEventData:(NSString *)content alarmType:(NSInteger)alarmType;
+///   - content: @{
+    /// @"alarmType":@"0",
+///     @"content":content
+///}
+- (void)mk_bxd_receiveAlarmEventData:(NSDictionary *)contentData;
 
 @end
 
-@interface MKBXDCentralManager : NSObject<MKBLEBaseCentralManagerProtocol>
+@interface MKBXDCentralManager : NSObject<MKBXDCentralManagerProtocol>
 
 @property (nonatomic, weak)id <mk_bxd_centralManagerScanDelegate>delegate;
 
@@ -89,10 +91,10 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
 
 + (MKBXDCentralManager *)shared;
 
-/// Destroy the MKBXDCentralManager singleton and the MKBLEBaseCentralManager singleton. After the dfu upgrade, you need to destroy these two and then reinitialize.
+/// Destroy the MKBXDCentralManager singleton and the MKBXDCentralManager singleton. After the dfu upgrade, you need to destroy these two and then reinitialize.
 + (void)sharedDealloc;
 
-/// Destroy the MKBXDCentralManager singleton and remove the manager list of MKBLEBaseCentralManager.
+/// Destroy the MKBXDCentralManager singleton and remove the manager list of MKBXDCentralManager.
 + (void)removeFromCentralList;
 
 - (nonnull CBCentralManager *)centralManager;

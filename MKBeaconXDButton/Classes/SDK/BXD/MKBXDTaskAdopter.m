@@ -10,8 +10,7 @@
 
 #import <CoreBluetooth/CoreBluetooth.h>
 
-#import "MKBLEBaseSDKAdopter.h"
-#import "MKBLEBaseSDKDefines.h"
+#import "MKBXDBaseSDKAdopter.h"
 
 #import "MKBXDOperationID.h"
 #import "MKBXDAdopter.h"
@@ -20,7 +19,7 @@
 
 + (NSDictionary *)parseReadDataWithCharacteristic:(CBCharacteristic *)characteristic {
     NSData *readData = characteristic.value;
-    NSLog(@"+++++%@-----%@",characteristic.UUID.UUIDString,readData);
+//    NSLog(@"+++++%@-----%@",characteristic.UUID.UUIDString,readData);
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"2A24"]]) {
         //产品型号
         NSString *tempString = [[NSString alloc] initWithData:readData encoding:NSUTF8StringEncoding];
@@ -68,11 +67,11 @@
 
 #pragma mark - 解析
 + (NSDictionary *)parseCustomData:(NSData *)readData {
-    NSString *readString = [MKBLEBaseSDKAdopter hexStringFromData:readData];
+    NSString *readString = [MKBXDBaseSDKAdopter hexStringFromData:readData];
     if (![[readString substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"eb"]) {
         return @{};
     }
-    NSInteger dataLen = [MKBLEBaseSDKAdopter getDecimalWithHex:readString range:NSMakeRange(6, 2)];
+    NSInteger dataLen = [MKBXDBaseSDKAdopter getDecimalWithHex:readString range:NSMakeRange(6, 2)];
     if (readData.length != dataLen + 4) {
         return @{};
     }
@@ -106,7 +105,7 @@
         resultDic = @{
                       @"samplingRate":[content substringWithRange:NSMakeRange(0, 2)],
                       @"fullScale":[content substringWithRange:NSMakeRange(2, 2)],
-                      @"threshold":[MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)],
+                      @"threshold":[MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)],
                       };
     }else if ([cmd isEqualToString:@"22"]) {
         //读取可连接状态
@@ -121,12 +120,12 @@
         NSData *passwordData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
         NSString *password = [[NSString alloc] initWithData:passwordData encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"password":(MKValidStr(password) ? password : @""),
+            @"password":(password ? password : @""),
         };
     }else if ([cmd isEqualToString:@"25"]) {
         //读取连续按键有效时长
         operationID = mk_bxd_taskReadEffectiveClickIntervalOperation;
-        NSInteger interval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(0, 4)];
+        NSInteger interval = [MKBXDBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(0, 4)];
         resultDic = @{
             @"interval":[NSString stringWithFormat:@"%ld",(long)(interval / 100)],
         };
@@ -136,7 +135,7 @@
         NSData *manufacturerData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
         NSString *manufacturer = [[NSString alloc] initWithData:manufacturerData encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"manufacturer":(MKValidStr(manufacturer) ? manufacturer : @""),
+            @"manufacturer":(manufacturer ? manufacturer : @""),
         };
     }else if ([cmd isEqualToString:@"2b"]) {
         //读取厂商信息
@@ -144,7 +143,7 @@
         NSData *firmwareData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
         NSString *firmware = [[NSString alloc] initWithData:firmwareData encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"firmware":(MKValidStr(firmware) ? firmware : @""),
+            @"firmware":(firmware ? firmware : @""),
         };
     }else if ([cmd isEqualToString:@"2c"]) {
         //读取软件版本
@@ -152,7 +151,7 @@
         NSData *softwareData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
         NSString *software = [[NSString alloc] initWithData:softwareData encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"software":(MKValidStr(software) ? software : @""),
+            @"software":(software ? software : @""),
         };
     }else if ([cmd isEqualToString:@"2d"]) {
         //读取硬件版本
@@ -160,7 +159,7 @@
         NSData *hardwareData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
         NSString *hardware = [[NSString alloc] initWithData:hardwareData encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"hardware":(MKValidStr(hardware) ? hardware : @""),
+            @"hardware":(hardware ? hardware : @""),
         };
     }else if ([cmd isEqualToString:@"2e"]) {
         //读取产品型号
@@ -168,7 +167,7 @@
         NSData *modeIDData = [data subdataWithRange:NSMakeRange(4, data.length - 4)];
         NSString *modeID = [[NSString alloc] initWithData:modeIDData encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"modeID":(MKValidStr(modeID) ? modeID : @""),
+            @"modeID":(modeID ? modeID : @""),
         };
     }else if ([cmd isEqualToString:@"2f"]) {
         //读取回应包开关
@@ -207,8 +206,8 @@
         operationID = mk_bxd_taskReadTriggerChannelAdvParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
         BOOL isOn = [[content substringWithRange:NSMakeRange(2, 2)] isEqualToString:@"01"];
-        NSNumber *rssi = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(4, 2)]];
-        NSInteger advInterval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
+        NSNumber *rssi = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(4, 2)]];
+        NSInteger advInterval = [MKBXDBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
         NSString *txPower = [MKBXDAdopter fetchTxPowerValueString:[content substringWithRange:NSMakeRange(10, 2)]];
         resultDic = @{
             @"channelType":channelType,
@@ -222,10 +221,10 @@
         operationID = mk_bxd_taskReadChannelTriggerParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
         BOOL alarm = [[content substringWithRange:NSMakeRange(2, 2)] isEqualToString:@"01"];
-        NSNumber *rssi = [MKBLEBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(4, 2)]];
-        NSInteger advInterval = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
+        NSNumber *rssi = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(4, 2)]];
+        NSInteger advInterval = [MKBXDBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(6, 4)];
         NSString *txPower = [MKBXDAdopter fetchTxPowerValueString:[content substringWithRange:NSMakeRange(10, 2)]];
-        NSString *advTime = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(12, 4)];
+        NSString *advTime = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(12, 4)];
         resultDic = @{
             @"channelType":channelType,
             @"alarm":@(alarm),
@@ -247,7 +246,7 @@
         //读取触发提醒模式
         operationID = mk_bxd_taskReadAlarmNotificationTypeOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
-        NSString *noteType = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 2)];
+        NSString *noteType = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 2)];
         resultDic = @{
             @"channelType":channelType,
             @"alarmNotificationType":noteType,
@@ -255,7 +254,7 @@
     }else if ([cmd isEqualToString:@"38"]) {
         //读取异常活动报警静止时间
         operationID = mk_bxd_taskReadAbnormalInactivityTimeOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"time":time
         };
@@ -269,7 +268,7 @@
     }else if ([cmd isEqualToString:@"3a"]) {
         //读取省电模式静止时间
         operationID = mk_bxd_taskReadStaticTriggerTimeOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"time":time
         };
@@ -277,8 +276,8 @@
         //读取通道触发LED提醒参数
         operationID = mk_bxd_taskReadAlarmLEDNotiParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
         resultDic = @{
             @"channelType":channelType,
             @"time":time,
@@ -288,8 +287,8 @@
         //读取通道触发马达提醒参数
         operationID = mk_bxd_taskReadAlarmVibrateNotiParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
         resultDic = @{
             @"channelType":channelType,
             @"time":time,
@@ -299,8 +298,8 @@
         //读取通道触发蜂鸣器提醒参数
         operationID = mk_bxd_taskReadAlarmBuzzerNotiParamsOperation;
         NSString *channelType = [content substringWithRange:NSMakeRange(0, 2)];
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 4)];
         resultDic = @{
             @"channelType":channelType,
             @"time":time,
@@ -309,8 +308,8 @@
     }else if ([cmd isEqualToString:@"3e"]) {
         //读取远程LED提醒参数
         operationID = mk_bxd_taskReadRemoteReminderLEDNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
             @"interval":interval,
@@ -318,8 +317,8 @@
     }else if ([cmd isEqualToString:@"3f"]) {
         //读取远程马达提醒参数
         operationID = mk_bxd_taskReadRemoteReminderVibrationNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
             @"interval":interval,
@@ -327,8 +326,8 @@
     }else if ([cmd isEqualToString:@"40"]) {
         //读取远程蜂鸣器提醒参数
         operationID = mk_bxd_taskReadRemoteReminderBuzzerNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
             @"interval":interval,
@@ -343,8 +342,8 @@
     }else if ([cmd isEqualToString:@"43"]) {
         //读取LED消警参数
         operationID = mk_bxd_taskReadDismissAlarmLEDNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
             @"interval":interval,
@@ -352,8 +351,8 @@
     }else if ([cmd isEqualToString:@"44"]) {
         //读取马达消警参数
         operationID = mk_bxd_taskReadDismissAlarmVibrationNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
             @"interval":interval,
@@ -361,8 +360,8 @@
     }else if ([cmd isEqualToString:@"45"]) {
         //读取蜂鸣器消警参数
         operationID = mk_bxd_taskReadDismissAlarmBuzzerNotiParamsOperation;
-        NSString *time = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *interval = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        NSString *time = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *interval = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
         resultDic = @{
             @"time":time,
             @"interval":interval,
@@ -371,19 +370,19 @@
         //读取消警提醒模式
         operationID = mk_bxd_taskReadDismissAlarmNotificationTypeOperation;
         resultDic = @{
-            @"type":[MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)],
+            @"type":[MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)],
         };
     }else if ([cmd isEqualToString:@"4a"]) {
         //读取电池电压
         operationID = mk_bxd_taskReadBatteryVoltageOperation;
-        NSString *voltage = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *voltage = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"voltage":voltage,
         };
     }else if ([cmd isEqualToString:@"4b"]) {
         //读取设备当前时间戳
         operationID = mk_bxd_taskReadDeviceTimestampOperation;
-        NSString *timestamp = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *timestamp = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"timestamp":timestamp,
         };
@@ -391,7 +390,7 @@
         //读取传感器状态
         operationID = mk_bxd_taskReadSensorStatusOperation;
         NSString *bitContent = (content.length == 4 ? [content substringFromIndex:2] : content);
-        NSString *bit = [MKBLEBaseSDKAdopter binaryByhex:bitContent];
+        NSString *bit = [MKBXDBaseSDKAdopter binaryByhex:bitContent];
         BOOL threeAxis = [[bit substringWithRange:NSMakeRange(7, 1)] isEqualToString:@"1"];
         BOOL htSensor = [[bit substringWithRange:NSMakeRange(6, 1)] isEqualToString:@"1"];
         BOOL lightSensor = [[bit substringWithRange:NSMakeRange(6, 1)] isEqualToString:@"1"];
@@ -411,26 +410,26 @@
         operationID = mk_bxd_taskReadDeviceNameOperation;
         NSString *deviceName = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(4, data.length - 4)] encoding:NSUTF8StringEncoding];
         resultDic = @{
-            @"deviceName":(MKValidStr(deviceName) ? deviceName : @""),
+            @"deviceName":(deviceName ? deviceName : @""),
         };
     }else if ([cmd isEqualToString:@"52"]) {
         //读取单击触发次数
         operationID = mk_bxd_taskReadSinglePressEventCountOperation;
-        NSString *count = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"count":count,
         };
     }else if ([cmd isEqualToString:@"53"]) {
         //读取双击触发次数
         operationID = mk_bxd_taskReadDoublePressEventCountOperation;
-        NSString *count = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"count":count,
         };
     }else if ([cmd isEqualToString:@"54"]) {
         //读取长按触发次数
         operationID = mk_bxd_taskReadLongPressEventCountOperation;
-        NSString *count = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"count":count,
         };
@@ -443,12 +442,12 @@
     }else if ([cmd isEqualToString:@"5a"]) {
         //读取生产日期
         operationID = mk_bxd_taskReadProductionDateOperation;
-        NSString *year = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
-        NSString *month = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 2)];
+        NSString *year = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, 4)];
+        NSString *month = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 2)];
         if (month.length == 1) {
             month = [@"0" stringByAppendingString:month];
         }
-        NSString *day = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 2)];
+        NSString *day = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(6, 2)];
         if (day.length == 1) {
             day = [@"0" stringByAppendingString:day];
         }
@@ -458,7 +457,7 @@
     }else if ([cmd isEqualToString:@"62"]) {
         //读取电池实时百分比
         operationID = mk_bxd_taskReadDeviceBatteryPercentOperation;
-        NSString *percent = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        NSString *percent = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
         resultDic = @{
             @"percent":percent,
         };
@@ -582,11 +581,11 @@
 }
 
 + (NSDictionary *)parsePasswordData:(NSData *)readData {
-    NSString *readString = [MKBLEBaseSDKAdopter hexStringFromData:readData];
+    NSString *readString = [MKBXDBaseSDKAdopter hexStringFromData:readData];
     if (![[readString substringWithRange:NSMakeRange(0, 2)] isEqualToString:@"eb"]) {
         return @{};
     }
-    NSInteger dataLen = [MKBLEBaseSDKAdopter getDecimalWithHex:readString range:NSMakeRange(6, 2)];
+    NSInteger dataLen = [MKBXDBaseSDKAdopter getDecimalWithHex:readString range:NSMakeRange(6, 2)];
     if (readData.length != dataLen + 4) {
         return @{};
     }

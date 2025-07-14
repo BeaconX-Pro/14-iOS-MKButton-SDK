@@ -19,7 +19,7 @@
 #import "MKHudManager.h"
 #import "MKCustomUIAdopter.h"
 
-#import "MKBLEBaseSDKAdopter.h"
+#import "MKBXDBaseSDKAdopter.h"
 
 #import "MKBXDExcelManager.h"
 #import "MKBXDInterface+MKBXDConfig.h"
@@ -27,6 +27,8 @@
 #import "MKBXDCentralManager.h"
 
 #import "MKBXDSyncEventHeaderView.h"
+
+static NSTimeInterval const parseDataInterval = 0.05;
 
 @interface MKBXDExportEventDataController ()<MFMailComposeViewControllerDelegate,
 MKBXDSyncEventHeaderViewDelegate,
@@ -40,12 +42,20 @@ mk_bxd_centralManagerAlarmEventDelegate>
 
 @property (nonatomic, strong)NSDateFormatter *dateFormatter;
 
+@property (nonatomic, strong)NSMutableArray *contentList;
+
+/// 定时解析数据
+@property (nonatomic, strong)dispatch_source_t parseTimer;
+
 @end
 
 @implementation MKBXDExportEventDataController
 
 - (void)dealloc {
     NSLog(@"MKBXDExportEventDataController销毁");
+    if (self.parseTimer) {
+        dispatch_cancel(self.parseTimer);
+    }
     if (self.vcType == MKBXDExportEventDataControllerTypeSingle) {
         [[MKBXDCentralManager shared] notifySingleClickData:NO];
         return;
@@ -92,42 +102,21 @@ mk_bxd_centralManagerAlarmEventDelegate>
 /// Receive Alarm Event Data.
 /// - Parameters:
 ///   - content: content
-- (void)mk_bxd_receiveAlarmEventData:(NSString *)content alarmType:(NSInteger)alarmType {
-    long long timeValue = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(0, 16)];
-    NSDate *date = [NSDate dateWithTimeIntervalSince1970:(timeValue / 1000.0)];
-    NSString *dateString = [self.dateFormatter stringFromDate:date];
-    
-    NSString *eventType = @"";
-    if (alarmType == 0 || alarmType == 1 || alarmType == 2) {
-        NSInteger type = [MKBLEBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(16, 2)];
-        if (type == 0) {
-            eventType = @"Single press mode";
-        }else if (type == 1) {
-            eventType = @"Double press mode";
-        }else if (type == 2) {
-            eventType = @"Long press mode";
-        }
-    }else {
-        //Long Connection Mode
-        eventType = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(16, 2)];
-    }
-    
-    NSDictionary *dic = @{
-        @"timestamp":dateString,
-        @"eventType":eventType
-    };
-    [self.dataList addObject:dic];
-    NSString *space = (alarmType > 2 ? @"\t\t\t\t\t" : @"\t\t\t");
-    NSString *text = [NSString stringWithFormat:@"\n%@%@%@",dateString,space,eventType];
-    self.textView.text = [text stringByAppendingString:self.textView.text];
+- (void)mk_bxd_receiveAlarmEventData:(NSDictionary *)contentData {
+    [self.contentList addObject:contentData];
 }
 
 #pragma mark - MKBXDSyncEventHeaderViewDelegate
 - (void)bxd_syncEventHeaderView_syncBtnPressed:(BOOL)selected {
+    if (self.parseTimer) {
+        dispatch_cancel(self.parseTimer);
+    }
     if (selected) {
         //开始监听
         [self.textView setText:@""];
         [self.dataList removeAllObjects];
+        [self.contentList removeAllObjects];
+        [self addTimerForRefresh];
     }
     if (self.vcType == MKBXDExportEventDataControllerTypeSingle) {
         [[MKBXDCentralManager shared] notifySingleClickData:selected];
@@ -250,6 +239,61 @@ mk_bxd_centralManagerAlarmEventDelegate>
     self.headerView.sync = NO;
 }
 
+#pragma mark - 刷新
+- (void)addTimerForRefresh {
+    self.parseTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,dispatch_get_global_queue(0, 0));
+    dispatch_source_set_timer(self.parseTimer, dispatch_time(DISPATCH_TIME_NOW, parseDataInterval * NSEC_PER_SEC),  parseDataInterval * NSEC_PER_SEC, 0);
+    @weakify(self);
+    dispatch_source_set_event_handler(self.parseTimer, ^{
+        @strongify(self);
+        moko_dispatch_main_safe(^{
+            [self parseContentDatas];
+        });
+    });
+    dispatch_resume(self.parseTimer);
+}
+
+- (void)parseContentDatas {
+    if (self.contentList.count == 0) {
+        return;
+    }
+    NSDictionary *contentDic = self.contentList[0];
+    [self.contentList removeObjectAtIndex:0];
+    
+    NSString *content = contentDic[@"content"];
+    NSInteger alarmType = [contentDic[@"alarmType"] integerValue];
+    
+    long long timeValue = [MKBXDBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(0, 16)];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:(timeValue / 1000.0)];
+    NSString *dateString = [self.dateFormatter stringFromDate:date];
+    
+    NSString *eventType = @"";
+    if (alarmType == 0 || alarmType == 1 || alarmType == 2) {
+        NSInteger type = [MKBXDBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(16, 2)];
+        if (type == 0) {
+            eventType = @"Single press mode";
+        }else if (type == 1) {
+            eventType = @"Double press mode";
+        }else if (type == 2) {
+            eventType = @"Long press mode";
+        }
+    }else {
+        //Long Connection Mode
+        eventType = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(16, 2)];
+    }
+    
+    NSDictionary *dic = @{
+        @"timestamp":dateString,
+        @"eventType":eventType
+    };
+    [self.dataList addObject:dic];
+    NSString *space = (alarmType > 2 ? @"\t\t\t\t\t" : @"\t\t\t");
+    NSString *text = [NSString stringWithFormat:@"\n%@%@%@",dateString,space,eventType];
+    moko_dispatch_main_safe(^{
+        self.textView.text = [text stringByAppendingString:self.textView.text];
+    });
+}
+
 #pragma mark - UI
 - (void)loadSubViews {
     NSString *title = @"Single press event";
@@ -304,6 +348,13 @@ mk_bxd_centralManagerAlarmEventDelegate>
         _dataList = [NSMutableArray array];
     }
     return _dataList;
+}
+
+- (NSMutableArray *)contentList {
+    if (!_contentList) {
+        _contentList = [NSMutableArray array];
+    }
+    return _contentList;
 }
 
 - (NSDateFormatter *)dateFormatter {

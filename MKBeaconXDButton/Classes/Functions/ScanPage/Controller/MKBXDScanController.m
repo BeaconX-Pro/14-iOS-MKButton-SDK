@@ -30,8 +30,8 @@
 #import "MKBXScanFilterView.h"
 #import "MKBXScanSearchButton.h"
 
-#import "MKBLEBaseCentralManager.h"
-#import "MKBLEBaseLogManager.h"
+#import "MKBXDCentralManager.h"
+#import "MKBXDBaseLogManager.h"
 
 #import "CTMediator+MKBXDAdd.h"
 
@@ -214,12 +214,12 @@ MKBXDTabBarControllerDelegate>
 
 #pragma mark - event method
 - (void)refreshButtonPressed {
-    if ([MKBLEBaseCentralManager shared].centralManager.state == CBManagerStateUnauthorized) {
+    if ([MKBXDCentralManager shared].centralManager.state == CBManagerStateUnauthorized) {
         //用户未授权
         [self showAuthorizationAlert];
         return;
     }
-    if ([MKBLEBaseCentralManager shared].centralManager.state == CBManagerStatePoweredOff) {
+    if ([MKBXDCentralManager shared].centralManager.state == CBManagerStatePoweredOff) {
         //用户关闭了系统蓝牙
         [self showBLEDisable];
         return;
@@ -418,9 +418,9 @@ MKBXDTabBarControllerDelegate>
             [[NSUserDefaults standardUserDefaults] setObject:self.asciiText forKey:localPasswordKey];
         }
         [[MKHudManager share] hide];
-        [MKBLEBaseLogManager deleteLogWithFileName:@"/Single press trigger event"];
-        [MKBLEBaseLogManager deleteLogWithFileName:@"/Double press trigger event"];
-        [MKBLEBaseLogManager deleteLogWithFileName:@"/Long press trigger event"];
+        [MKBXDBaseLogManager deleteLogWithFileName:@"/Single press trigger event"];
+        [MKBXDBaseLogManager deleteLogWithFileName:@"/Double press trigger event"];
+        [MKBXDBaseLogManager deleteLogWithFileName:@"/Long press trigger event"];
         [self performSelector:@selector(pushTabBarPage) withObject:nil afterDelay:0.6f];
     } failedBlock:^(NSError * _Nonnull error) {
         [[MKHudManager share] hide];

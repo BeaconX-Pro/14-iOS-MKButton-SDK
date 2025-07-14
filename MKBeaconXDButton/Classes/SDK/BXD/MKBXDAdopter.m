@@ -8,8 +8,7 @@
 
 #import "MKBXDAdopter.h"
 
-#import "MKBLEBaseSDKDefines.h"
-#import "MKBLEBaseSDKAdopter.h"
+#import "MKBXDBaseSDKAdopter.h"
 
 @implementation MKBXDAdopter
 
@@ -20,7 +19,7 @@
     if (protocol.rssi < -100 || protocol.rssi > 0) {
         return NO;
     }
-    if (!MKValidStr(protocol.advInterval) || [protocol.advInterval integerValue] < 1 || [protocol.advInterval integerValue] > 500) {
+    if (![protocol.advInterval isKindOfClass:NSString.class] || protocol.advInterval.length == 0 || [protocol.advInterval integerValue] < 1 || [protocol.advInterval integerValue] > 500) {
         return NO;
     }
     return YES;
@@ -30,10 +29,10 @@
     if (![self validTriggerChannelAdvParamsProtocol:protocol]) {
         return @"";
     }
-    NSString *channel = [MKBLEBaseSDKAdopter fetchHexValue:protocol.alarmType byteLen:1];
+    NSString *channel = [MKBXDBaseSDKAdopter fetchHexValue:protocol.alarmType byteLen:1];
     NSString *state = (protocol.isOn ? @"01" : @"00");
-    NSString *rssiValue = [MKBLEBaseSDKAdopter hexStringFromSignedNumber:protocol.rssi];
-    NSString *advInterval = [MKBLEBaseSDKAdopter fetchHexValue:([protocol.advInterval integerValue] * 20) byteLen:2];
+    NSString *rssiValue = [MKBXDBaseSDKAdopter hexStringFromSignedNumber:protocol.rssi];
+    NSString *advInterval = [MKBXDBaseSDKAdopter fetchHexValue:([protocol.advInterval integerValue] * 20) byteLen:2];
     NSString *txPower = [self fetchTxPower:protocol.txPower];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@%@",@"ea013406",channel,state,rssiValue,advInterval,txPower];
     return commandString;
@@ -46,10 +45,10 @@
     if (protocol.rssi < -100 || protocol.rssi > 0) {
         return NO;
     }
-    if (!MKValidStr(protocol.advInterval) || [protocol.advInterval integerValue] < 1 || [protocol.advInterval integerValue] > 500) {
+    if (![protocol.advInterval isKindOfClass:NSString.class] || protocol.advInterval.length == 0 || [protocol.advInterval integerValue] < 1 || [protocol.advInterval integerValue] > 500) {
         return NO;
     }
-    if (!MKValidStr(protocol.advertisingTime) || [protocol.advertisingTime integerValue] < 1 || [protocol.advertisingTime integerValue] > 65535) {
+    if (![protocol.advertisingTime isKindOfClass:NSString.class] || protocol.advertisingTime.length == 0 || [protocol.advertisingTime integerValue] < 1 || [protocol.advertisingTime integerValue] > 65535) {
         return NO;
     }
     return YES;
@@ -59,12 +58,12 @@
     if (![self validChannelTriggerParamsProtocol:protocol]) {
         return @"";
     }
-    NSString *channel = [MKBLEBaseSDKAdopter fetchHexValue:protocol.alarmType byteLen:1];
+    NSString *channel = [MKBXDBaseSDKAdopter fetchHexValue:protocol.alarmType byteLen:1];
     NSString *state = (protocol.alarm ? @"01" : @"00");
-    NSString *rssiValue = [MKBLEBaseSDKAdopter hexStringFromSignedNumber:protocol.rssi];
-    NSString *advInterval = [MKBLEBaseSDKAdopter fetchHexValue:([protocol.advInterval integerValue] * 20) byteLen:2];
+    NSString *rssiValue = [MKBXDBaseSDKAdopter hexStringFromSignedNumber:protocol.rssi];
+    NSString *advInterval = [MKBXDBaseSDKAdopter fetchHexValue:([protocol.advInterval integerValue] * 20) byteLen:2];
     NSString *txPower = [self fetchTxPower:protocol.txPower];
-    NSString *advTime = [MKBLEBaseSDKAdopter fetchHexValue:[protocol.advertisingTime integerValue] byteLen:2];
+    NSString *advTime = [MKBXDBaseSDKAdopter fetchHexValue:[protocol.advertisingTime integerValue] byteLen:2];
     NSString *commandString = [NSString stringWithFormat:@"%@%@%@%@%@%@%@",@"ea013508",channel,state,rssiValue,advInterval,txPower,advTime];
     return commandString;
 }
@@ -173,7 +172,7 @@
 }
 
 + (NSDictionary *)parseChannelContent:(NSString *)content {
-    if (!MKValidStr(content) || content.length < 2) {
+    if (![content isKindOfClass:NSString.class] || content.length < 2) {
         return @{};
     }
     NSMutableDictionary *resultDic = [NSMutableDictionary dictionary];
@@ -182,7 +181,7 @@
     [resultDic setObject:channelType forKey:@"channelType"];
     index += 2;
     
-    NSString *advType = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 2)];
+    NSString *advType = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 2)];
     [resultDic setObject:advType forKey:@"advType"];
     index += 2;
     
@@ -214,10 +213,10 @@
         NSString *uuid = [content substringWithRange:NSMakeRange(index, 32)];
         index += 32;
         
-        NSString *major = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        NSString *major = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
         index += 4;
         
-        NSString *minor = [MKBLEBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        NSString *minor = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
         index += 4;
         
         NSDictionary *advContent = @{
