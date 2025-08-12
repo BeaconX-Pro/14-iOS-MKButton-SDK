@@ -95,4 +95,38 @@
     }
 }
 
++ (void)deleteDataListWithSucBlock:(void(^)(void))sucBlock
+                       failedBlock:(void(^)(NSError *error))failedBlock {
+    //设置excel文件名和路径
+    NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *path = [documentPath stringByAppendingPathComponent:@"eventData.xlsx"];
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        if (sucBlock) {
+            moko_dispatch_main_safe(^{
+                sucBlock();
+            });
+        }
+        return;
+    }
+    BOOL success = [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    if (!success) {
+        //删除失败
+        NSError *error = [[NSError alloc] initWithDomain:@"excelOperation"
+                                                    code:-999
+                                                userInfo:@{@"errorInfo":@"Delete Failed"}];
+        if (failedBlock) {
+            moko_dispatch_main_safe(^{
+                failedBlock(error);
+            });
+        }
+        return;
+    }
+    if (sucBlock) {
+        moko_dispatch_main_safe(^{
+            sucBlock();
+        });
+    }
+}
+
 @end

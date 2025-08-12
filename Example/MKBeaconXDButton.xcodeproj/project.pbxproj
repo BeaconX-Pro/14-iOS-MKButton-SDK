@@ -475,7 +475,7 @@
 				GCC_PREFIX_HEADER = "MKBeaconXDButton/MKBeaconXDButton-Prefix.pch";
 				INFOPLIST_FILE = "MKBeaconXDButton/MKBeaconXDButton-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1.2;
+				MARKETING_VERSION = 2.1.3;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -622,7 +622,7 @@
 				GCC_PREFIX_HEADER = "MKBeaconXDButton/MKBeaconXDButton-Prefix.pch";
 				INFOPLIST_FILE = "MKBeaconXDButton/MKBeaconXDButton-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1.2;
+				MARKETING_VERSION = 2.1.3;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -644,7 +644,7 @@
 				GCC_PREFIX_HEADER = "MKBeaconXDButton/MKBeaconXDButton-Prefix.pch";
 				INFOPLIST_FILE = "MKBeaconXDButton/MKBeaconXDButton-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 2.1.2;
+				MARKETING_VERSION = 2.1.3;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";

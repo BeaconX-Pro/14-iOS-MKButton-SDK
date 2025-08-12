@@ -488,7 +488,7 @@ static dispatch_once_t onceToken;
     self.failedBlock = failedBlock;
     MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral];
     [[MKBXDBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
-        if (self.password != nil && self.password.length <= 16) {
+        if (self.password.length > 0 && self.password.length <= 16) {
             //需要密码登录
             [self logToLocal:@"密码登录"];
             [self sendPasswordToDevice];

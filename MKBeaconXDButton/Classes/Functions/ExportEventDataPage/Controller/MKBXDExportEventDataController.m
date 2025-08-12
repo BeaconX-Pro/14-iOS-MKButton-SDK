@@ -234,9 +234,18 @@ mk_bxd_centralManagerAlarmEventDelegate>
 }
 
 - (void)clearAllStatus {
-    [self.textView setText:@""];
-    [self.dataList removeAllObjects];
-    self.headerView.sync = NO;
+    [[MKHudManager share] showHUDWithTitle:@"Delete...." inView:self.view isPenetration:NO];
+    [MKBXDExcelManager deleteDataListWithSucBlock:^{
+        [self.textView setText:@""];
+        [self.dataList removeAllObjects];
+        self.headerView.sync = NO;
+        [[MKHudManager share] hide];
+    } failedBlock:^(NSError * _Nonnull error) {
+        [[MKHudManager share] hide];
+        [self.textView setText:@""];
+        [self.dataList removeAllObjects];
+        self.headerView.sync = NO;
+    }];
 }
 
 #pragma mark - 刷新

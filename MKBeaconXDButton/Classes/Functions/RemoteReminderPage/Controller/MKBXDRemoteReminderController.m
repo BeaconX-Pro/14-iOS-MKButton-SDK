@@ -156,14 +156,14 @@ MKBXDRemoteReminderCellDelegate>
     }
     if (index == 2) {
         //Ringing time
-        self.dataModel.ringingTime = value;
+        self.dataModel.vibratingTime = value;
         MKTextFieldCellModel *cellModel = self.section3List[0];
         cellModel.textFieldValue = value;
         return;
     }
     if (index == 3) {
         //Ringing Interval
-        self.dataModel.ringingInterval = value;
+        self.dataModel.vibratingInterval = value;
         MKTextFieldCellModel *cellModel = self.section3List[1];
         cellModel.textFieldValue = value;
         return;
