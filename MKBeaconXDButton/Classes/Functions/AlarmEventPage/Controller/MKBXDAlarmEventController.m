@@ -20,6 +20,8 @@
 
 #import "MKBXDConnectManager.h"
 
+#import "MKBXDExcelManager.h"
+
 #import "MKBXDInterface+MKBXDConfig.h"
 
 #import "MKBXDAlarmEventCountCell.h"
@@ -81,6 +83,7 @@ MKBXDAlarmEventCountCellDelegate>
             self.dataModel.singleCount = @"0";
             MKBXDAlarmEventCountCellModel *cellModel1 = self.dataList[0];
             cellModel1.count = self.dataModel.singleCount;
+            [MKBXDExcelManager deleteDataListWithSucBlock:nil failedBlock:nil];
             [self.tableView reloadData];
         } failedBlock:^(NSError * _Nonnull error) {
             [[MKHudManager share] hide];
@@ -95,6 +98,7 @@ MKBXDAlarmEventCountCellDelegate>
             self.dataModel.doubleCount = @"0";
             MKBXDAlarmEventCountCellModel *cellModel1 = self.dataList[1];
             cellModel1.count = self.dataModel.doubleCount;
+            [MKBXDExcelManager deleteDataListWithSucBlock:nil failedBlock:nil];
             [self.tableView reloadData];
         } failedBlock:^(NSError * _Nonnull error) {
             [[MKHudManager share] hide];
@@ -109,6 +113,7 @@ MKBXDAlarmEventCountCellDelegate>
             self.dataModel.longCount = @"0";
             MKBXDAlarmEventCountCellModel *cellModel1 = self.dataList[2];
             cellModel1.count = self.dataModel.longCount;
+            [MKBXDExcelManager deleteDataListWithSucBlock:nil failedBlock:nil];
             [self.tableView reloadData];
         } failedBlock:^(NSError * _Nonnull error) {
             [[MKHudManager share] hide];
