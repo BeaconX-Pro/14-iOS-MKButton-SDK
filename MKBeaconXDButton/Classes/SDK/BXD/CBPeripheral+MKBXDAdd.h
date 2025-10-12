@@ -48,6 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_password;
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_threeAxisData;
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_longConModeData;
+@property (nonatomic, strong, readonly)CBCharacteristic *bxd_subBtnData;
 
 - (void)bxd_updateCharacterWithService:(CBService *)service;
 

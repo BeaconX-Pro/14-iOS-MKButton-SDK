@@ -159,6 +159,14 @@
                  failedBlock:failedBlock];
 }
 
++ (void)bxd_readTurnOffByButtonStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                      failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadTurnOffByButtonStatusOperation
+                     cmdFlag:@"29"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
 + (void)bxd_readScanResponsePacketWithSucBlock:(void (^)(id returnData))sucBlock
                                    failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadScanResponsePacketOperation
@@ -443,6 +451,38 @@
                                      failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadDeviceBatteryPercentOperation
                      cmdFlag:@"62"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
++ (void)bxd_readDevicePCBTypeWithSucBlock:(void (^)(id returnData))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadDevicePCBTypeOperation
+                     cmdFlag:@"75"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
++ (void)bxd_readSubButtonSinglePressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadSubButtonSinglePressEventCountOperation
+                     cmdFlag:@"77"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
++ (void)bxd_readSubButtonDoublePressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadSubButtonDoublePressEventCountOperation
+                     cmdFlag:@"78"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
++ (void)bxd_readSubButtonLongPressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
+                                             failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadSubButtonLongPressEventCountOperation
+                     cmdFlag:@"79"
                     sucBlock:sucBlock
                  failedBlock:failedBlock];
 }

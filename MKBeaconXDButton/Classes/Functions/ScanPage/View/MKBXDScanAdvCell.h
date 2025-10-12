@@ -15,9 +15,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// 0:Single 1:Double 2:Long 3:Abnormal inactivity
 @property (nonatomic, assign)NSInteger alarmMode;
 
-@property (nonatomic, assign)BOOL triggerStatus;
+/*
+ version = 0/1 0: Standby 1:Trigger
+ version = 2 0: Standby 1:Main-Triggered 2:Sub-Triggered
+ */
+@property (nonatomic, assign)NSInteger triggerStatus;
 
 @property (nonatomic, copy)NSString *triggerCount;
+
+/// Only used for version is V2(Double button).
+@property (nonatomic, assign)BOOL motionStatus;
+
+/// 0: V1 1: Long connection 2:V2(Double button)
+@property (nonatomic, assign)NSInteger version;
 
 @end
 

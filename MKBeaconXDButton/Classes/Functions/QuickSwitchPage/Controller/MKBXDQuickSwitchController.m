@@ -99,6 +99,11 @@ MKBXQuickSwitchCellDelegate>
         [self configScanPacket:isOn];
         return;
     }
+    if (index == 5) {
+        //按键开关机
+        [self setTurnOffByButtonToDevice:isOn];
+        return;
+    }
 }
 
 #pragma mark - 设置参数部分
@@ -282,6 +287,23 @@ MKBXQuickSwitchCellDelegate>
     }];
 }
 
+- (void)setTurnOffByButtonToDevice:(BOOL)isOn {
+    [[MKHudManager share] showHUDWithTitle:@"Setting..."
+                                     inView:self.view
+                              isPenetration:NO];
+    [MKBXDInterface bxd_configTurnOffByButton:isOn sucBlock:^{
+        [[MKHudManager share] hide];
+        self.dataModel.turnOffByButton = isOn;
+        MKBXQuickSwitchCellModel *cellModel = self.dataList[5];
+        cellModel.isOn = isOn;
+        [self.view showCentralToast:@"Success!"];
+    } failedBlock:^(NSError * _Nonnull error) {
+        [[MKHudManager share] hide];
+        [self.view showCentralToast:error.userInfo[@"errorInfo"]];
+        [self.collectionView reloadData];
+    }];
+}
+
 #pragma mark - 读取数据
 - (void)readDataFromDevice {
     [[MKHudManager share] showHUDWithTitle:@"Reading..." inView:self.view isPenetration:NO];
@@ -329,6 +351,14 @@ MKBXQuickSwitchCellDelegate>
     cellModel5.titleMsg = @"Scan response packet";
     cellModel5.isOn = self.dataModel.scanPacket;
     [self.dataList addObject:cellModel5];
+    
+    if ([MKBXDConnectManager shared].isCR) {
+        MKBXQuickSwitchCellModel *cellModel6 = [[MKBXQuickSwitchCellModel alloc] init];
+        cellModel6.index = 5;
+        cellModel6.titleMsg = @"Turn off Beacon by button";
+        cellModel6.isOn = self.dataModel.turnOffByButton;
+        [self.dataList addObject:cellModel6];
+    }
     
         
     [self.collectionView reloadData];

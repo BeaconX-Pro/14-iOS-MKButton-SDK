@@ -24,6 +24,7 @@
 #import "MKTextFieldCell.h"
 #import "MKTextSwitchCell.h"
 #import "MKNormalSliderCell.h"
+#import "MKAlertView.h"
 
 #import "MKBXDAlarmModeConfigModel.h"
 
@@ -411,6 +412,37 @@ MKBXDAbnormalInactivityTimeCellDelegate>
 }
 
 - (void)saveDataToDevice {
+    if (!self.dataModel.advIsOn) {
+        BOOL valid = YES;
+        if (self.pageType == MKBXDAlarmModeConfigControllerType_single) {
+            if (!self.dataModel.doubleIsOn && !self.dataModel.longIsOn && !self.dataModel.inactivityIsOn) {
+                valid = NO;
+            }
+        } else if (self.pageType == MKBXDAlarmModeConfigControllerType_double) {
+            if (!self.dataModel.singleIsOn && !self.dataModel.longIsOn && !self.dataModel.inactivityIsOn) {
+                valid = NO;
+            }
+        } else if (self.pageType == MKBXDAlarmModeConfigControllerType_long) {
+            if (!self.dataModel.singleIsOn && !self.dataModel.doubleIsOn  && !self.dataModel.inactivityIsOn) {
+                valid = NO;
+            }
+        } else if (self.pageType == MKBXDAlarmModeConfigControllerType_abnormal) {
+            if (!self.dataModel.singleIsOn && !self.dataModel.doubleIsOn  && !self.dataModel.longIsOn) {
+                valid = NO;
+            }
+        }
+        if (!valid) {
+            MKAlertViewAction *cancelAction = [[MKAlertViewAction alloc] initWithTitle:@"OK" handler:^{
+                
+            }];
+            NSString *msg = @"*Please ensure that at lease 1 SLOT is enabled";
+            MKAlertView *alertView = [[MKAlertView alloc] init];
+            [alertView addAction:cancelAction];
+            [alertView showAlertWithTitle:@"Warning!" message:msg notificationName:@"mk_bxd_needDismissAlert"];
+            return;
+        }
+    }
+    
     [[MKHudManager share] showHUDWithTitle:@"Config..." inView:self.view isPenetration:NO];
     @weakify(self);
     [self.dataModel configDataWithSucBlock:^{

@@ -74,6 +74,12 @@ TODO: Add long description of the pod here.
       end
       
       ss.subspec 'View' do |sss|
+        sss.subspec 'AlarmEventCell' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/AlarmEventCell/**'
+        end
+        sss.subspec 'AlarmMsgCell' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/AlarmMsgCell/**'
+        end
         sss.subspec 'AlarmSyncTimeView' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Expand/View/AlarmSyncTimeView/**'
         end
@@ -136,6 +142,23 @@ TODO: Add long description of the pod here.
       
         sss.subspec 'View' do |ssss|
           ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/View/**'
+        end
+      end
+      
+      ss.subspec 'AlarmEventForDoubleBtnPage' do |sss|
+        sss.subspec 'Controller' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForDoubleBtnPage/Controller/**'
+        
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Model'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/View'
+        end
+      
+        sss.subspec 'Model' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForDoubleBtnPage/Model/**'
+        end
+      
+        sss.subspec 'View' do |ssss|
+          ssss.source_files = 'MKBeaconXDButton/Classes/Functions/AlarmEventForDoubleBtnPage/View/**'
         end
       end
       
@@ -416,6 +439,7 @@ TODO: Add long description of the pod here.
           
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForCRPage/Controller'
+          ssss.dependency 'MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/DismissConfigPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/RemoteReminderPage/Controller'
           ssss.dependency 'MKBeaconXDButton/Functions/AccelerationPage/Controller'

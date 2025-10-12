@@ -29,6 +29,10 @@
 
 @property (nonatomic, strong)UILabel *triggerCountValueLabel;
 
+@property (nonatomic, strong)UILabel *motionStatusLabel;
+
+@property (nonatomic, strong)UILabel *motionStatusValueLabel;
+
 @end
 
 @implementation MKBXDScanAdvCell
@@ -49,6 +53,8 @@
         [self.contentView addSubview:self.triggerStatusValueLabel];
         [self.contentView addSubview:self.triggerCountLabel];
         [self.contentView addSubview:self.triggerCountValueLabel];
+        [self.contentView addSubview:self.motionStatusLabel];
+        [self.contentView addSubview:self.motionStatusValueLabel];
     }
     return self;
 }
@@ -79,18 +85,6 @@
         make.centerY.mas_equalTo(self.triggerStatusLabel.mas_centerY);
         make.height.mas_equalTo(MKFont(12.f).lineHeight);
     }];
-    [self.triggerCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.msgLabel.mas_left);
-        make.right.mas_equalTo(self.contentView.mas_centerX).mas_offset(-5.f);
-        make.top.mas_equalTo(self.triggerStatusLabel.mas_bottom).mas_offset(5.f);
-        make.height.mas_equalTo(MKFont(12.f).lineHeight);
-    }];
-    [self.triggerCountValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.mas_equalTo(self.contentView.mas_centerX).mas_offset(5.f);
-        make.right.mas_equalTo(-10.f);
-        make.centerY.mas_equalTo(self.triggerCountLabel.mas_centerY);
-        make.height.mas_equalTo(MKFont(12.f).lineHeight);
-    }];
 }
 
 #pragma mark - setter
@@ -109,10 +103,85 @@
     }else if (_dataModel.alarmMode == 3) {
         self.msgLabel.text = @"Abnormal inactivity mode";
     }
-    self.triggerStatusValueLabel.text = (_dataModel.triggerStatus ? @"Triggered" : @"Standby");
+    if (_dataModel.triggerStatus == 0) {
+        //Standby
+        self.triggerStatusValueLabel.text = @"Standby";
+    }else {
+        if (_dataModel.version == 2) {
+            //双按键
+            if (_dataModel.triggerStatus == 1) {
+                self.triggerStatusValueLabel.text = @"Main-Triggered";
+            }else if (_dataModel.triggerStatus == 2) {
+                self.triggerStatusValueLabel.text = @"Sub-Triggered";
+            }
+        }else {
+            //V1和V2
+            self.triggerStatusValueLabel.text = @"Triggered";
+        }
+    }
     self.triggerCountValueLabel.text = SafeStr(_dataModel.triggerCount);
-    self.triggerCountValueLabel.hidden = (_dataModel.alarmMode == 3);
-    self.triggerCountLabel.hidden = (_dataModel.alarmMode == 3);
+    self.motionStatusValueLabel.text = (_dataModel.motionStatus ? @"Moving" : @"Stationary");
+    if (self.triggerCountValueLabel.superview) {
+        [self.triggerCountValueLabel removeFromSuperview];
+    }
+    if (self.triggerCountLabel.superview) {
+        [self.triggerCountLabel removeFromSuperview];
+    }
+    if (self.motionStatusValueLabel.superview) {
+        [self.motionStatusValueLabel removeFromSuperview];
+    }
+    if (self.motionStatusLabel.superview) {
+        [self.motionStatusLabel removeFromSuperview];
+    }
+    if (_dataModel.alarmMode != 3) {
+        [self.contentView addSubview:self.triggerCountLabel];
+        [self.contentView addSubview:self.triggerCountValueLabel];
+        [self.triggerCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.msgLabel.mas_left);
+            make.right.mas_equalTo(self.contentView.mas_centerX).mas_offset(-5.f);
+            make.top.mas_equalTo(self.triggerStatusLabel.mas_bottom).mas_offset(5.f);
+            make.height.mas_equalTo(MKFont(12.f).lineHeight);
+        }];
+        [self.triggerCountValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.contentView.mas_centerX).mas_offset(5.f);
+            make.right.mas_equalTo(-10.f);
+            make.centerY.mas_equalTo(self.triggerCountLabel.mas_centerY);
+            make.height.mas_equalTo(MKFont(12.f).lineHeight);
+        }];
+        if (_dataModel.version == 2) {
+            [self.contentView addSubview:self.motionStatusLabel];
+            [self.contentView addSubview:self.motionStatusValueLabel];
+            [self.motionStatusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(self.msgLabel.mas_left);
+                make.right.mas_equalTo(self.contentView.mas_centerX).mas_offset(-5.f);
+                make.top.mas_equalTo(self.triggerCountLabel.mas_bottom).mas_offset(5.f);
+                make.height.mas_equalTo(MKFont(12.f).lineHeight);
+            }];
+            [self.motionStatusValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(self.contentView.mas_centerX).mas_offset(5.f);
+                make.right.mas_equalTo(-10.f);
+                make.centerY.mas_equalTo(self.motionStatusLabel.mas_centerY);
+                make.height.mas_equalTo(MKFont(12.f).lineHeight);
+            }];
+        }
+    }else {
+        if (_dataModel.version == 2) {
+            [self.contentView addSubview:self.motionStatusLabel];
+            [self.contentView addSubview:self.motionStatusValueLabel];
+            [self.motionStatusLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(self.msgLabel.mas_left);
+                make.right.mas_equalTo(self.contentView.mas_centerX).mas_offset(-5.f);
+                make.top.mas_equalTo(self.triggerStatusLabel.mas_bottom).mas_offset(5.f);
+                make.height.mas_equalTo(MKFont(12.f).lineHeight);
+            }];
+            [self.motionStatusValueLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+                make.left.mas_equalTo(self.contentView.mas_centerX).mas_offset(5.f);
+                make.right.mas_equalTo(-10.f);
+                make.centerY.mas_equalTo(self.motionStatusLabel.mas_centerY);
+                make.height.mas_equalTo(MKFont(12.f).lineHeight);
+            }];
+        }
+    }
 }
 
 #pragma mark - getter
@@ -162,6 +231,21 @@
         _triggerCountValueLabel = [self createLabel];
     }
     return _triggerCountValueLabel;
+}
+
+- (UILabel *)motionStatusLabel {
+    if (!_motionStatusLabel) {
+        _motionStatusLabel = [self createLabel];
+        _motionStatusLabel.text = @"Motion status";
+    }
+    return _motionStatusLabel;
+}
+
+- (UILabel *)motionStatusValueLabel {
+    if (!_motionStatusValueLabel) {
+        _motionStatusValueLabel = [self createLabel];
+    }
+    return _motionStatusValueLabel;
 }
 
 - (UILabel *)createLabel {

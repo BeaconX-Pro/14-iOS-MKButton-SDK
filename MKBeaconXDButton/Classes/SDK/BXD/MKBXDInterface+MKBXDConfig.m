@@ -110,6 +110,16 @@
                    failedBlock:failedBlock];
 }
 
++ (void)bxd_configTurnOffByButton:(BOOL)isOn
+                         sucBlock:(void (^)(void))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = (isOn ? @"ea01290101" : @"ea01290100");
+    [self configDataWithTaskID:mk_bxd_taskConfigTurnOffByButtonOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
 + (void)bxd_configScanResponsePacket:(BOOL)isOn
                             sucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock {
@@ -547,6 +557,33 @@
                          failedBlock:(void (^)(NSError *error))failedBlock {
     NSString *commandString = @"ea015d00";
     [self configDataWithTaskID:mk_bxd_taskBatteryResetOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_clearSubButtonSinglePressEventDataWithSucBlock:(void (^)(void))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = @"ea017a00";
+    [self configDataWithTaskID:mk_bxd_taskClearSubBtnSinglePressEventDataOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_clearSubButtonDoublePressEventDataWithSucBlock:(void (^)(void))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = @"ea017b00";
+    [self configDataWithTaskID:mk_bxd_taskClearSubBtnDoublePressEventDataOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_clearSubButtonLongPressEventDataWithSucBlock:(void (^)(void))sucBlock
+                                             failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = @"ea017c00";
+    [self configDataWithTaskID:mk_bxd_taskClearSubBtnLongPressEventDataOperation
                           data:commandString
                       sucBlock:sucBlock
                    failedBlock:failedBlock];

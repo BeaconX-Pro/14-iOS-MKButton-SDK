@@ -12,8 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKBXDAlarmEventDataModel : NSObject
 
-@property (nonatomic, copy)NSString *timestamp;
-
 @property (nonatomic, copy)NSString *singleCount;
 
 @property (nonatomic, copy)NSString *doubleCount;

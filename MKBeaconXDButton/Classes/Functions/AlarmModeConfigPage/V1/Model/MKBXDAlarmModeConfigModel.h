@@ -12,6 +12,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKBXDAlarmModeConfigModel : NSObject
 
+@property (nonatomic, assign)BOOL singleIsOn;
+
+@property (nonatomic, assign)BOOL doubleIsOn;
+
+@property (nonatomic, assign)BOOL longIsOn;
+
+@property (nonatomic, assign)BOOL inactivityIsOn;
+
 /// 0:single 1:double 2:long 3:abnormal
 @property (nonatomic, assign)NSInteger alarmType;
 

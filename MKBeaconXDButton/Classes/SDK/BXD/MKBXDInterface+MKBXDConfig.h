@@ -63,6 +63,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_factoryResetWithSucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Whether support turn off device by button.(Only for BXP-CR)
+/// @param isOn isOn
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configTurnOffByButton:(BOOL)isOn
+                         sucBlock:(void (^)(void))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Scan response packet.
 /// @param isOn isOn
 /// @param sucBlock Success callback
@@ -343,6 +351,24 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_batteryResetWithSucBlock:(void (^)(void))sucBlock
                          failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Delete the trigger record of the sub button single press event.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_clearSubButtonSinglePressEventDataWithSucBlock:(void (^)(void))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Delete the trigger record of the sub button double press event.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_clearSubButtonDoublePressEventDataWithSucBlock:(void (^)(void))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Delete the trigger record of the sub button long press event.
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_clearSubButtonLongPressEventDataWithSucBlock:(void (^)(void))sucBlock
+                                             failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark - password
 /// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.

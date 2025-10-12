@@ -19,6 +19,7 @@ static const char *bxd_longConnectRecordKey = "bxd_longConnectRecordKey";
 static const char *bxd_passwordKey = "bxd_passwordKey";
 static const char *bxd_threeAxisDataKey = "bxd_threeAxisDataKey";
 static const char *bxd_longConModeDataKey = "bxd_longConModeDataKey";
+static const char *bxd_subBtnDataKey = "bxd_subBtnDataKey";
 
 static const char *bxd_manufacturerKey = "bxd_manufacturerKey";
 static const char *bxd_deviceModelKey = "bxd_deviceModelKey";
@@ -78,6 +79,8 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
                 objc_setAssociatedObject(self, &bxd_longConModeDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
                 objc_setAssociatedObject(self, &bxd_longConnectRecordKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA0A"]]) {
+                objc_setAssociatedObject(self, &bxd_subBtnDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
             }
         }
         return;
@@ -127,6 +130,7 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     objc_setAssociatedObject(self, &bxd_passwordKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_threeAxisDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_longConModeDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_subBtnDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     objc_setAssociatedObject(self, &bxd_customSuccessKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_disconnectTypeSuccessKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -177,6 +181,10 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
 
 - (CBCharacteristic *)bxd_longConModeData {
     return objc_getAssociatedObject(self, &bxd_longConModeDataKey);
+}
+
+- (CBCharacteristic *)bxd_subBtnData {
+    return objc_getAssociatedObject(self, &bxd_subBtnDataKey);
 }
 
 - (CBCharacteristic *)bxd_singleRecord {

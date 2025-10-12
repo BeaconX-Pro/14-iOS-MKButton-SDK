@@ -22,6 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign)BOOL dismiss;
 
+/// BXP-CR支持
+@property (nonatomic, assign)BOOL turnOffByButton;
+
 
 - (void)readWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock;
 

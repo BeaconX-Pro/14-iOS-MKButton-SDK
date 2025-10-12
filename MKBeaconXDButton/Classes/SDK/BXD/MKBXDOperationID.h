@@ -19,6 +19,7 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskReadConnectableOperation,                //读取设备的可连接状态
     mk_bxd_taskReadConnectPasswordOperation,            //读取设备的连接密码
     mk_bxd_taskReadEffectiveClickIntervalOperation,     //读取连续按键有效时长
+    mk_bxd_taskReadTurnOffByButtonStatusOperation,      //读取按键开关机状态
     mk_bxd_taskReadScanResponsePacketOperation,         //读取回应包开关
     mk_bxd_taskReadResetDeviceByButtonStatusOperation,  //读取按键是否可以恢复出厂设置
     mk_bxd_taskReadTriggerChannelStateOperation,        //读取各通道广播使能情况
@@ -51,6 +52,10 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskReadLongPressEventCountOperation,        //读取长按触发次数
     mk_bxd_taskReadDeviceTypeOperation,                 //读取设备类型
     mk_bxd_taskReadDeviceBatteryPercentOperation,       //读取电池实时百分比
+    mk_bxd_taskReadDevicePCBTypeOperation,              //读取板子类型
+    mk_bxd_taskReadSubButtonSinglePressEventCountOperation, //读取副按键单击触发次数
+    mk_bxd_taskReadSubButtonDoublePressEventCountOperation, //读取副按键双击触发次数
+    mk_bxd_taskReadSubButtonLongPressEventCountOperation,   //读取副按键长按触发次数
 
 #pragma mark - custom write
     mk_bxd_taskConfigThreeAxisDataParamsOperation,      //设置3轴传感器参数
@@ -59,6 +64,7 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskConfigEffectiveClickIntervalOperation,   //设置连续按键有效时长
     mk_bxd_taskConfigPowerOffOperation,                 //关机
     mk_bxd_taskConfigFactoryResetOperation,             //恢复出厂设置
+    mk_bxd_taskConfigTurnOffByButtonOperation,          //配置按键开关机状态
     mk_bxd_taskConfigScanResponsePacketOperation,       //设置回应包开关
     mk_bxd_taskConfigResetDeviceByButtonStatusOperation,    //设置按键是否可以恢复出厂设置
     mk_bxd_taskConfigChannelContentOperation,               //设置通道广播帧类型
@@ -89,6 +95,9 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskConfigDeviceIDOperation,                 //设置deviceID
     mk_bxd_taskConfigDeviceNameOperation,               //设置设备名称
     mk_bxd_taskBatteryResetOperation,                   //重置电池
+    mk_bxd_taskClearSubBtnSinglePressEventDataOperation,    //清除副按键单击触发次数
+    mk_bxd_taskClearSubBtnDoublePressEventDataOperation,    //清除副按键双击触发次数
+    mk_bxd_taskClearSubBtnLongPressEventDataOperation,      //清除副按键长按触发次数
     
 #pragma mark - password
     mk_bxd_taskConfigPasswordVerificationOperation,     //设置设备密码验证

@@ -2,8 +2,8 @@
 //  MKBXDAlarmV2EventCell.h
 //  MKBeaconXDButton_Example
 //
-//  Created by aa on 2024/11/25.
-//  Copyright © 2024 aadyx2007@163.com. All rights reserved.
+//  Created by aa on 2025/10/9.
+//  Copyright © 2025 aadyx2007@163.com. All rights reserved.
 //
 
 #import <MKBaseModuleLibrary/MKBaseCell.h>
@@ -12,7 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MKBXDAlarmV2EventCellModel : NSObject
 
-@property (nonatomic, copy)NSString *count;
+@property (nonatomic, copy)NSString *mainCount;
+
+@property (nonatomic, copy)NSString *subCount;
 
 @end
 

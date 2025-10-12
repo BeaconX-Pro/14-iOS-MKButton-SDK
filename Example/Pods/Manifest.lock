@@ -230,10 +230,18 @@ PODS:
     - MKCustomUIModule
   - MKBeaconXDButton/Expand/View (0.0.2):
     - MKBaseModuleLibrary
+    - MKBeaconXDButton/Expand/View/AlarmEventCell (= 0.0.2)
+    - MKBeaconXDButton/Expand/View/AlarmMsgCell (= 0.0.2)
     - MKBeaconXDButton/Expand/View/AlarmSyncTimeView (= 0.0.2)
     - MKBeaconXDButton/Expand/View/DeviceIDCell (= 0.0.2)
     - MKBeaconXDButton/Expand/View/NTPickerView (= 0.0.2)
     - MKBeaconXDButton/Expand/View/SyncEventHeaderView (= 0.0.2)
+    - MKCustomUIModule
+  - MKBeaconXDButton/Expand/View/AlarmEventCell (0.0.2):
+    - MKBaseModuleLibrary
+    - MKCustomUIModule
+  - MKBeaconXDButton/Expand/View/AlarmMsgCell (0.0.2):
+    - MKBaseModuleLibrary
     - MKCustomUIModule
   - MKBeaconXDButton/Expand/View/AlarmSyncTimeView (0.0.2):
     - MKBaseModuleLibrary
@@ -257,6 +265,7 @@ PODS:
     - MKBeaconXDButton/Functions/AboutPage (= 0.0.2)
     - MKBeaconXDButton/Functions/AccelerationPage (= 0.0.2)
     - MKBeaconXDButton/Functions/AlarmEventForCRPage (= 0.0.2)
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage (= 0.0.2)
     - MKBeaconXDButton/Functions/AlarmEventPage (= 0.0.2)
     - MKBeaconXDButton/Functions/AlarmModeConfigPage (= 0.0.2)
     - MKBeaconXDButton/Functions/AlarmNotiTypePage (= 0.0.2)
@@ -388,6 +397,51 @@ PODS:
     - MKBeaconXDButton/CTMediator
     - MKBeaconXDButton/Expand
     - MKBeaconXDButton/Functions/ExportEventDataPage/Controller
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage (0.0.2):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Controller (= 0.0.2)
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Model (= 0.0.2)
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/View (= 0.0.2)
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Controller (0.0.2):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Model
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/View
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Model (0.0.2):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
+    - MKBeaconXDButton/SDK
+    - MKCustomUIModule
+    - MLInputDodger
+  - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/View (0.0.2):
+    - HHTransition
+    - MKBaseModuleLibrary
+    - MKBeaconXCustomUI
+    - MKBeaconXDButton/ConnectManager
+    - MKBeaconXDButton/CTMediator
+    - MKBeaconXDButton/Expand
     - MKBeaconXDButton/SDK
     - MKCustomUIModule
     - MLInputDodger
@@ -1085,6 +1139,7 @@ PODS:
     - MKBeaconXDButton/Expand
     - MKBeaconXDButton/Functions/AccelerationPage/Controller
     - MKBeaconXDButton/Functions/AlarmEventForCRPage/Controller
+    - MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Controller
     - MKBeaconXDButton/Functions/AlarmEventPage/Controller
     - MKBeaconXDButton/Functions/DismissConfigPage/Controller
     - MKBeaconXDButton/Functions/PowerSavePage/Controller
@@ -1544,7 +1599,7 @@ DEPENDENCIES:
   - MKBeaconXDButton (from `../`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
     - CircleProgressBar
     - CTMediator
     - HHTransition
@@ -1575,7 +1630,7 @@ SPEC CHECKSUMS:
   MJRefresh: ff9e531227924c84ce459338414550a05d2aea78
   MKBaseModuleLibrary: 2b79bcae588c755588413fbb643b510253271b23
   MKBeaconXCustomUI: 3cdea4a52442d432b2ebacd78460a890e7e644b6
-  MKBeaconXDButton: c0aa2880aa6eefeb9a2cfa33d3f06e6ab5cf7e74
+  MKBeaconXDButton: 6a4c2c95d9b8dd4e85d7cb14db8b99ebd4b1a4b1
   MKCustomUIModule: 8426eba1d3178b06d92741d31da32502920fb8fa
   MLInputDodger: 79a0e420a80d0d3bba122bf2639603cc76609ba8
   SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
@@ -1583,6 +1638,6 @@ SPEC CHECKSUMS:
   WRNavigationBar: 10bfdf96addf14d640d07c2ef08a029c18d8af10
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 11727ddc890766c92169735dfbb509b35c3b51fc
+PODFILE CHECKSUM: c272a67fcfd6b18e9c19f910b172016964033f89
 
-COCOAPODS: 1.16.1
+COCOAPODS: 1.16.2

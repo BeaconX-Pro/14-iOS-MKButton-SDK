@@ -105,8 +105,10 @@ static const char *frameTypeKey = "frameTypeKey";
         MKBXDAdvDataModel *tempModel = (MKBXDAdvDataModel *)advModel;
         MKBXDScanAdvCellModel *cellModel = [[MKBXDScanAdvCellModel alloc] init];
         cellModel.alarmMode = tempModel.alarmType;
-        cellModel.triggerStatus = tempModel.trigger;
+        cellModel.triggerStatus = tempModel.triggerStatus;
         cellModel.triggerCount = tempModel.triggerCount;
+        cellModel.motionStatus = tempModel.motionStatus;
+        cellModel.version = tempModel.version;
         
         return cellModel;
     }
@@ -271,7 +273,17 @@ static const char *frameTypeKey = "frameTypeKey";
     }
     if ([dataModel isKindOfClass:MKBXDScanAdvCellModel.class]) {
         //Adv Data
-        return 70.f;
+        MKBXDScanAdvCellModel *model = (MKBXDScanAdvCellModel *)dataModel;
+        if (model.alarmMode != 3) {
+            if (model.version == 2) {
+                return 90.f;
+            }
+            return 70.f;
+        }
+        if (model.version == 2) {
+            return 70.f;
+        }
+        return 50.f;
     }
     
     return 0;

@@ -67,15 +67,22 @@ typedef NS_ENUM(NSInteger, MKBXDAdvAlarmType) {
 
 @property (nonatomic, assign)MKBXDAdvAlarmType alarmType;
 
-/// Whether the current trigger channel is in the trigger state.
-@property (nonatomic, assign)BOOL trigger;
+/*
+ version = 0/1 0: Standby 1:Trigger
+ version = 2 0: Standby 1:Main-Triggered 2:Sub-Triggered
+ */
+@property (nonatomic, assign)NSInteger triggerStatus;
 
 /// Trigger Count.
 @property (nonatomic, copy)NSString *triggerCount;
 
-@property (nonatomic, copy)NSString *deviceType;
-
 @property (nonatomic, copy)NSString *deviceID;
+
+/// 0: V1 1: Long connection 2:V2(Double button)
+@property (nonatomic, assign)NSInteger version;
+
+/// Only for version is V2(Double button).
+@property (nonatomic, assign)BOOL motionStatus;
 
 - (MKBXDAdvDataModel *)initWithAdvertiseData:(NSData *)advData;
 

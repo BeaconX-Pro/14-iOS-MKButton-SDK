@@ -1,20 +1,18 @@
 //
-//  MKBXDQuickSwitchModel.m
-//  MKBeaconXPlus_Example
+//  MKBXDAlarmEventDBDataModel.m
+//  MKBeaconXDButton_Example
 //
-//  Created by aa on 2021/8/18.
-//  Copyright © 2021 aadyx2007@163.com. All rights reserved.
+//  Created by aa on 2025/10/10.
+//  Copyright © 2025 aadyx2007@163.com. All rights reserved.
 //
 
-#import "MKBXDQuickSwitchModel.h"
+#import "MKBXDAlarmEventDBDataModel.h"
 
 #import "MKMacroDefines.h"
 
-#import "MKBXDConnectManager.h"
-
 #import "MKBXDInterface.h"
 
-@interface MKBXDQuickSwitchModel ()
+@interface MKBXDAlarmEventDBDataModel ()
 
 @property (nonatomic, strong)dispatch_queue_t readQueue;
 
@@ -22,35 +20,33 @@
 
 @end
 
-@implementation MKBXDQuickSwitchModel
+@implementation MKBXDAlarmEventDBDataModel
 
-- (void)readWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock {
+- (void)readDataWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock {
     dispatch_async(self.readQueue, ^{
-        if (![self readConnectable]) {
-            [self operationFailedBlockWithMsg:@"Read Connectable Error" block:failedBlock];
+        if (![self readSingleMainCount]) {
+            [self operationFailedBlockWithMsg:@"Read Single Main Count Error" block:failedBlock];
             return;
         }
-        if (![self readPasswordVerification]) {
-            [self operationFailedBlockWithMsg:@"Read Password verification Error" block:failedBlock];
+        if (![self readSingleSubCount]) {
+            [self operationFailedBlockWithMsg:@"Read Single Sub Count Error" block:failedBlock];
             return;
         }
-        if (![self readResetByButton]) {
-            [self operationFailedBlockWithMsg:@"Read Reset Beacon by button Error" block:failedBlock];
+        if (![self readDoubleMainCount]) {
+            [self operationFailedBlockWithMsg:@"Read Double Main Count Error" block:failedBlock];
             return;
         }
-        if (![self readScanPacket]) {
-            [self operationFailedBlockWithMsg:@"Read Scan response packet Error" block:failedBlock];
+        if (![self readDoubleSubCount]) {
+            [self operationFailedBlockWithMsg:@"Read Double Sub Count Error" block:failedBlock];
             return;
         }
-        if (![self readDismissAlarmByButton]) {
-            [self operationFailedBlockWithMsg:@"Read Dismiss alarm by button Error" block:failedBlock];
+        if (![self readLongMainCount]) {
+            [self operationFailedBlockWithMsg:@"Read Long Main Count Error" block:failedBlock];
             return;
         }
-        if ([MKBXDConnectManager shared].isCR) {
-            if (![self readTurnOffByButton]) {
-                [self operationFailedBlockWithMsg:@"Read Turn Off by button Error" block:failedBlock];
-                return;
-            }
+        if (![self readLongSubCount]) {
+            [self operationFailedBlockWithMsg:@"Read Long Sub Count Error" block:failedBlock];
+            return;
         }
         moko_dispatch_main_safe(^{
             if (sucBlock) {
@@ -61,11 +57,12 @@
 }
 
 #pragma mark - interface
-- (BOOL)readConnectable {
+
+- (BOOL)readSingleMainCount {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_readConnectableWithSucBlock:^(id  _Nonnull returnData) {
+    [MKBXDInterface bxd_readSinglePressEventCountWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.connectable = [returnData[@"result"][@"connectable"] boolValue];
+        self.singleMainCount = returnData[@"result"][@"count"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -74,11 +71,11 @@
     return success;
 }
 
-- (BOOL)readPasswordVerification {
+- (BOOL)readSingleSubCount {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_readPasswordVerificationWithSucBlock:^(id  _Nonnull returnData) {
+    [MKBXDInterface bxd_readSubButtonSinglePressEventCountWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.passwordVerification = [returnData[@"result"][@"state"] isEqualToString:@"01"];
+        self.singleSubCount = returnData[@"result"][@"count"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -87,11 +84,11 @@
     return success;
 }
 
-- (BOOL)readResetByButton {
+- (BOOL)readDoubleMainCount {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_readResetDeviceByButtonStatusWithSucBlock:^(id  _Nonnull returnData) {
+    [MKBXDInterface bxd_readDoublePressEventCountWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.resetByButton = [returnData[@"result"][@"isOn"] boolValue];
+        self.doubleMainCount = returnData[@"result"][@"count"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -100,11 +97,11 @@
     return success;
 }
 
-- (BOOL)readScanPacket {
+- (BOOL)readDoubleSubCount {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_readScanResponsePacketWithSucBlock:^(id  _Nonnull returnData) {
+    [MKBXDInterface bxd_readSubButtonDoublePressEventCountWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.scanPacket = [returnData[@"result"][@"isOn"] boolValue];
+        self.doubleSubCount = returnData[@"result"][@"count"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -113,11 +110,11 @@
     return success;
 }
 
-- (BOOL)readDismissAlarmByButton {
+- (BOOL)readLongMainCount {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_readDismissAlarmByButtonWithSucBlock:^(id  _Nonnull returnData) {
+    [MKBXDInterface bxd_readLongPressEventCountWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.dismiss = [returnData[@"result"][@"isOn"] boolValue];
+        self.longMainCount = returnData[@"result"][@"count"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -126,11 +123,11 @@
     return success;
 }
 
-- (BOOL)readTurnOffByButton {
+- (BOOL)readLongSubCount {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_readTurnOffByButtonStatusWithSucBlock:^(id  _Nonnull returnData) {
+    [MKBXDInterface bxd_readSubButtonLongPressEventCountWithSucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.turnOffByButton = [returnData[@"result"][@"isOn"] boolValue];
+        self.longSubCount = returnData[@"result"][@"count"];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -142,11 +139,11 @@
 #pragma mark - private method
 - (void)operationFailedBlockWithMsg:(NSString *)msg block:(void (^)(NSError *error))block {
     moko_dispatch_main_safe(^{
-        NSError *error = [[NSError alloc] initWithDomain:@"quickSwitchParams"
+        NSError *error = [[NSError alloc] initWithDomain:@"AlarmEventParams"
                                                     code:-999
                                                 userInfo:@{@"errorInfo":msg}];
         block(error);
-    });
+    })
 }
 
 #pragma mark - getter
@@ -159,7 +156,7 @@
 
 - (dispatch_queue_t)readQueue {
     if (!_readQueue) {
-        _readQueue = dispatch_queue_create("quickSwitchQueue", DISPATCH_QUEUE_SERIAL);
+        _readQueue = dispatch_queue_create("AlarmEventQueue", DISPATCH_QUEUE_SERIAL);
     }
     return _readQueue;
 }

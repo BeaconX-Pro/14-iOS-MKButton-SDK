@@ -159,7 +159,11 @@
 - (MKBXDAdvDataModel *)initWithAdvertiseData:(NSData *)advData {
     if (self = [super init]) {
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:advData];
-        NSString *typeString = [content substringWithRange:NSMakeRange(0, 2)];
+        NSInteger index = 0;
+        
+        NSString *typeString = [content substringWithRange:NSMakeRange(index, 2)];
+        index += 2;
+        
         MKBXDAdvAlarmType alarmType = MKBXDAdvAlarmType_single;
         if ([typeString isEqualToString:@"21"]) {
             alarmType = MKBXDAdvAlarmType_double;
@@ -169,13 +173,37 @@
             alarmType = MKBXDAdvAlarmType_abnormalInactivity;
         }
         self.alarmType = alarmType;
-        NSString *state = [content substringWithRange:NSMakeRange(2, 2)];
-        NSString *binary = [MKBXDBaseSDKAdopter binaryByhex:state];
-        self.trigger = [[binary substringWithRange:NSMakeRange(6, 1)] isEqualToString:@"1"];
-        self.triggerCount = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
+        
+        NSString *state = [content substringWithRange:NSMakeRange(index, 2)];
+        index += 2;
+        
+        self.triggerCount = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        index += 4;
+        
         NSInteger len = advData.length - 6;
-        self.deviceID = [content substringWithRange:NSMakeRange(8, 2 * len)];
-        self.deviceType = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8 + 2 * len, 2)];
+        self.deviceID = [content substringWithRange:NSMakeRange(index, 2 * len)];
+        index += (2 * len);
+        
+        self.version = [MKBXDBaseSDKAdopter getDecimalWithHex:content range:NSMakeRange(index, 2)];
+        index += 2;
+         
+        self.motionStatus = [[content substringWithRange:NSMakeRange(index, 2)] isEqualToString:@"01"];
+        
+        NSString *binary = [MKBXDBaseSDKAdopter binaryByhex:state];
+        if (self.version == 2) {
+            //V2支持双按键
+            NSString *tempType = [binary substringWithRange:NSMakeRange(5, 2)];
+            if ([tempType isEqualToString:@"00"]) {
+                self.triggerStatus = 0;
+            } else if ([tempType isEqualToString:@"01"]) {
+                self.triggerStatus = 1;
+            } else if ([tempType isEqualToString:@"10"]) {
+                self.triggerStatus = 2;
+            }
+        } else {
+            self.triggerStatus = [[binary substringWithRange:NSMakeRange(6, 1)] integerValue];
+        }
+        
     }
     return self;
 }
@@ -188,15 +216,22 @@
 - (MKBXDAdvRespondDataModel *)initRespondWithAdvertiseData:(NSData *)advData {
     if (self = [super init]) {
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:advData];
-        self.fullScale = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(2, 2)];
-        self.motionThreshold = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(4, 4)];
-        NSNumber *xValue = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(8, 4)]];
+        NSInteger index = 2;
+        self.fullScale = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 2)];
+        index += 2;
+        self.motionThreshold = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        index += 4;
+        NSNumber *xValue = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(index, 4)]];
+        index += 4;
         self.xData = [NSString stringWithFormat:@"%ld",(long)[xValue integerValue]];
-        NSNumber *yValue = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(12, 4)]];
+        NSNumber *yValue = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(index, 4)]];
+        index += 4;
         self.yData = [NSString stringWithFormat:@"%ld",(long)[yValue integerValue]];
-        NSNumber *zValue = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(16, 4)]];
+        NSNumber *zValue = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(index, 4)]];
+        index += 4;
         self.zData = [NSString stringWithFormat:@"%ld",(long)[zValue integerValue]];
-        NSString *temperature = [content substringWithRange:NSMakeRange(20, 4)];
+        NSString *temperature = [content substringWithRange:NSMakeRange(index, 4)];
+        index += 4;
         if ([temperature isEqualToString:@"ffff"]) {
             //不支持芯片温度
             self.beaconTemperature = temperature;
@@ -206,10 +241,12 @@
             NSInteger tempLow = [MKBXDBaseSDKAdopter getDecimalWithHex:temperature range:NSMakeRange(2, 2)];
             self.beaconTemperature = [NSString stringWithFormat:@"%ld.%.2f",(long)[tempHight integerValue],(tempLow / 256.f)];
         }
-        NSNumber *tempRssi = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(24, 2)]];
+        NSNumber *tempRssi = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(index, 2)]];
+        index += 2;
         self.rangingData = [NSString stringWithFormat:@"%ld",(long)[tempRssi integerValue]];
-        self.voltage = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(26, 4)];
-        NSString *tempMac = [[content substringWithRange:NSMakeRange(30, 12)] uppercaseString];
+        self.voltage = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(index, 4)];
+        index += 4;
+        NSString *tempMac = [[content substringWithRange:NSMakeRange(index, 12)] uppercaseString];
         NSString *macAddress = [NSString stringWithFormat:@"%@:%@:%@:%@:%@:%@",
         [tempMac substringWithRange:NSMakeRange(0, 2)],
         [tempMac substringWithRange:NSMakeRange(2, 2)],

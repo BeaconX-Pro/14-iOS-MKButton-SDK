@@ -30,6 +30,10 @@
 
 - (void)readDataWithSucBlock:(void (^)(void))sucBlock failedBlock:(void (^)(NSError *error))failedBlock {
     dispatch_async(self.readQueue, ^{
+        if (![self readAlarmStatus]) {
+            [self operationFailedBlockWithMsg:@"Read Alarm Status Error" block:failedBlock];
+            return;
+        }
         if (![self readTriggerChannelAdvParams]) {
             [self operationFailedBlockWithMsg:@"Read Trigger Channel Adv Params Error" block:failedBlock];
             return;
@@ -173,6 +177,22 @@
 }
 
 #pragma mark - interface
+
+- (BOOL)readAlarmStatus {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_readTriggerChannelStateWithSucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.singleIsOn = [returnData[@"result"][@"singlePressMode"] boolValue];
+        self.doubleIsOn = [returnData[@"result"][@"doublePressMode"] boolValue];
+        self.longIsOn = [returnData[@"result"][@"longPressMode"] boolValue];
+        self.inactivityIsOn = [returnData[@"result"][@"abnormalInactivityMode"] boolValue];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
 
 - (BOOL)readTriggerChannelAdvParams {
     __block BOOL success = NO;

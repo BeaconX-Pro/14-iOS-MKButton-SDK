@@ -30,6 +30,7 @@ NSString *const mk_bxd_receiveLongConnectionModeDataNotification = @"mk_bxd_rece
 
 NSString *const mk_bxd_receiveThreeAxisDataNotification = @"mk_bxd_receiveThreeAxisDataNotification";
 
+NSString *const mk_bxd_receiveSubClickDataNotification = @"mk_bxd_receiveSubClickDataNotification";
 
 static MKBXDCentralManager *manager = nil;
 static dispatch_once_t onceToken;
@@ -186,8 +187,10 @@ static dispatch_once_t onceToken;
         NSLog(@"+++++++++++++++++接收数据出错");
         return;
     }
+    NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
+    NSLog(@"%@-%@",characteristic.UUID.UUIDString,content);
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
-//        //单击数据/双击数据/长按数据/长连接模式数据
+        //单击数据/双击数据/长按数据/长连接模式数据/副按键数据
         NSString *alarmType = @"0";
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
             alarmType = @"0";
@@ -195,8 +198,10 @@ static dispatch_once_t onceToken;
             alarmType = @"1";
         }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]]) {
             alarmType = @"2";
-        }else {
+        }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
             alarmType = @"3";
+        }else {
+            alarmType = @"4";
         }
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         NSDictionary *dic = @{
@@ -249,6 +254,21 @@ static dispatch_once_t onceToken;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveLongConnectionModeDataNotification
+                                                                object:nil
+                                                              userInfo:@{@"count":count,
+                                                                       }];
+        });
+        return;
+    }
+    
+    if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA0A"]]) {
+        NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
+        [self saveToLogData:content appToDevice:NO];
+        //副按键触发次数
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 2)];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_receiveSubClickDataNotification
                                                                 object:nil
                                                               userInfo:@{@"count":count,
                                                                        }];
@@ -459,6 +479,14 @@ static dispatch_once_t onceToken;
         return NO;
     }
     [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_longConnectRecord];
+    return YES;
+}
+
+- (BOOL)notifySubClickData:(BOOL)notify {
+    if (self.connectStatus != mk_bxd_centralConnectStatusConnected || self.peripheral == nil || self.peripheral.bxd_subBtnData == nil) {
+        return NO;
+    }
+    [self.peripheral setNotifyValue:notify forCharacteristic:self.peripheral.bxd_subBtnData];
     return YES;
 }
 

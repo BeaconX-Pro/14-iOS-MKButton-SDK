@@ -110,6 +110,17 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readEffectiveClickIntervalWithSucBlock:(void (^)(id returnData))sucBlock
                                        failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Whether support turn off device by button.(Only for BXP-CR)
+/*
+ @{
+ @"isOn":@(YES)
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readTurnOffByButtonStatusWithSucBlock:(void (^)(id returnData))sucBlock
+                                      failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Scan response packet.
 /*
  @{
@@ -507,6 +518,53 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_readDeviceBatteryPercentWithSucBlock:(void (^)(id returnData))sucBlock
                                      failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read device's pcb type.
+/*
+ @{
+ @"type":@"1"
+ }
+ 1:Single button, only for B2
+ 2:Single button, only for B2
+ 3:Double button
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readDevicePCBTypeWithSucBlock:(void (^)(id returnData))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read the count of the sub button single press event.
+/*
+ @{
+ @"count":@"0"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readSubButtonSinglePressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read the count of the sub button double press event.
+/*
+ @{
+ @"count":@"0"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readSubButtonDoublePressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
+                                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Read the count of the sub button long press event.
+/*
+ @{
+ @"count":@"0"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readSubButtonLongPressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
+                                             failedBlock:(void (^)(NSError *error))failedBlock;
 
 
 #pragma mark - password

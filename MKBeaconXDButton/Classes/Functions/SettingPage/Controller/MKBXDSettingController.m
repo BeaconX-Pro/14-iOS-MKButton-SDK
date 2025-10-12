@@ -33,6 +33,7 @@
 #import "MKBXDAccelerationController.h"
 #import "MKBXDPowerSaveController.h"
 #import "MKBXDAlarmEventCRController.h"
+#import "MKBXDAlarmEventDBController.h"
 
 @interface MKBXDSettingController ()<UITableViewDelegate,
 UITableViewDataSource,
@@ -90,6 +91,12 @@ MKTextFieldCellDelegate>
         //Alarm event
         if ([MKBXDConnectManager shared].isCR) {
             MKBXDAlarmEventCRController *vc = [[MKBXDAlarmEventCRController alloc] init];
+            [self.navigationController pushViewController:vc animated:YES];
+            return;
+        }
+        if ([MKBXDConnectManager shared].doubleBtn) {
+            //支持双按键的BXP-B-D
+            MKBXDAlarmEventDBController *vc = [[MKBXDAlarmEventDBController alloc] init];
             [self.navigationController pushViewController:vc animated:YES];
             return;
         }

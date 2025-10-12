@@ -169,6 +169,13 @@
         resultDic = @{
             @"modeID":(modeID ? modeID : @""),
         };
+    }else if ([cmd isEqualToString:@"29"]) {
+        //读取按键开关机状态
+        operationID = mk_bxd_taskReadTurnOffByButtonStatusOperation;
+        BOOL isOn = [content isEqualToString:@"01"];
+        resultDic = @{
+            @"isOn":@(isOn)
+        };
     }else if ([cmd isEqualToString:@"2f"]) {
         //读取回应包开关
         operationID = mk_bxd_taskReadScanResponsePacketOperation;
@@ -461,6 +468,34 @@
         resultDic = @{
             @"percent":percent,
         };
+    }else if ([cmd isEqualToString:@"75"]) {
+        //读取板子类型
+        operationID = mk_bxd_taskReadDevicePCBTypeOperation;
+        NSString *type = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        resultDic = @{
+            @"type":type,
+        };
+    }else if ([cmd isEqualToString:@"77"]) {
+        //读取副按键单击触发次数
+        operationID = mk_bxd_taskReadSubButtonSinglePressEventCountOperation;
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        resultDic = @{
+            @"count":count,
+        };
+    }else if ([cmd isEqualToString:@"78"]) {
+        //读取副按键双击触发次数
+        operationID = mk_bxd_taskReadSubButtonDoublePressEventCountOperation;
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        resultDic = @{
+            @"count":count,
+        };
+    }else if ([cmd isEqualToString:@"79"]) {
+        //读取副按键长按触发次数
+        operationID = mk_bxd_taskReadSubButtonLongPressEventCountOperation;
+        NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(0, content.length)];
+        resultDic = @{
+            @"count":count,
+        };
     }
     
     return [self dataParserGetDataSuccess:resultDic operationID:operationID];
@@ -485,6 +520,9 @@
     }else if ([cmd isEqualToString:@"28"]) {
         //恢复出厂设置
         operationID = mk_bxd_taskConfigFactoryResetOperation;
+    }else if ([cmd isEqualToString:@"29"]) {
+        //配置按键开关机状态
+        operationID = mk_bxd_taskConfigTurnOffByButtonOperation;
     }else if ([cmd isEqualToString:@"2f"]) {
         //设置回应包开关
         operationID = mk_bxd_taskConfigScanResponsePacketOperation;
@@ -575,6 +613,15 @@
     }else if ([cmd isEqualToString:@"5d"]) {
         //重置电池
         operationID = mk_bxd_taskBatteryResetOperation;
+    }else if ([cmd isEqualToString:@"7a"]) {
+        //清除副按键单击触发次数
+        operationID = mk_bxd_taskClearSubBtnSinglePressEventDataOperation;
+    }else if ([cmd isEqualToString:@"7b"]) {
+        //清除副按键双击触发次数
+        operationID = mk_bxd_taskClearSubBtnDoublePressEventDataOperation;
+    }else if ([cmd isEqualToString:@"7c"]) {
+        //清除副按键长按触发次数
+        operationID = mk_bxd_taskClearSubBtnLongPressEventDataOperation;
     }
     
     return [self dataParserGetDataSuccess:@{@"success":@(success)} operationID:operationID];

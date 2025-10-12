@@ -39,6 +39,8 @@ extern NSString *const mk_bxd_receiveLongConnectionModeDataNotification;
 
 extern NSString *const mk_bxd_receiveThreeAxisDataNotification;
 
+extern NSString *const mk_bxd_receiveSubClickDataNotification;
+
 typedef NS_ENUM(NSInteger, mk_bxd_centralManagerStatus) {
     mk_bxd_centralManagerStatusUnable,                           //不可用
     mk_bxd_centralManagerStatusEnable,                           //可用状态
@@ -181,6 +183,10 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
 /// Long connection click record data.(BXP-CR only)
 /// @param notify notify
 - (BOOL)notifyLongConnectClickData:(BOOL)notify;
+
+/// Sub Button click record data.(BXP-B-D only)
+/// @param notify notify
+- (BOOL)notifySubClickData:(BOOL)notify;
 
 /// Three axis data.
 /// @param notify notify

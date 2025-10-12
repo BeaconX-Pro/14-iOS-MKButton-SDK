@@ -24,16 +24,19 @@
 
 #import "MKBXDConnectManager.h"
 
+#import "MKBXDAlarmEventCell.h"
+#import "MKBXDAlarmMsgCell.h"
+
 #import "MKBXDAlarmV2Model.h"
 
 #import "MKBXDAlarmV2EventCell.h"
-#import "MKBXDAlarmV2MsgCell.h"
 
 #import "MKBXDAlarmModeConfigV2Controller.h"
 #import "MKBXDAlarmNotiTypeController.h"
 
 @interface MKBXDAlarmV2Controller ()<UITableViewDelegate,
 UITableViewDataSource,
+MKBXDAlarmEventCellDelegate,
 MKBXDAlarmV2EventCellDelegate>
 
 @property (nonatomic, strong)MKBaseTableView *tableView;
@@ -61,6 +64,9 @@ MKBXDAlarmV2EventCellDelegate>
 - (void)dealloc {
     NSLog(@"MKBXDAlarmV2Controller销毁");
     [[MKBXDCentralManager shared] notifyLongConModeData:NO];
+    if ([MKBXDConnectManager shared].doubleBtn) {
+        [[MKBXDCentralManager shared] notifySubClickData:NO];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -73,11 +79,18 @@ MKBXDAlarmV2EventCellDelegate>
     [super viewDidLoad];
     [self loadSubViews];
     [self loadSectionDatas];
-    [[MKBXDCentralManager shared] notifyLongConModeData:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receiveLongConModeData:)
                                                  name:mk_bxd_receiveLongConnectionModeDataNotification
                                                object:nil];
+    [[MKBXDCentralManager shared] notifyLongConModeData:YES];
+    if ([MKBXDConnectManager shared].doubleBtn) {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveSubClickData:)
+                                                     name:mk_bxd_receiveSubClickDataNotification
+                                                   object:nil];
+        [[MKBXDCentralManager shared] notifySubClickData:YES];
+    }
 }
 
 #pragma mark - super method
@@ -88,14 +101,17 @@ MKBXDAlarmV2EventCellDelegate>
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 2) {
-        MKBXDAlarmV2MsgCellModel *cellModel = self.section2List[indexPath.row];
+        MKBXDAlarmMsgCellModel *cellModel = self.section2List[indexPath.row];
         return [cellModel fetchCellHeight];
     }
     if (indexPath.section == 3) {
+        if ([MKBXDConnectManager shared].doubleBtn) {
+            return 110.f;
+        }
         return 80.f;
     }
     if (indexPath.section == 5) {
-        MKBXDAlarmV2MsgCellModel *cellModel = self.section5List[indexPath.row];
+        MKBXDAlarmMsgCellModel *cellModel = self.section5List[indexPath.row];
         return [cellModel fetchCellHeight];
     }
     
@@ -176,12 +192,18 @@ MKBXDAlarmV2EventCellDelegate>
         return cell;
     }
     if (indexPath.section == 2) {
-        MKBXDAlarmV2MsgCell *cell = [MKBXDAlarmV2MsgCell initCellWithTableView:tableView];
+        MKBXDAlarmMsgCell *cell = [MKBXDAlarmMsgCell initCellWithTableView:tableView];
         cell.dataModel = self.section2List[indexPath.row];
         return cell;
     }
     if (indexPath.section == 3) {
-        MKBXDAlarmV2EventCell *cell = [MKBXDAlarmV2EventCell initCellWithTableView:tableView];
+        if ([MKBXDConnectManager shared].doubleBtn) {
+            MKBXDAlarmV2EventCell *cell = [MKBXDAlarmV2EventCell initCellWithTableView:tableView];
+            cell.dataModel = self.section3List[indexPath.row];
+            cell.delegate = self;
+            return cell;
+        }
+        MKBXDAlarmEventCell *cell = [MKBXDAlarmEventCell initCellWithTableView:tableView];
         cell.dataModel = self.section3List[indexPath.row];
         cell.delegate = self;
         return cell;
@@ -191,9 +213,14 @@ MKBXDAlarmV2EventCellDelegate>
         cell.dataModel = self.section4List[indexPath.row];
         return cell;
     }
-    MKBXDAlarmV2MsgCell *cell = [MKBXDAlarmV2MsgCell initCellWithTableView:tableView];
+    MKBXDAlarmMsgCell *cell = [MKBXDAlarmMsgCell initCellWithTableView:tableView];
     cell.dataModel = self.section5List[indexPath.row];
     return cell;
+}
+
+#pragma mark - MKBXDAlarmEventCellDelegate
+- (void)bxd_alarmEventCell_clearButtonPressed {
+    [self dismissAlarm];
 }
 
 #pragma mark - MKBXDAlarmV2EventCellDelegate
@@ -207,8 +234,26 @@ MKBXDAlarmV2EventCellDelegate>
     if (!ValidDict(dic)) {
         return;
     }
+    if ([MKBXDConnectManager shared].doubleBtn) {
+        MKBXDAlarmV2EventCellModel *cellModel = self.section3List[0];
+        cellModel.mainCount = dic[@"count"];
+    }else {
+        MKBXDAlarmEventCellModel *cellModel = self.section3List[0];
+        cellModel.count = dic[@"count"];
+    }
+    
+    
+    [self.tableView mk_reloadSection:3 withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)receiveSubClickData:(NSNotification *)note {
+    NSDictionary *dic = note.userInfo;
+    if (!ValidDict(dic)) {
+        return;
+    }
+    
     MKBXDAlarmV2EventCellModel *cellModel = self.section3List[0];
-    cellModel.count = dic[@"count"];
+    cellModel.subCount = dic[@"count"];
     
     [self.tableView mk_reloadSection:3 withRowAnimation:UITableViewRowAnimationNone];
 }
@@ -299,15 +344,22 @@ MKBXDAlarmV2EventCellDelegate>
 }
 
 - (void)loadSection2List {
-    MKBXDAlarmV2MsgCellModel *cellModel = [[MKBXDAlarmV2MsgCellModel alloc] init];
+    MKBXDAlarmMsgCellModel *cellModel = [[MKBXDAlarmMsgCellModel alloc] init];
     cellModel.msg = @"*Advertising mode mainly refers to the configuration of channel parameters for broadcasting in a non-connected state and the parameter settings related to alarm events, which are different from the parameters in long connection mode.";
     [self.section2List addObject:cellModel];
 }
 
 - (void)loadSection3List {
-    MKBXDAlarmV2EventCellModel *cellModel = [[MKBXDAlarmV2EventCellModel alloc] init];
-    cellModel.count = @"0";
-    [self.section3List addObject:cellModel];
+    if ([MKBXDConnectManager shared].doubleBtn) {
+        MKBXDAlarmV2EventCellModel *cellModel = [[MKBXDAlarmV2EventCellModel alloc] init];
+        cellModel.mainCount = @"0";
+        cellModel.subCount = @"0";
+        [self.section3List addObject:cellModel];
+    }else {
+        MKBXDAlarmEventCellModel *cellModel = [[MKBXDAlarmEventCellModel alloc] init];
+        cellModel.count = @"0";
+        [self.section3List addObject:cellModel];
+    }
 }
 
 - (void)loadSection4List {
@@ -318,7 +370,7 @@ MKBXDAlarmV2EventCellDelegate>
 }
 
 - (void)loadSection5List {
-    MKBXDAlarmV2MsgCellModel *cellModel = [[MKBXDAlarmV2MsgCellModel alloc] init];
+    MKBXDAlarmMsgCellModel *cellModel = [[MKBXDAlarmMsgCellModel alloc] init];
     cellModel.msg = @"*Long connection mode mainly refers to the parameter settings related to alarm events and event monitoring display in a long connection state. To ensure the beacon can be connected, you need to make sure that at least one slot is enabled in Advertising Mode setting, allowing the device to continue broadcasting while in a non-connected state";
     [self.section5List addObject:cellModel];
 }

@@ -157,13 +157,12 @@
 
 - (void)loadSubPages {
     UIViewController *alarmPage = nil;
-    if ([[MKBXDConnectManager shared].deviceType integerValue] == 1) {
-        //1  新固件
-        alarmPage = [[MKBXDAlarmV2Controller alloc] init];
-        
-    }else {
+    if ([[MKBXDConnectManager shared].deviceType integerValue] == 0) {
         //0  旧固件
         alarmPage = [[MKBXDAlarmController alloc] init];
+    } else {
+        //1  支持长链接  2 支持双按键
+        alarmPage = [[MKBXDAlarmV2Controller alloc] init];
     }
     alarmPage.tabBarItem.title = @"ALARM";
     alarmPage.tabBarItem.image = LOADICON(@"MKBeaconXDButton", @"MKBXDTabBarController", @"bxd_slotTabBarItemUnselected.png");

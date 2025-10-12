@@ -1,19 +1,19 @@
 //
-//  MKBXDAlarmV2MsgCell.m
+//  MKBXDAlarmMsgCell.m
 //  MKBeaconXDButton_Example
 //
-//  Created by aa on 2024/11/25.
-//  Copyright © 2024 aadyx2007@163.com. All rights reserved.
+//  Created by aa on 2025/10/9.
+//  Copyright © 2025 aadyx2007@163.com. All rights reserved.
 //
 
-#import "MKBXDAlarmV2MsgCell.h"
+#import "MKBXDAlarmMsgCell.h"
 
 #import "Masonry.h"
 
 #import "MKMacroDefines.h"
 #import "NSString+MKAdd.h"
 
-@implementation MKBXDAlarmV2MsgCellModel
+@implementation MKBXDAlarmMsgCellModel
 
 - (CGFloat)fetchCellHeight {
     CGSize msgSize = [NSString sizeWithText:self.msg
@@ -24,18 +24,18 @@
 
 @end
 
-@interface MKBXDAlarmV2MsgCell ()
+@interface MKBXDAlarmMsgCell ()
 
 @property (nonatomic, strong)UILabel *msgLabel;
 
 @end
 
-@implementation MKBXDAlarmV2MsgCell
+@implementation MKBXDAlarmMsgCell
 
-+ (MKBXDAlarmV2MsgCell *)initCellWithTableView:(UITableView *)tableView {
-    MKBXDAlarmV2MsgCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MKBXDAlarmV2MsgCellIdenty"];
++ (MKBXDAlarmMsgCell *)initCellWithTableView:(UITableView *)tableView {
+    MKBXDAlarmMsgCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MKBXDAlarmMsgCellIdenty"];
     if (!cell) {
-        cell = [[MKBXDAlarmV2MsgCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MKBXDAlarmV2MsgCellIdenty"];
+        cell = [[MKBXDAlarmMsgCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MKBXDAlarmMsgCellIdenty"];
     }
     return cell;
 }
@@ -61,10 +61,10 @@
 }
 
 #pragma mark - setter
-- (void)setDataModel:(MKBXDAlarmV2MsgCellModel *)dataModel {
+- (void)setDataModel:(MKBXDAlarmMsgCellModel *)dataModel {
     _dataModel = nil;
     _dataModel = dataModel;
-    if (!_dataModel || ![_dataModel isKindOfClass:MKBXDAlarmV2MsgCellModel.class]) {
+    if (!_dataModel || ![_dataModel isKindOfClass:MKBXDAlarmMsgCellModel.class]) {
         return;
     }
     self.msgLabel.text = SafeStr(_dataModel.msg);

@@ -61,6 +61,13 @@
             [self operationFailedMsg:@"Read Device Type Error" completeBlock:failedBlock];
             return;
         }
+        if ([self.deviceType integerValue] == 2) {
+            //只有deviceType=2才支持读取pcb类型
+            if (![self readPCBType]) {
+                [self operationFailedMsg:@"Read PCB Type Error" completeBlock:failedBlock];
+                return;
+            }
+        }
         NSString *software = [self readSoftwareVersion];
         if (!ValidStr(software)) {
             [self operationFailedMsg:@"Read Software Failed!" completeBlock:failedBlock];
@@ -84,7 +91,8 @@
                                                        options:0
                                                          range:NSMakeRange(0, [software length])];
         self.isCR = (crMatches > 0);
-        
+        //BXP-B-D&deviceType=02&pcbType=3
+        self.doubleBtn = (crMatches <= 0 && self.pcbType == 3);
         if (![self readSensorStatus]) {
             [self operationFailedMsg:@"Read Sensor Error" completeBlock:failedBlock];
             return;
@@ -166,6 +174,19 @@
         self.threeSensor = [returnData[@"result"][@"threeAxis"] boolValue];
         self.htSensor = [returnData[@"result"][@"htSensor"] boolValue];
         self.lightSensor = [returnData[@"result"][@"lightSensor"] boolValue];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
+
+- (BOOL)readPCBType {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_readDevicePCBTypeWithSucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.pcbType = [returnData[@"result"][@"type"] integerValue];
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);

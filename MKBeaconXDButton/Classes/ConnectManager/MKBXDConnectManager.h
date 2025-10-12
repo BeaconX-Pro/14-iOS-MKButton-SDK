@@ -19,8 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否需要密码连接
 @property (nonatomic, assign)BOOL needPassword;
 
-/// 设备类型
+/// 设备类型00:旧固件 01:支持长链接模式 02:2.0版本(BXP-B-D新增了双按键支持)
 @property (nonatomic, copy)NSString *deviceType;
+
+/// 仅仅当deviceType=02的时候才支持当前功能
+/*
+ 1:Single button, only for B2
+ 2:Single button, only for B2
+ 3:Double button
+ */
+@property (nonatomic, assign)NSInteger pcbType;
 
 /// 是否带有三轴传感器
 @property (nonatomic, assign)BOOL threeSensor;
@@ -33,6 +41,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 是否是BXP-CR
 @property (nonatomic, assign)BOOL isCR;
+
+/// 是否是双按键，只有BXP-B-D&deviceType=2&pcbType=3才支持
+@property (nonatomic, assign)BOOL doubleBtn;
 
 + (MKBXDConnectManager *)shared;
 
