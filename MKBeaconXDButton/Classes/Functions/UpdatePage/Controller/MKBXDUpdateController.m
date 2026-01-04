@@ -18,6 +18,8 @@
 
 #import "MKBXDCentralManager.h"
 
+#import "MKBXDConnectManager.h"
+
 #import "MKBXDDFUModule.h"
 
 @interface MKBXDUpdateController ()<UITableViewDelegate,UITableViewDataSource>
@@ -85,7 +87,7 @@
     } sucBlock:^{
         @strongify(self);
         [[MKHudManager share] showHUDWithTitle:@"Update firmware successfully!" inView:self.view isPenetration:NO];
-        [self performSelector:@selector(updateComplete) withObject:nil afterDelay:3.f];
+        [self performSelector:@selector(updateComplete) withObject:nil afterDelay:1.f];
     } failedBlock:^(NSError * _Nonnull error) {
         @strongify(self);
         [[MKHudManager share] showHUDWithTitle:@"Opps!DFU Failed. Please try again!" inView:self.view isPenetration:NO];
@@ -104,7 +106,8 @@
     return cell;
 }
 
-#pragma mark -
+#pragma mark - private method
+
 - (void)updateComplete {
     self.leftButton.enabled = YES;
     [[MKHudManager share] hide];

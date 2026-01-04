@@ -344,7 +344,7 @@ static dispatch_once_t onceToken;
             });
         }
     };
-    MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral];
+    MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral dfuMode:NO];
     [[MKBXDBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
         [self confirmNeedPassword];
     } failedBlock:^(NSError * _Nonnull error) {
@@ -371,7 +371,7 @@ static dispatch_once_t onceToken;
     self.password = @"";
     self.password = password;
     __weak typeof(self) weakSelf = self;
-    [self connectPeripheral:peripheral successBlock:^(CBPeripheral *peripheral) {
+    [self connectPeripheral:peripheral dfu:NO successBlock:^(CBPeripheral *peripheral) {
         __strong typeof(self) sself = weakSelf;
         sself.sucBlock = nil;
         sself.failedBlock = nil;
@@ -397,7 +397,33 @@ static dispatch_once_t onceToken;
     }
     self.password = @"";
     __weak typeof(self) weakSelf = self;
-    [self connectPeripheral:peripheral successBlock:^(CBPeripheral *peripheral) {
+    [self connectPeripheral:peripheral dfu:NO successBlock:^(CBPeripheral *peripheral) {
+        __strong typeof(self) sself = weakSelf;
+        sself.sucBlock = nil;
+        sself.failedBlock = nil;
+        if (sucBlock) {
+            sucBlock(peripheral);
+        }
+    } failedBlock:^(NSError *error) {
+        __strong typeof(self) sself = weakSelf;
+        sself.sucBlock = nil;
+        sself.failedBlock = nil;
+        if (failedBlock) {
+            failedBlock(error);
+        }
+    }];
+}
+
+- (void)dfuconnectPeripheral:(nonnull CBPeripheral *)peripheral
+                    sucBlock:(void (^)(CBPeripheral *peripheral))sucBlock
+                 failedBlock:(void (^)(NSError *error))failedBlock {
+    if (!peripheral) {
+        [MKBXDBaseSDKAdopter operationConnectFailedBlock:failedBlock];
+        return;
+    }
+    self.password = @"";
+    __weak typeof(self) weakSelf = self;
+    [self connectPeripheral:peripheral dfu:YES successBlock:^(CBPeripheral *peripheral) {
         __strong typeof(self) sself = weakSelf;
         sself.sucBlock = nil;
         sself.failedBlock = nil;
@@ -508,13 +534,14 @@ static dispatch_once_t onceToken;
 
 #pragma mark - password method
 - (void)connectPeripheral:(CBPeripheral *)peripheral
+                      dfu:(BOOL)dfu
              successBlock:(void (^)(CBPeripheral *peripheral))sucBlock
               failedBlock:(void (^)(NSError *error))failedBlock {
     self.sucBlock = nil;
     self.sucBlock = sucBlock;
     self.failedBlock = nil;
     self.failedBlock = failedBlock;
-    MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral];
+    MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral dfuMode:dfu];
     [[MKBXDBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
         if (self.password.length > 0 && self.password.length <= 16) {
             //需要密码登录
@@ -522,8 +549,14 @@ static dispatch_once_t onceToken;
             [self sendPasswordToDevice];
             return;
         }
-        //免密登录
-        [self logToLocal:@"免密登录"];
+        if (dfu) {
+            //免密登录
+            [self logToLocal:@"DFU升级"];
+        }else {
+            //免密登录
+            [self logToLocal:@"免密登录"];
+        }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             self.connectStatus = mk_bxd_centralConnectStatusConnected;
             [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];

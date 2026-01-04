@@ -50,11 +50,17 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_longConModeData;
 @property (nonatomic, strong, readonly)CBCharacteristic *bxd_subBtnData;
 
+#pragma mark - OTA
+
+@property (nonatomic, strong, readonly)CBCharacteristic *bxd_otaData;
+
+@property (nonatomic, strong, readonly)CBCharacteristic *bxd_otaControl;
+
 - (void)bxd_updateCharacterWithService:(CBService *)service;
 
 - (void)bxd_updateCurrentNotifySuccess:(CBCharacteristic *)characteristic;
 
-- (BOOL)bxd_connectSuccess;
+- (BOOL)bxd_connectSuccess:(BOOL)dfu;
 
 - (void)bxd_setNil;
 

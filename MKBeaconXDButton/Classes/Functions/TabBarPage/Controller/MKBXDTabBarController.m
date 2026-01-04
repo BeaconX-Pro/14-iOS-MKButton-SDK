@@ -34,6 +34,8 @@
 
 @property (nonatomic, assign)BOOL disconnectType;
 
+@property (nonatomic, assign)BOOL startDfu;
+
 @end
 
 @implementation MKBXDTabBarController
@@ -77,6 +79,10 @@
                                              selector:@selector(deviceConnectStateChanged)
                                                  name:mk_bxd_peripheralConnectStateChangedNotification
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(startDfuProcess)
+                                                 name:@"mk_bxd_startDfuProcessNotification"
+                                               object:nil];
 }
 
 #pragma mark - notes
@@ -101,6 +107,9 @@
 }
 
 - (void)disconnectTypeNotification:(NSNotification *)note {
+    if (self.startDfu) {
+        return;
+    }
     NSString *type = note.userInfo[@"type"];
     //02:修改密码成功后，返回结果，断开连接
     //03:恢复出厂设置
@@ -122,7 +131,7 @@
 }
 
 - (void)centralManagerStateChanged{
-    if (self.disconnectType) {
+    if (self.disconnectType || self.startDfu) {
         return;
     }
     if ([MKBXDCentralManager shared].centralStatus != mk_bxd_centralManagerStatusEnable) {
@@ -131,11 +140,15 @@
 }
 
 - (void)deviceConnectStateChanged {
-     if (self.disconnectType) {
+     if (self.disconnectType || self.startDfu) {
         return;
     }
     [self showAlertWithMsg:@"The device is disconnected." title:@"Dismiss"];
     return;
+}
+
+- (void)startDfuProcess {
+    self.startDfu = YES;
 }
 
 #pragma mark - private method

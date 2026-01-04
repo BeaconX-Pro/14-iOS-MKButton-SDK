@@ -144,6 +144,14 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
                  sucBlock:(void (^)(CBPeripheral *peripheral))sucBlock
               failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Dfu connect device function.
+/// @param peripheral peripheral
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
+- (void)dfuconnectPeripheral:(nonnull CBPeripheral *)peripheral
+                    sucBlock:(void (^)(CBPeripheral *peripheral))sucBlock
+                 failedBlock:(void (^)(NSError *error))failedBlock;
+
 - (void)disconnect;
 
 /// Start a task for data communication with the device

@@ -463,7 +463,7 @@ MKBXDNotificationTypePickerViewDelegate>
 
 - (MKBXDNotificationTypePickerView *)headerView {
     if (!_headerView) {
-        _headerView = [[MKBXDNotificationTypePickerView alloc] initWithFrame:CGRectMake(0, 0, kViewWidth, 140.f)];
+        _headerView = [[MKBXDNotificationTypePickerView alloc] initWithFrame:CGRectMake(0, 0, kViewWidth, 200.f)];
         _headerView.delegate = self;
         _headerView.dataModel = self.headerViewModel;
     }

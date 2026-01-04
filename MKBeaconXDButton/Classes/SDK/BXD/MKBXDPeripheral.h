@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class CBPeripheral;
 @interface MKBXDPeripheral : NSObject<MKBXDPeripheralProtocol>
 
-- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
+- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral dfuMode:(BOOL)dfu;
 
 @end
 

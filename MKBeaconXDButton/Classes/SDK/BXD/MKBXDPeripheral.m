@@ -16,13 +16,16 @@
 
 @property (nonatomic, strong)CBPeripheral *peripheral;
 
+@property (nonatomic, assign)BOOL dfu;
+
 @end
 
 @implementation MKBXDPeripheral
 
-- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral {
+- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral dfuMode:(BOOL)dfu {
     if (self = [super init]) {
         self.peripheral = peripheral;
+        self.dfu = dfu;
     }
     return self;
 }
@@ -46,7 +49,7 @@
 }
 
 - (BOOL)connectSuccess {
-    return [self.peripheral bxd_connectSuccess];
+    return [self.peripheral bxd_connectSuccess:self.dfu];
 }
 
 - (void)setNil {

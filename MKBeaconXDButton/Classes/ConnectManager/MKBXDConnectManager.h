@@ -45,6 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否是双按键，只有BXP-B-D&deviceType=2&pcbType=3才支持
 @property (nonatomic, assign)BOOL doubleBtn;
 
+/// 使用新版本的dfu流程
+@property (nonatomic, assign)BOOL isBXPB03D;
+
 + (MKBXDConnectManager *)shared;
 
 /// 连接设备

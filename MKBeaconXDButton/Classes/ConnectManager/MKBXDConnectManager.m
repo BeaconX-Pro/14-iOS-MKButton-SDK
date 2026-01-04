@@ -84,6 +84,8 @@
             return;
         }
         
+        self.isBXPB03D = [software containsString:@"BXP-B03-D"];
+        
         NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-CR$"
                                                                                options:0
                                                                                  error:nil];

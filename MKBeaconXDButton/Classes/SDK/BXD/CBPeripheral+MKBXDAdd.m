@@ -28,6 +28,9 @@ static const char *bxd_hardwareKey = "bxd_hardwareKey";
 static const char *bxd_softwareKey = "bxd_softwareKey";
 static const char *bxd_firmwareKey = "bxd_firmwareKey";
 
+static const char *bxd_otaControlKey = "bxd_otaControlKey";
+static const char *bxd_otaDataKey = "bxd_otaDataKey";
+
 static const char *bxd_customSuccessKey = "bxd_customSuccessKey";
 static const char *bxd_disconnectTypeSuccessKey = "bxd_disconnectTypeSuccessKey";
 static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
@@ -85,6 +88,18 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
         }
         return;
     }
+    if ([service.UUID isEqual:[CBUUID UUIDWithString:@"00001530-1212-EFDE-1523-785FEABCD123"]]) {
+        //OTA
+        NSArray *characteristicList = service.characteristics;
+        for (CBCharacteristic *characteristic in characteristicList) {
+            if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"00001531-1212-EFDE-1523-785FEABCD123"]]) {
+                objc_setAssociatedObject(self, &bxd_otaControlKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }else if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"00001532-1212-EFDE-1523-785FEABCD123"]]) {
+                objc_setAssociatedObject(self, &bxd_otaDataKey, characteristic, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            }
+        }
+        return;
+    }
 }
 
 - (void)bxd_updateCurrentNotifySuccess:(CBCharacteristic *)characteristic {
@@ -102,7 +117,13 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     }
 }
 
-- (BOOL)bxd_connectSuccess {
+- (BOOL)bxd_connectSuccess:(BOOL)dfu {
+    if (dfu) {
+        if (!self.bxd_otaData || !self.bxd_otaControl) {
+            return NO;
+        }
+        return YES;
+    }
     if (![objc_getAssociatedObject(self, &bxd_disconnectTypeSuccessKey) boolValue] || ![objc_getAssociatedObject(self, &bxd_customSuccessKey) boolValue] || ![objc_getAssociatedObject(self, &bxd_passwordSuccessKey) boolValue]) {
         return NO;
     }
@@ -131,6 +152,9 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
     objc_setAssociatedObject(self, &bxd_threeAxisDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_longConModeDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_subBtnDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    
+    objc_setAssociatedObject(self, &bxd_otaControlKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, &bxd_otaDataKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
     objc_setAssociatedObject(self, &bxd_customSuccessKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     objc_setAssociatedObject(self, &bxd_disconnectTypeSuccessKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -201,6 +225,14 @@ static const char *bxd_passwordSuccessKey = "bxd_passwordSuccessKey";
 
 - (CBCharacteristic *)bxd_longConnectRecord {
     return objc_getAssociatedObject(self, &bxd_longConnectRecordKey);
+}
+
+- (CBCharacteristic *)bxd_otaData {
+    return objc_getAssociatedObject(self, &bxd_otaDataKey);
+}
+
+- (CBCharacteristic *)bxd_otaControl {
+    return objc_getAssociatedObject(self, &bxd_otaControlKey);
 }
 
 #pragma mark - private method
