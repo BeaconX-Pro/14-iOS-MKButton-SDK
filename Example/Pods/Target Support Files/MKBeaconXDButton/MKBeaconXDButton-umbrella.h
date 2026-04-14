@@ -80,7 +80,6 @@
 #import "MKBXDTabBarController.h"
 #import "MKBXDUpdateController.h"
 #import "MKBXDDFUModule.h"
-#import "MKBXDV2DFUModule.h"
 #import "CBPeripheral+MKBXDAdd.h"
 #import "MKBXDAdopter.h"
 #import "MKBXDBaseAdvModel.h"

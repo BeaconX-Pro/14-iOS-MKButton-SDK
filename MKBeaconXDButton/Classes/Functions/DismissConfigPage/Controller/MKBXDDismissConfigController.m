@@ -432,15 +432,15 @@ MKBXDNotificationTypePickerViewDelegate>
 #pragma mark - UI
 - (void)loadSubViews {
     self.defaultTitle = @"Dismiss alarm configuration";
-    self.titleLabel.font = MKFont(13.f);
+    [self setNavTitleFont:MKFont(13.f)];
     self.view.backgroundColor = RGBCOLOR(242, 242, 242);
     [self.rightButton setImage:LOADICON(@"MKBeaconXDButton", @"MKBXDDismissConfigController", @"bxd_slotSaveIcon.png") forState:UIControlStateNormal];
     [self.view addSubview:self.tableView];
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop);
-        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom);
+        make.top.equalTo(self.view).offset(kTopBarHeight);
+        make.bottom.equalTo(self.view).offset(-kSafeAreaHeight);
     }];
 }
 

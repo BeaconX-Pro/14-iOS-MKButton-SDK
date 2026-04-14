@@ -319,7 +319,7 @@ mk_bxd_centralManagerAlarmEventDelegate>
     [self.headerView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop);
+        make.top.equalTo(self.view).offset(kTopBarHeight);
         make.height.mas_equalTo(100.f);
     }];
     [self.view addSubview:self.textView];
@@ -327,7 +327,7 @@ mk_bxd_centralManagerAlarmEventDelegate>
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
         make.top.mas_equalTo(self.headerView.mas_bottom);
-        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom);
+        make.bottom.equalTo(self.view).offset(-kSafeAreaHeight);
     }];
 }
 

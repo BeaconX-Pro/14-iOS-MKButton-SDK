@@ -234,7 +234,7 @@ MKBXDTabBarControllerDelegate>
     [self.dataList removeAllObjects];
     [self.tableView reloadData];
     //刷新顶部设备数量
-    [self.titleLabel setText:[NSString stringWithFormat:@"DEVICE(%@)",[NSString stringWithFormat:@"%ld",(long)self.dataList.count]]];
+    self.defaultTitle = [NSString stringWithFormat:@"DEVICE(%@)",[NSString stringWithFormat:@"%ld",(long)self.dataList.count]];
     [self.refreshIcon.layer addAnimation:[MKCustomUIAdopter refreshAnimation:2.f] forKey:@"mk_refreshAnimationKey"];
     [[MKBXDCentralManager shared] startScan];
 }
@@ -266,7 +266,7 @@ MKBXDTabBarControllerDelegate>
             timeInterval = currentInterval;
             if (self.isNeedRefresh) {
                 [self.tableView reloadData];
-                [self.titleLabel setText:[NSString stringWithFormat:@"DEVICE(%@)",[NSString stringWithFormat:@"%ld",(long)self.dataList.count]]];
+                self.defaultTitle = [NSString stringWithFormat:@"DEVICE(%@)",[NSString stringWithFormat:@"%ld",(long)self.dataList.count]];
                 self.isNeedRefresh = NO;
             }
         }
@@ -487,14 +487,14 @@ MKBXDTabBarControllerDelegate>
     [self.view setBackgroundColor:RGBCOLOR(237, 243, 250)];
     self.leftButton.hidden = YES;
     [self.rightButton setImage:LOADICON(@"MKBeaconXDButton", @"MKBXDScanController", @"bxd_scanRightAboutIcon.png") forState:UIControlStateNormal];
-    self.titleLabel.text = @"DEVICE(0)";
+    self.defaultTitle = @"DEVICE(0)";
     UIView *topView = [[UIView alloc] init];
     topView.backgroundColor = RGBCOLOR(237, 243, 250);
     [self.view addSubview:topView];
     [topView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(0);
         make.right.mas_equalTo(0);
-        make.top.mas_equalTo(self.view.mas_safeAreaLayoutGuideTop);
+        make.top.equalTo(self.view).offset(kTopBarHeight);
         make.height.mas_equalTo(searchButtonHeight + 2 * 15.f);
     }];
     [self.refreshButton addSubview:self.refreshIcon];
@@ -524,7 +524,7 @@ MKBXDTabBarControllerDelegate>
         make.left.mas_equalTo(10.f);
         make.right.mas_equalTo(-10.f);
         make.top.mas_equalTo(topView.mas_bottom);
-        make.bottom.mas_equalTo(self.view.mas_safeAreaLayoutGuideBottom).mas_offset(-5.f);
+        make.bottom.equalTo(self.view).offset(-(kSafeAreaHeight + 5.f));
     }];
 }
 
