@@ -80,6 +80,10 @@
 #import "MKBXDTabBarController.h"
 #import "MKBXDUpdateController.h"
 #import "MKBXDDFUModule.h"
+#import "MKBXDBaseCentralManager.h"
+#import "MKBXDBaseDataProtocol.h"
+#import "MKBXDBaseLogManager.h"
+#import "MKBXDBaseSDKAdopter.h"
 #import "CBPeripheral+MKBXDAdd.h"
 #import "MKBXDAdopter.h"
 #import "MKBXDBaseAdvModel.h"
@@ -92,10 +96,6 @@
 #import "MKBXDSDK.h"
 #import "MKBXDSDKNormalDefines.h"
 #import "MKBXDTaskAdopter.h"
-#import "MKBXDBaseCentralManager.h"
-#import "MKBXDBaseDataProtocol.h"
-#import "MKBXDBaseLogManager.h"
-#import "MKBXDBaseSDKAdopter.h"
 #import "Target_BXD_Module.h"
 
 FOUNDATION_EXPORT double MKBeaconXDButtonVersionNumber;

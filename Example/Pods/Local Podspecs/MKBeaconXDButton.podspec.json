@@ -1,6 +1,6 @@
 {
   "name": "MKBeaconXDButton",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "summary": "A short description of MKBeaconXDButton.",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/aadyx2007@163.com/MKBeaconXDButton",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/aadyx2007@163.com/MKBeaconXDButton.git",
-    "tag": "0.0.2"
+    "tag": "0.0.3"
   },
   "platforms": {
     "ios": "14.0"
@@ -26,7 +26,7 @@
   "subspecs": [
     {
       "name": "ConnectManager",
-      "source_files": "MKBeaconXDButton/Classes/ConnectManager/**",
+      "source_files": "MKBeaconXDButton/Classes/ConnectManager/**/*.{h,m}",
       "dependencies": {
         "MKBeaconXDButton/SDK": [
 
@@ -38,7 +38,7 @@
     },
     {
       "name": "CTMediator",
-      "source_files": "MKBeaconXDButton/Classes/CTMediator/**",
+      "source_files": "MKBeaconXDButton/Classes/CTMediator/**/*.{h,m}",
       "dependencies": {
         "MKBaseModuleLibrary": [
 
@@ -50,25 +50,16 @@
     },
     {
       "name": "SDK",
-      "subspecs": [
-        {
-          "name": "Base",
-          "source_files": "MKBeaconXDButton/Classes/SDK/Base/**"
-        },
-        {
-          "name": "BXD",
-          "source_files": "MKBeaconXDButton/Classes/SDK/BXD/**",
-          "dependencies": {
-            "MKBeaconXDButton/SDK/Base": [
+      "source_files": "MKBeaconXDButton/Classes/SDK/**/*.{h,m}",
+      "dependencies": {
+        "MKBaseBleModule": [
 
-            ]
-          }
-        }
-      ]
+        ]
+      }
     },
     {
       "name": "Target",
-      "source_files": "MKBeaconXDButton/Classes/Target/**",
+      "source_files": "MKBeaconXDButton/Classes/Target/**/*.{h,m}",
       "dependencies": {
         "MKBeaconXDButton/Functions": [
 
@@ -77,6 +68,7 @@
     },
     {
       "name": "Expand",
+      "source_files": "MKBeaconXDButton/Classes/Expand/**/*.{h,m}",
       "dependencies": {
         "MKBaseModuleLibrary": [
 
@@ -84,45 +76,11 @@
         "MKCustomUIModule": [
 
         ]
-      },
-      "subspecs": [
-        {
-          "name": "ExcelManager",
-          "source_files": "MKBeaconXDButton/Classes/Expand/ExcelManager/**"
-        },
-        {
-          "name": "View",
-          "subspecs": [
-            {
-              "name": "AlarmEventCell",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/AlarmEventCell/**"
-            },
-            {
-              "name": "AlarmMsgCell",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/AlarmMsgCell/**"
-            },
-            {
-              "name": "AlarmSyncTimeView",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/AlarmSyncTimeView/**"
-            },
-            {
-              "name": "DeviceIDCell",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/DeviceIDCell/**"
-            },
-            {
-              "name": "NTPickerView",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/NTPickerView/**"
-            },
-            {
-              "name": "SyncEventHeaderView",
-              "source_files": "MKBeaconXDButton/Classes/Expand/View/SyncEventHeaderView/**"
-            }
-          ]
-        }
-      ]
+      }
     },
     {
       "name": "Functions",
+      "source_files": "MKBeaconXDButton/Classes/Functions/**/*.{h,m}",
       "dependencies": {
         "MKBeaconXDButton/SDK": [
 
@@ -136,12 +94,6 @@
         "MKBeaconXDButton/Expand": [
 
         ],
-        "MKBaseModuleLibrary": [
-
-        ],
-        "MKCustomUIModule": [
-
-        ],
         "MKBeaconXCustomUI": [
 
         ],
@@ -150,585 +102,11 @@
         ],
         "MLInputDodger": [
 
+        ],
+        "iOSDFULibrary": [
+          "4.13.0"
         ]
-      },
-      "subspecs": [
-        {
-          "name": "AboutPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AboutPage/Controller/**"
-            }
-          ]
-        },
-        {
-          "name": "AccelerationPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AccelerationPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AccelerationPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AccelerationPage/View": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AccelerationPage/Model/**"
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AccelerationPage/View/**"
-            }
-          ]
-        },
-        {
-          "name": "AlarmEventForCRPage",
-          "dependencies": {
-            "MKBeaconXDButton/Functions/ExportEventDataPage/Controller": [
-
-            ]
-          },
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmEventForCRPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmEventForCRPage/View": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/Model/**"
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForCRPage/View/**"
-            }
-          ]
-        },
-        {
-          "name": "AlarmEventForDoubleBtnPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForDoubleBtnPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/View": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForDoubleBtnPage/Model/**"
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventForDoubleBtnPage/View/**"
-            }
-          ]
-        },
-        {
-          "name": "AlarmEventPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmEventPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmEventPage/View": [
-
-                ]
-              }
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventPage/View/**"
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmEventPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "AlarmModeConfigPage",
-          "subspecs": [
-            {
-              "name": "Defines",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/Defines/**"
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/Model/**"
-            },
-            {
-              "name": "V1",
-              "subspecs": [
-                {
-                  "name": "Controller",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V1/Controller/**",
-                  "dependencies": {
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/V1/Model": [
-
-                    ],
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/View": [
-
-                    ],
-                    "MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller": [
-
-                    ]
-                  }
-                },
-                {
-                  "name": "Model",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V1/Model/**",
-                  "dependencies": {
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/Model": [
-
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "name": "V2",
-              "subspecs": [
-                {
-                  "name": "Controller",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V2/Controller/**",
-                  "dependencies": {
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/V2/Model": [
-
-                    ],
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/View": [
-
-                    ],
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/Defines": [
-
-                    ]
-                  }
-                },
-                {
-                  "name": "Model",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/V2/Model/**",
-                  "dependencies": {
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/Model": [
-
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "name": "View",
-              "subspecs": [
-                {
-                  "name": "AbnormalInactivityTimeCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/AbnormalInactivityTimeCell/**"
-                },
-                {
-                  "name": "SlotBeaconCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotBeaconCell/**"
-                },
-                {
-                  "name": "SlotFramePickCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotFramePickCell/**",
-                  "dependencies": {
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/Defines": [
-
-                    ]
-                  }
-                },
-                {
-                  "name": "SlotParamCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotParamCell/**",
-                  "dependencies": {
-                    "MKBeaconXDButton/Functions/AlarmModeConfigPage/Defines": [
-
-                    ]
-                  }
-                },
-                {
-                  "name": "SlotUIDCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/SlotUIDCell/**"
-                },
-                {
-                  "name": "TxPowerCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/TxPowerCell/**"
-                },
-                {
-                  "name": "TriggerTypeClickCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/TriggerTypeClickCell/**"
-                },
-                {
-                  "name": "AlarmTypePickCell",
-                  "source_files": "MKBeaconXDButton/Classes/Functions/AlarmModeConfigPage/View/AlarmTypePickCell/**"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "name": "AlarmNotiTypePage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmNotiTypePage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmNotiTypePage/Model": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmNotiTypePage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "AlarmPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmModeConfigPage": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "AlarmPageV2",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmPageV2/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmPageV2/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmPageV2/View": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmNotiTypePage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmModeConfigPage/V2/Controller": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmPageV2/Model/**"
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/AlarmPageV2/View/**"
-            }
-          ]
-        },
-        {
-          "name": "DeviceInfoPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/DeviceInfoPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/DeviceInfoPage/Model": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/DeviceInfoPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "DevicePage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/DevicePage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/DevicePage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/QuickSwitchPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/UpdatePage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/DeviceInfoPage/Controller": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/DevicePage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "DismissConfigPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/DismissConfigPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/DismissConfigPage/Model": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/DismissConfigPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "ExportEventDataPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/ExportEventDataPage/Controller/**"
-            }
-          ]
-        },
-        {
-          "name": "PowerSavePage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/PowerSavePage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/PowerSavePage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/PowerSavePage/View": [
-
-                ]
-              }
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/PowerSavePage/View/**"
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/PowerSavePage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "QuickSwitchPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/QuickSwitchPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/QuickSwitchPage/Model": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/QuickSwitchPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "RemoteReminderPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/RemoteReminderPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/RemoteReminderPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/RemoteReminderPage/View": [
-
-                ]
-              }
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/RemoteReminderPage/View/**"
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/RemoteReminderPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "ScanPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/ScanPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/ScanPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/ScanPage/View": [
-
-                ],
-                "MKBeaconXDButton/Functions/ScanPage/Adopter": [
-
-                ],
-                "MKBeaconXDButton/Functions/TabBarPage/Controller": [
-
-                ]
-              }
-            },
-            {
-              "name": "View",
-              "source_files": "MKBeaconXDButton/Classes/Functions/ScanPage/View/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/ScanPage/Model": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/ScanPage/Model/**"
-            },
-            {
-              "name": "Adopter",
-              "source_files": "MKBeaconXDButton/Classes/Functions/ScanPage/Adopter/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/ScanPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/ScanPage/View": [
-
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "SettingPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/SettingPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/SettingPage/Model": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmEventPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmEventForCRPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmEventForDoubleBtnPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/DismissConfigPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/RemoteReminderPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/AccelerationPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/PowerSavePage/Controller": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/SettingPage/Model/**"
-            }
-          ]
-        },
-        {
-          "name": "TabBarPage",
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/TabBarPage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/AlarmPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/AlarmPageV2/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/SettingPage/Controller": [
-
-                ],
-                "MKBeaconXDButton/Functions/DevicePage/Controller": [
-
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "name": "UpdatePage",
-          "dependencies": {
-            "iOSDFULibrary": [
-              "4.13.0"
-            ]
-          },
-          "subspecs": [
-            {
-              "name": "Controller",
-              "source_files": "MKBeaconXDButton/Classes/Functions/UpdatePage/Controller/**",
-              "dependencies": {
-                "MKBeaconXDButton/Functions/UpdatePage/Model": [
-
-                ]
-              }
-            },
-            {
-              "name": "Model",
-              "source_files": "MKBeaconXDButton/Classes/Functions/UpdatePage/Model/**"
-            }
-          ]
-        }
-      ]
+      }
     }
   ]
 }
