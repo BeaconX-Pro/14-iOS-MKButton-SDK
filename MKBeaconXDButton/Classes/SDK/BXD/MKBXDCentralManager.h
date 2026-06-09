@@ -41,6 +41,9 @@ extern NSString *const mk_bxd_receiveThreeAxisDataNotification;
 
 extern NSString *const mk_bxd_receiveSubClickDataNotification;
 
+/// 状态恢复完成通知（当应用被系统重启并恢复蓝牙状态时发送）
+extern NSString *const mk_bxd_stateRestorationNotification;
+
 typedef NS_ENUM(NSInteger, mk_bxd_centralManagerStatus) {
     mk_bxd_centralManagerStatusUnable,                           //不可用
     mk_bxd_centralManagerStatusEnable,                           //可用状态
@@ -82,11 +85,22 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
 
 @end
 
+/// 状态恢复代理协议
+@protocol mk_bxd_stateRestorationDelegate <NSObject>
+@optional
+/// 状态恢复完成，系统重新连接了外设
+/// @param peripherals 恢复的外设列表
+- (void)mk_bxd_didRestoreStateWithPeripherals:(NSArray<CBPeripheral *> *)peripherals;
+@end
+
 @interface MKBXDCentralManager : NSObject<MKBXDCentralManagerProtocol>
 
 @property (nonatomic, weak)id <mk_bxd_centralManagerScanDelegate>delegate;
 
 @property (nonatomic, weak)id <mk_bxd_centralManagerAlarmEventDelegate>eventDelegate;
+
+/// 状态恢复代理
+@property (nonatomic, weak)id <mk_bxd_stateRestorationDelegate> restorationDelegate;
 
 /// Current connection status
 @property (nonatomic, assign, readonly)mk_bxd_centralConnectStatus connectStatus;
@@ -98,6 +112,17 @@ typedef NS_ENUM(NSInteger, mk_bxd_centralConnectStatus) {
 
 /// Destroy the MKBXDCentralManager singleton and remove the manager list of MKBXDCentralManager.
 + (void)removeFromCentralList;
+
+/// 启用状态恢复功能（需要在应用启动时尽早调用，建议在 didFinishLaunchingWithOptions 中调用）
+/// @param restoreIdentifier 唯一标识符，建议使用 Bundle ID，传nil则禁用状态恢复
++ (void)enableStateRestorationWithIdentifier:(nullable NSString *)restoreIdentifier;
+
+/// 检查当前是否是从状态恢复中启动的应用
++ (BOOL)isLaunchedFromStateRestoration;
+
+/// 设置状态恢复完成回调（便捷方法）
+/// @param completion 状态恢复完成时调用
++ (void)setStateRestorationCompletion:(nullable void(^)(NSArray<CBPeripheral *> *restoredPeripherals))completion;
 
 - (nonnull CBCentralManager *)centralManager;
 

@@ -21,6 +21,8 @@ extern NSString *const MKBXDCentralManagerStateChangedNotification;
 typedef void(^MKBXDConnectFailedBlock)(NSError *error);
 ///  连接外设成功block
 typedef void(^MKBXDConnectSuccessBlock)(CBPeripheral *peripheral);
+/// 状态恢复完成block
+typedef void(^MKBXDStateRestorationCompletion)(NSArray<CBPeripheral *> * _Nullable restoredPeripherals);
 
 @interface MKBXDBaseCentralManager : NSObject
 
@@ -33,10 +35,17 @@ typedef void(^MKBXDConnectSuccessBlock)(CBPeripheral *peripheral);
 /// 当前蓝牙中心状态
 @property (nonatomic, assign, readonly)MKBXDCentralManagerState centralStatus;
 
+/// 状态恢复回调（当应用被系统重启并恢复蓝牙状态时调用）
+@property (nonatomic, copy, nullable)MKBXDStateRestorationCompletion restorationCompletion;
+
 + (MKBXDBaseCentralManager *)shared;
 
 /// 销毁单例
 + (void)singleDealloc;
+
+/// 初始化CentralManager（支持状态恢复）- 必须在shared之前调用
+/// @param restoreIdentifier 状态恢复标识符，传nil则不启用状态恢复，建议使用Bundle ID
++ (void)initializeWithRestoreIdentifier:(nullable NSString *)restoreIdentifier;
 
 /// 当前连接的外设
 - (nullable CBPeripheral *)peripheral;

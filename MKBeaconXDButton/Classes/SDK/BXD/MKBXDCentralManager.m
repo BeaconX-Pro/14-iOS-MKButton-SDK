@@ -32,20 +32,13 @@ NSString *const mk_bxd_receiveThreeAxisDataNotification = @"mk_bxd_receiveThreeA
 
 NSString *const mk_bxd_receiveSubClickDataNotification = @"mk_bxd_receiveSubClickDataNotification";
 
+NSString *const mk_bxd_stateRestorationNotification = @"mk_bxd_stateRestorationNotification";
+
 static MKBXDCentralManager *manager = nil;
 static dispatch_once_t onceToken;
-
-//@interface NSObject (MKBXDCentralManager)
-//
-//@end
-//
-//@implementation NSObject (MKBXDCentralManager)
-//
-//+ (void)load{
-//    [MKBXDCentralManager shared];
-//}
-//
-//@end
+static NSString *g_restoreIdentifier = nil;
+static BOOL g_isLaunchedFromStateRestoration = NO;
+static void(^g_restorationCompletion)(NSArray<CBPeripheral *> *restoredPeripherals) = nil;
 
 @interface MKBXDCentralManager ()
 
@@ -78,6 +71,7 @@ static dispatch_once_t onceToken;
     if (self = [super init]) {
         [self logToLocal:@"MKBXDCentralManager初始化"];
         [[MKBXDBaseCentralManager shared] loadDataManager:self];
+        [self setupStateRestorationObserver];
     }
     return self;
 }
@@ -101,6 +95,73 @@ static dispatch_once_t onceToken;
     [[MKBXDBaseCentralManager shared] removeDataManager];
     manager = nil;
     onceToken = 0;
+}
+
+#pragma mark - State Restoration Public Methods
++ (void)enableStateRestorationWithIdentifier:(NSString *)restoreIdentifier {
+    g_restoreIdentifier = restoreIdentifier;
+    
+    // 检查是否是从终止状态启动
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL wasTerminated = [defaults boolForKey:@"MKBXD_WAS_TERMINATED"];
+    if (wasTerminated) {
+        g_isLaunchedFromStateRestoration = YES;
+        NSLog(@"[MKBXD] App launched from terminated state, checking for state restoration");
+    }
+    [defaults setBool:NO forKey:@"MKBXD_WAS_TERMINATED"];
+    [defaults synchronize];
+    
+    // 初始化CentralManager以启用状态恢复
+    [MKBXDBaseCentralManager initializeWithRestoreIdentifier:restoreIdentifier];
+    
+    // 重新加载dataManager
+    [[MKBXDBaseCentralManager shared] loadDataManager:manager];
+    
+    // 设置状态恢复回调
+    [[MKBXDBaseCentralManager shared] setRestorationCompletion:^(NSArray<CBPeripheral *> *restoredPeripherals) {
+        NSLog(@"[MKBXD] State restoration completed, restored %lu peripherals", (unsigned long)restoredPeripherals.count);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // 发送通知
+            [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_stateRestorationNotification
+                                                                object:nil
+                                                              userInfo:@{@"peripherals": restoredPeripherals ?: @[]}];
+            
+            // 调用代理方法
+            if (manager && manager.restorationDelegate && [manager.restorationDelegate respondsToSelector:@selector(mk_bxd_didRestoreStateWithPeripherals:)]) {
+                [manager.restorationDelegate mk_bxd_didRestoreStateWithPeripherals:restoredPeripherals ?: @[]];
+            }
+            
+            // 调用便捷回调
+            if (g_restorationCompletion) {
+                g_restorationCompletion(restoredPeripherals ?: @[]);
+            }
+        });
+    }];
+}
+
++ (BOOL)isLaunchedFromStateRestoration {
+    return g_isLaunchedFromStateRestoration;
+}
+
++ (void)setStateRestorationCompletion:(void (^)(NSArray<CBPeripheral *> * _Nonnull))completion {
+    g_restorationCompletion = completion;
+}
+
+#pragma mark - Private State Restoration Methods
+- (void)setupStateRestorationObserver {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleStateRestoration:)
+                                                 name:mk_bxd_stateRestorationNotification
+                                               object:nil];
+}
+
+- (void)handleStateRestoration:(NSNotification *)notification {
+    NSArray<CBPeripheral *> *peripherals = notification.userInfo[@"peripherals"];
+    if (peripherals.count == 0) {
+        return;
+    }
+    NSLog(@"[MKBXD] Handling state restoration for %lu peripherals", (unsigned long)peripherals.count);
 }
 
 #pragma mark - MKBXDScanProtocol
@@ -161,10 +222,8 @@ static dispatch_once_t onceToken;
     [self.operationList removeAllObjects];
     self.isAction = NO;
     if (self.readingNeedPassword) {
-        //正在读取lockState的时候不对连接状态做出回调
         return;
     }
-    //连接成功的判断必须是发送密码成功之后
     if (connectState == MKBXDPeripheralConnectStateUnknow) {
         self.connectStatus = mk_bxd_centralConnectStatusUnknow;
     }else if (connectState == MKBXDPeripheralConnectStateConnecting) {
@@ -190,7 +249,6 @@ static dispatch_once_t onceToken;
     NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
     NSLog(@"%@-%@",characteristic.UUID.UUIDString,content);
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA04"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA05"]] || [characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA09"]]) {
-        //单击数据/双击数据/长按数据/长连接模式数据/副按键数据
         NSString *alarmType = @"0";
         if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA03"]]) {
             alarmType = @"0";
@@ -215,7 +273,6 @@ static dispatch_once_t onceToken;
     }
     
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA02"]]) {
-        //引起设备断开连接的类型
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -226,7 +283,6 @@ static dispatch_once_t onceToken;
         return;
     }
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA06"]]) {
-        //三轴数据
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
         NSNumber *xData = [MKBXDBaseSDKAdopter signedHexTurnString:[content substringWithRange:NSMakeRange(8, 4)]];
@@ -249,7 +305,6 @@ static dispatch_once_t onceToken;
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA08"]]) {
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
-        //长连接按键触发次数
         NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 2)];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -264,7 +319,6 @@ static dispatch_once_t onceToken;
     if ([characteristic.UUID isEqual:[CBUUID UUIDWithString:@"AA0A"]]) {
         NSString *content = [MKBXDBaseSDKAdopter hexStringFromData:characteristic.value];
         [self saveToLogData:content appToDevice:NO];
-        //副按键触发次数
         NSString *count = [MKBXDBaseSDKAdopter getDecimalStringWithHex:content range:NSMakeRange(8, 2)];
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -544,16 +598,13 @@ static dispatch_once_t onceToken;
     MKBXDPeripheral *bxdPeripheral = [[MKBXDPeripheral alloc] initWithPeripheral:peripheral dfuMode:dfu];
     [[MKBXDBaseCentralManager shared] connectDevice:bxdPeripheral sucBlock:^(CBPeripheral * _Nonnull peripheral) {
         if (self.password.length > 0 && self.password.length <= 16) {
-            //需要密码登录
             [self logToLocal:@"密码登录"];
             [self sendPasswordToDevice];
             return;
         }
         if (dfu) {
-            //免密登录
             [self logToLocal:@"DFU升级"];
         }else {
-            //免密登录
             [self logToLocal:@"免密登录"];
         }
         
@@ -588,11 +639,9 @@ static dispatch_once_t onceToken;
             [sself operationAction];
         }
         if (error || ![returnData isKindOfClass:NSDictionary.class] || ![returnData[@"success"] boolValue]) {
-            //密码错误
             [sself operationFailedBlockWithMsg:@"Password Error" failedBlock:sself.failedBlock];
             return ;
         }
-        //密码正确
         dispatch_async(dispatch_get_main_queue(), ^{
             sself.connectStatus = mk_bxd_centralConnectStatusConnected;
             [[NSNotificationCenter defaultCenter] postNotificationName:mk_bxd_peripheralConnectStateChangedNotification object:nil];
@@ -617,7 +666,6 @@ static dispatch_once_t onceToken;
             [sself.operationList removeObjectAtIndex:0];
             [sself operationAction];
         }
-        //读取成功
         dispatch_async(dispatch_get_main_queue(), ^{
             if (sself.needPasswordBlock) {
                 sself.needPasswordBlock(returnData);
@@ -734,7 +782,6 @@ static dispatch_once_t onceToken;
     if (!self.needPasswordBlock) {
         return;
     }
-    //读取是否需要密码
     [self disconnect];
     self.needPasswordBlock = nil;
     self.readingNeedPassword = NO;

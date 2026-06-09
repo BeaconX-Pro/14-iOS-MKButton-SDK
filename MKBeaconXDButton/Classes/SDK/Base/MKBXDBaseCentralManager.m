@@ -20,20 +20,9 @@ NSString *const MKBXDCentralManagerStateChangedNotification = @"MKBXDCentralMana
 
 static MKBXDBaseCentralManager *manager = nil;
 static dispatch_once_t onceToken;
+static NSString *g_restoreIdentifier = nil;
 
 static NSTimeInterval const defaultConnectTime = 20.f;
-
-@interface NSObject (MKBXDCentralManager)
-
-@end
-
-@implementation NSObject (MKBXDCentralManager)
-
-+ (void)load{
-    [MKBXDBaseCentralManager shared];
-}
-
-@end
 
 @interface MKBXDBaseCentralManager ()<CBCentralManagerDelegate, CBPeripheralDelegate>
 
@@ -68,11 +57,38 @@ static NSTimeInterval const defaultConnectTime = 20.f;
 #pragma mark - life circle
 
 - (instancetype)init {
+    return [self initWithRestoreIdentifier:g_restoreIdentifier];
+}
+
+- (instancetype)initWithRestoreIdentifier:(NSString *)restoreIdentifier {
     if (self = [super init]) {
         _centralManagerQueue = dispatch_queue_create("moko.com.centralManager", DISPATCH_QUEUE_SERIAL);
-        _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:_centralManagerQueue];
+        
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        if (restoreIdentifier.length > 0) {
+            options[CBCentralManagerOptionRestoreIdentifierKey] = restoreIdentifier;
+            NSLog(@"[MKBXD] State restoration enabled with identifier: %@", restoreIdentifier);
+        }
+        options[CBCentralManagerOptionShowPowerAlertKey] = @(YES);
+        
+        _centralManager = [[CBCentralManager alloc] initWithDelegate:self
+                                                                queue:_centralManagerQueue
+                                                              options:options.count > 0 ? options : nil];
     }
     return self;
+}
+
++ (void)initializeWithRestoreIdentifier:(NSString *)restoreIdentifier {
+    g_restoreIdentifier = restoreIdentifier;
+    if (manager) {
+        if (manager.centralManager) {
+            [manager.centralManager stopScan];
+            manager.centralManager.delegate = nil;
+        }
+        manager = nil;
+        onceToken = 0;
+        [self shared];
+    }
 }
 
 + (MKBXDBaseCentralManager *)shared {
@@ -92,6 +108,43 @@ static NSTimeInterval const defaultConnectTime = 20.f;
 #pragma mark - CBCentralManagerDelegate
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
     [self updateCentralManagerState];
+}
+
+// 关键：状态恢复方法
+- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *,id> *)dict {
+    NSLog(@"[MKBXD] willRestoreState called - System is restoring Bluetooth state");
+    
+    // 恢复已连接的 peripherals
+    NSArray<CBPeripheral *> *peripherals = dict[CBCentralManagerRestoredStatePeripheralsKey];
+    if (peripherals.count > 0) {
+        NSLog(@"[MKBXD] Restoring %lu previously connected peripherals", (unsigned long)peripherals.count);
+        for (CBPeripheral *peripheral in peripherals) {
+            peripheral.delegate = self;
+            NSLog(@"[MKBXD] Restored peripheral: %@", peripheral.name ?: peripheral.identifier.UUIDString);
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.restorationCompletion) {
+                self.restorationCompletion(peripherals);
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"MKBXDStateRestorationNotification"
+                                                                object:nil
+                                                              userInfo:@{@"peripherals": peripherals}];
+        });
+    }
+    
+    // 恢复正在进行的扫描
+    NSArray<CBUUID *> *scanServices = dict[CBCentralManagerRestoredStateScanServicesKey];
+    if (scanServices.count > 0) {
+        NSDictionary *scanOptions = dict[CBCentralManagerRestoredStateScanOptionsKey];
+        NSLog(@"[MKBXD] Restoring scan with services: %@", scanServices);
+        [self.centralManager scanForPeripheralsWithServices:scanServices options:scanOptions];
+        self.managerAction = mk_bxd_managerActionScan;
+        
+        if (self.managerPro && [self.managerPro respondsToSelector:@selector(MKBXDCentralManagerStartScan)]) {
+            [self.managerPro MKBXDCentralManagerStartScan];
+        }
+    }
 }
 
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *,id> *)advertisementData RSSI:(NSNumber *)RSSI {
@@ -119,7 +172,6 @@ static NSTimeInterval const defaultConnectTime = 20.f;
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"---------->The peripheral is disconnect");
     if (self.connectStatus != MKBXDPeripheralConnectStateConnected) {
-        //连接过程中的断开不处理
         return;
     }
     [self.peripheralManager setNil];
@@ -194,14 +246,11 @@ static NSTimeInterval const defaultConnectTime = 20.f;
 
 - (BOOL)scanForPeripheralsWithServices:(NSArray<CBUUID *> *)services options:(NSDictionary<NSString *,id> *)options {
     if (self.centralManager.state != CBManagerStatePoweredOn) {
-        //当前蓝牙状态不可用
         return NO;
     }
     if (self.managerAction == mk_bxd_managerActionScan) {
-        //处于扫描状态
         [self.centralManager stopScan];
     }else if (self.managerAction == mk_bxd_managerActionConnecting) {
-        //处于连接状态
         [self connectPeripheralFailed];
     }
     self.managerAction = mk_bxd_managerActionScan;
@@ -233,7 +282,6 @@ static NSTimeInterval const defaultConnectTime = 20.f;
         return;
     }
     if (self.centralManager.state != CBManagerStatePoweredOn) {
-        //蓝牙状态不可用
         [MKBXDBaseSDKAdopter operationCentralBlePowerOffBlock:failedBlock];
         return;
     }
