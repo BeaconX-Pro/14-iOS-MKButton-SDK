@@ -61,7 +61,7 @@ TODO: Add long description of the pod here.
     ss.dependency 'MKBeaconXCustomUI'
     ss.dependency 'HHTransition'
     ss.dependency 'MLInputDodger'
-    ss.dependency 'iOSDFULibrary', '4.13.0'
+    ss.dependency 'NordicDFU', '4.16.0'
   end
   
 end
