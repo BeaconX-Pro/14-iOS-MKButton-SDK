@@ -8,6 +8,8 @@
 
 #import "MKBXDUpdateController.h"
 
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+
 #import "Masonry.h"
 #import "MKBaseTableView.h"
 #import "MKMacroDefines.h"
@@ -15,6 +17,7 @@
 
 #import "MKNormalTextCell.h"
 #import "MKHudManager.h"
+#import "MKCustomUIAdopter.h"
 
 #import "MKBXDCentralManager.h"
 
@@ -22,7 +25,7 @@
 
 #import "MKBXDDFUModule.h"
 
-@interface MKBXDUpdateController ()<UITableViewDelegate,UITableViewDataSource>
+@interface MKBXDUpdateController ()<UITableViewDelegate,UITableViewDataSource,UIDocumentPickerDelegate>
 
 @property (nonatomic, strong)MKBaseTableView *tableView;
 
@@ -74,25 +77,9 @@
         [self.view showCentralToast:@"Firmware cannot be empty!"];
         return;
     }
-    //抛出该通知，设备信息页面再次返回不需要读取任何数据了，防止出现读取错误
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"mk_bxd_startDfuProcessNotification" object:nil];
     NSString *document = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
     NSString *filePath = [document stringByAppendingPathComponent:firmwareModel.leftMsg];
-    self.leftButton.enabled = NO;
-    //BLE升级
-    [[MKHudManager share] showHUDWithTitle:@"Waiting..." inView:self.view isPenetration:NO];
-    @weakify(self);
-    [self.dfuModule updateWithFileUrl:filePath progressBlock:^(CGFloat progress) {
-        
-    } sucBlock:^{
-        @strongify(self);
-        [[MKHudManager share] showHUDWithTitle:@"Update firmware successfully!" inView:self.view isPenetration:NO];
-        [self performSelector:@selector(updateComplete) withObject:nil afterDelay:1.f];
-    } failedBlock:^(NSError * _Nonnull error) {
-        @strongify(self);
-        [[MKHudManager share] showHUDWithTitle:@"Opps!DFU Failed. Please try again!" inView:self.view isPenetration:NO];
-        [self performSelector:@selector(updateComplete) withObject:nil afterDelay:1.f];
-    }];
+    [self startDFUWithFilePath:filePath];
 }
 
 #pragma mark - UITableViewDataSource
@@ -106,8 +93,73 @@
     return cell;
 }
 
-#pragma mark - private method
+#pragma mark - Event method
+- (void)selectBtnPressed {
+    UTType *dataType = [UTType typeWithIdentifier:@"public.data"];
+    UIDocumentPickerViewController *documentPicker = [[UIDocumentPickerViewController alloc] initForOpeningContentTypes:@[dataType]];
+    documentPicker.delegate = self;
+    documentPicker.allowsMultipleSelection = NO;
+    [self presentViewController:documentPicker animated:YES completion:nil];
+}
 
+#pragma mark - UIDocumentPickerDelegate
+- (void)documentPicker:(UIDocumentPickerViewController *)controller didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls {
+    if (urls.count == 0) {
+        return;
+    }
+    NSURL *sourceURL = urls.firstObject;
+    NSString *documentDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *fileName = sourceURL.lastPathComponent;
+    NSString *destPath = [documentDir stringByAppendingPathComponent:fileName];
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:destPath]) {
+        [fileManager removeItemAtPath:destPath error:nil];
+    }
+
+    BOOL success = NO;
+    if ([sourceURL startAccessingSecurityScopedResource]) {
+        NSError *copyError;
+        success = [fileManager copyItemAtURL:sourceURL toURL:[NSURL fileURLWithPath:destPath] error:&copyError];
+        [sourceURL stopAccessingSecurityScopedResource];
+    }
+
+    if (success) {
+        [self startDFUWithFilePath:destPath];
+    } else {
+        [self.view showCentralToast:@"Failed to import firmware file!"];
+    }
+}
+
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController *)controller {
+    //用户取消选择，无需处理
+}
+
+#pragma mark - DFU
+- (void)startDFUWithFilePath:(NSString *)filePath {
+    if (!ValidStr(filePath)) {
+        [self.view showCentralToast:@"Firmware cannot be empty!"];
+        return;
+    }
+    //抛出该通知，设备信息页面再次返回不需要读取任何数据了，防止出现读取错误
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"mk_bxd_startDfuProcessNotification" object:nil];
+    self.leftButton.enabled = NO;
+    [[MKHudManager share] showHUDWithTitle:@"Waiting..." inView:self.view isPenetration:NO];
+    @weakify(self);
+    [self.dfuModule updateWithFileUrl:filePath progressBlock:^(CGFloat progress) {
+
+    } sucBlock:^{
+        @strongify(self);
+        [[MKHudManager share] showHUDWithTitle:@"Update firmware successfully!" inView:self.view isPenetration:NO];
+        [self performSelector:@selector(updateComplete) withObject:nil afterDelay:1.f];
+    } failedBlock:^(NSError * _Nonnull error) {
+        @strongify(self);
+        [[MKHudManager share] showHUDWithTitle:@"Opps!DFU Failed. Please try again!" inView:self.view isPenetration:NO];
+        [self performSelector:@selector(updateComplete) withObject:nil afterDelay:1.f];
+    }];
+}
+
+#pragma mark - private method
 - (void)updateComplete {
     self.leftButton.enabled = YES;
     [[MKHudManager share] hide];
@@ -126,7 +178,7 @@
     }
     // 创建 dispatch queue, 当文件改变事件发生时会发送到该 queue
     self.monitorQueue = dispatch_queue_create("ZFileMonitorQueue", 0);
-    
+
     // 创建 GCD source. 将用于监听 file descriptor 来判断是否有文件写入操作
     self.monitorSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, filedes, DISPATCH_VNODE_WRITE, self.monitorQueue);
     // 当文件发生改变时会调用该 block
@@ -139,13 +191,13 @@
             [self loadFileList];
         });
     });
-    
+
     // 当文件监听停止时会调用该 block
     dispatch_source_set_cancel_handler(self.monitorSource, ^{
         // 关闭文件监听时, 关闭该 file descriptor
         close(filedes);
     });
-    
+
     // 开始监听文件
     dispatch_resume(self.monitorSource);
 }
@@ -191,6 +243,8 @@
         _tableView.backgroundColor = COLOR_WHITE_MACROS;
         _tableView.delegate = self;
         _tableView.dataSource = self;
+
+        _tableView.tableHeaderView = [self tableHeader];
     }
     return _tableView;
 }
@@ -207,6 +261,19 @@
         _dfuModule = [[MKBXDDFUModule alloc] init];
     }
     return _dfuModule;
+}
+
+- (UIView *)tableHeader {
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, kViewWidth, 60.f)];
+    headerView.backgroundColor = COLOR_WHITE_MACROS;
+
+    UIButton *selectBtn = [MKCustomUIAdopter customButtonWithTitle:@"Select Firmware"
+                                                            target:self
+                                                            action:@selector(selectBtnPressed)];
+    selectBtn.frame = CGRectMake((kViewWidth - 200.f) / 2, 10.f, 200.f, 40.f);
+    [headerView addSubview:selectBtn];
+
+    return headerView;
 }
 
 @end
