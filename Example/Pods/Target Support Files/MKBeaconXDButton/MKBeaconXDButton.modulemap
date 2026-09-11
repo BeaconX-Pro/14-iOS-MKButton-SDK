@@ -1,0 +1,6 @@
+framework module MKBeaconXDButton {
+  umbrella header "MKBeaconXDButton-umbrella.h"
+
+  export *
+  module * { export * }
+}

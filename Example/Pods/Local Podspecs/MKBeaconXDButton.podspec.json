@@ -1,0 +1,112 @@
+{
+  "name": "MKBeaconXDButton",
+  "version": "0.0.5",
+  "summary": "A short description of MKBeaconXDButton.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/aadyx2007@163.com/MKBeaconXDButton",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "aadyx2007@163.com": "aadyx2007@163.com"
+  },
+  "source": {
+    "git": "https://github.com/aadyx2007@163.com/MKBeaconXDButton.git",
+    "tag": "0.0.5"
+  },
+  "platforms": {
+    "ios": "18.0"
+  },
+  "resource_bundles": {
+    "MKBeaconXDButton": [
+      "MKBeaconXDButton/Assets/*.png"
+    ]
+  },
+  "subspecs": [
+    {
+      "name": "ConnectManager",
+      "source_files": "MKBeaconXDButton/Classes/ConnectManager/**/*.{h,m}",
+      "dependencies": {
+        "MKBeaconXDButton/SDK": [
+
+        ],
+        "MKBaseModuleLibrary": [
+
+        ]
+      }
+    },
+    {
+      "name": "CTMediator",
+      "source_files": "MKBeaconXDButton/Classes/CTMediator/**/*.{h,m}",
+      "dependencies": {
+        "MKBaseModuleLibrary": [
+
+        ],
+        "CTMediator": [
+
+        ]
+      }
+    },
+    {
+      "name": "SDK",
+      "source_files": "MKBeaconXDButton/Classes/SDK/**/*.{h,m}",
+      "dependencies": {
+        "MKBaseBleModule": [
+
+        ]
+      }
+    },
+    {
+      "name": "Target",
+      "source_files": "MKBeaconXDButton/Classes/Target/**/*.{h,m}",
+      "dependencies": {
+        "MKBeaconXDButton/Functions": [
+
+        ]
+      }
+    },
+    {
+      "name": "Expand",
+      "source_files": "MKBeaconXDButton/Classes/Expand/**/*.{h,m}",
+      "dependencies": {
+        "MKBaseModuleLibrary": [
+
+        ],
+        "MKCustomUIModule": [
+
+        ]
+      }
+    },
+    {
+      "name": "Functions",
+      "source_files": "MKBeaconXDButton/Classes/Functions/**/*.{h,m}",
+      "dependencies": {
+        "MKBeaconXDButton/SDK": [
+
+        ],
+        "MKBeaconXDButton/CTMediator": [
+
+        ],
+        "MKBeaconXDButton/ConnectManager": [
+
+        ],
+        "MKBeaconXDButton/Expand": [
+
+        ],
+        "MKBeaconXCustomUI": [
+
+        ],
+        "HHTransition": [
+
+        ],
+        "MLInputDodger": [
+
+        ],
+        "NordicDFU": [
+          "4.16.0"
+        ]
+      }
+    }
+  ]
+}
