@@ -1,39 +1,34 @@
 //
-//  MKAppDelegate.m
-//  MKBeaconXDButton
+//  SceneDelegate.m
+//  MKBeaconXDButton_Example
 //
-//  Created by aadyx2007@163.com on 12/29/2022.
-//  Copyright (c) 2022 aadyx2007@163.com. All rights reserved.
+//  Created by aa on 2026/9/24.
+//  Copyright © 2026 aadyx2007@163.com. All rights reserved.
 //
 
-#import "MKAppDelegate.h"
-
-#import <CoreBluetooth/CoreBluetooth.h>
-
-#import <UserNotifications/UserNotifications.h>
+#import "SceneDelegate.h"
 
 #import "MKBXDCentralManager.h"
 
 #import "MKBXDScanController.h"
 
-@interface MKAppDelegate ()<mk_bxd_stateRestorationDelegate, UNUserNotificationCenterDelegate>
+@interface SceneDelegate ()<mk_bxd_stateRestorationDelegate>
+
+@property (nonatomic, strong)UIWindow *window;
 
 @property (nonatomic, strong)UIView *launchView;
 
 @end
 
-@implementation MKAppDelegate
+@implementation SceneDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    // 设置通知代理
-    if (@available(iOS 10.0, *)) {
-        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+- (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
+    if (![scene isKindOfClass:[UIWindowScene class]]) {
+        return;
     }
     
-    // ========== 启用状态恢复（必须在任何蓝牙操作之前调用）==========
-    NSString *restoreIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    [MKBXDCentralManager enableStateRestorationWithIdentifier:restoreIdentifier];
+    // 设置通知代理
+    [UNUserNotificationCenter currentNotificationCenter].delegate = self;
     
     // 设置状态恢复代理
     [MKBXDCentralManager shared].restorationDelegate = self;
@@ -69,30 +64,39 @@
     }
     
     // 设置窗口和根视图
-    _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    _window.backgroundColor = [UIColor whiteColor];
+    UIWindowScene *windowScene = (UIWindowScene *)scene;
+    self.window = [[UIWindow alloc] initWithWindowScene:windowScene];
+    self.window.backgroundColor = [UIColor whiteColor];
     MKBXDScanController *vc = [[MKBXDScanController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    _window.rootViewController = nav;
-    [_window makeKeyAndVisible];
+    self.window.rootViewController = nav;
+    [self.window makeKeyAndVisible];
     [self addLaunchScreen];
-    
-    return YES;
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
-{
+- (void)sceneDidDisconnect:(UIScene *)scene {
+    // 场景被释放时调用（不一定会调用）
+}
+
+- (void)sceneDidBecomeActive:(UIScene *)scene {
+    // 场景从非活跃状态进入活跃状态
+}
+
+- (void)sceneWillResignActive:(UIScene *)scene {
+    // 场景即将从活跃状态进入非活跃状态
+}
+
+- (void)sceneWillEnterForeground:(UIScene *)scene {
+    // 场景即将进入前台
+}
+
+- (void)sceneDidEnterBackground:(UIScene *)scene {
     // 标记应用进入后台，用于下次启动时检测状态恢复
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:YES forKey:@"MKBXD_WAS_TERMINATED"];
     [defaults synchronize];
     
     NSLog(@"📱 应用进入后台");
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application
-{
-    NSLog(@"📱 应用即将终止");
 }
 
 #pragma mark - mk_bxd_stateRestorationDelegate
@@ -139,8 +143,8 @@
 // 应用在前台时也显示通知
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
-         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler API_AVAILABLE(ios(14.0)) {
-    // iOS 14+ 使用新API
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+    // iOS 18 环境下使用新 API
     completionHandler(UNNotificationPresentationOptionList | UNNotificationPresentationOptionBanner | UNNotificationPresentationOptionSound);
 }
 
