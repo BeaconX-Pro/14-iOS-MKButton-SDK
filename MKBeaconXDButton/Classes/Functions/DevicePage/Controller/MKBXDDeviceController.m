@@ -30,7 +30,6 @@
 #import "MKBXDDevicePageModel.h"
 
 #import "MKBXDQuickSwitchController.h"
-#import "MKBXDUpdateController.h"
 #import "MKBXDDeviceInfoController.h"
 
 @interface MKBXDDeviceController ()<UITableViewDelegate,
@@ -298,7 +297,10 @@ MKBXDDeviceIDCellDelegate>
 }
 
 - (void)startDFU {
-    MKBXDUpdateController *vc = [[MKBXDUpdateController alloc] init];
+    //UpdatePage 依赖 NordicDFU 4.16.0（无 SPM 支持），SPM 模式下该目录被 exclude，
+    //通过运行时类名桥接，消除对 MKBXDUpdateController 的编译期硬依赖。
+    Class updateCls = NSClassFromString(@"MKBXDUpdateController");
+    UIViewController *vc = [[updateCls alloc] init];
     [self.navigationController pushViewController:vc animated:YES];
 }
 

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class UIViewController;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface Target_BXD_Module : NSObject

@@ -6,7 +6,9 @@
 //  Copyright © 2022 aadyx2007@163.com. All rights reserved.
 //
 
-#import <CTMediator/CTMediator.h>
+#import <UIKit/UIKit.h>
+
+#import "CTMediator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
