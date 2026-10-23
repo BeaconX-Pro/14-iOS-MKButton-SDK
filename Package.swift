@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseBleModule.git", from: "1.1.6"),
-        .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseModuleLibrary.git", from: "2.2.15"),
+        .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseModuleLibrary.git", from: "2.2.18"),
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKCustomUIModule.git", from: "2.1.14"),
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBeaconXCustomUI.git", from: "1.0.17"),
     ],
@@ -30,6 +30,9 @@ let package = Package(
             path: "MKBeaconXDButton",
             exclude: [
                 "Classes/Functions/UpdatePage",  // NordicDFU 4.16.0 无 SPM
+                "Classes/Vendor/CTMediator",
+                "Classes/Vendor/HHTransition",
+                "Classes/Vendor/MLInputDodger",
             ],
             sources: ["Classes"],
             resources: [.process("Assets")],
