@@ -26,14 +26,21 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "MKBeaconXDButtonSDK",
+            name: "MKBeaconXDButtonSDKBase",
             dependencies: [],
-            path: "MKBeaconXDButton/Classes/SDK",
+            path: "MKBeaconXDButton/Classes/SDK/Base",
             publicHeadersPath: ".",
-            cSettings: [
-                .headerSearchPath("Base"),
-                .headerSearchPath("BXD"),
+            linkerSettings: [
+                .linkedFramework("CoreBluetooth"),
+            ]
+        ),
+        .target(
+            name: "MKBeaconXDButtonSDK",
+            dependencies: [
+                "MKBeaconXDButtonSDKBase",
             ],
+            path: "MKBeaconXDButton/Classes/SDK/BXD",
+            publicHeadersPath: ".",
             linkerSettings: [
                 .linkedFramework("CoreBluetooth"),
             ]
@@ -42,6 +49,7 @@ let package = Package(
             name: "MKBeaconXDButton",
             dependencies: [
                 "MKBeaconXDButtonSDK",
+                "MKBeaconXDButtonSDKBase",
                 "MKBaseBleModule",
                 "MKBaseModuleLibrary",
                 "MKCustomUIModule",
@@ -150,8 +158,6 @@ let package = Package(
                 .headerSearchPath("Classes/Functions/SettingPage/Model"),
                 .headerSearchPath("Classes/Functions/TabBarPage"),
                 .headerSearchPath("Classes/Functions/TabBarPage/Controller"),
-                .headerSearchPath("Classes/SDK/Base"),
-                .headerSearchPath("Classes/SDK/BXD"),
                 .headerSearchPath("Classes/Target"),
                 .headerSearchPath("Classes/Vendor"),
                 .headerSearchPath("Classes/Vendor/CTMediator"),
