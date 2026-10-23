@@ -7,6 +7,12 @@ let package = Package(
         .iOS(.v18)
     ],
     products: [
+        // 客户二次开发使用：仅蓝牙 SDK 层，不包含任何 UI 页面
+        .library(
+            name: "MKBeaconXDButtonSDK",
+            targets: ["MKBeaconXDButtonSDK"]
+        ),
+        // 完整组件：SDK + 全部配置页面
         .library(
             name: "MKBeaconXDButton",
             targets: ["MKBeaconXDButton"]
@@ -20,8 +26,22 @@ let package = Package(
     ],
     targets: [
         .target(
+            name: "MKBeaconXDButtonSDK",
+            dependencies: [],
+            path: "MKBeaconXDButton/Classes/SDK",
+            publicHeadersPath: ".",
+            cSettings: [
+                .headerSearchPath("Base"),
+                .headerSearchPath("BXD"),
+            ],
+            linkerSettings: [
+                .linkedFramework("CoreBluetooth"),
+            ]
+        ),
+        .target(
             name: "MKBeaconXDButton",
             dependencies: [
+                "MKBeaconXDButtonSDK",
                 "MKBaseBleModule",
                 "MKBaseModuleLibrary",
                 "MKCustomUIModule",
@@ -29,6 +49,7 @@ let package = Package(
             ],
             path: "MKBeaconXDButton",
             exclude: [
+                "Classes/SDK",
                 "Classes/Functions/UpdatePage",  // NordicDFU 4.16.0 无 SPM
                 "Classes/Vendor/CTMediator",
                 "Classes/Vendor/HHTransition",
@@ -129,7 +150,6 @@ let package = Package(
                 .headerSearchPath("Classes/Functions/SettingPage/Model"),
                 .headerSearchPath("Classes/Functions/TabBarPage"),
                 .headerSearchPath("Classes/Functions/TabBarPage/Controller"),
-                .headerSearchPath("Classes/SDK"),
                 .headerSearchPath("Classes/SDK/Base"),
                 .headerSearchPath("Classes/SDK/BXD"),
                 .headerSearchPath("Classes/Target"),
