@@ -14,8 +14,6 @@
 
 @interface SceneDelegate ()<mk_bxd_stateRestorationDelegate>
 
-@property (nonatomic, strong)UIWindow *window;
-
 @property (nonatomic, strong)UIView *launchView;
 
 @end

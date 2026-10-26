@@ -1,0 +1,1 @@
+../Functions/ScanPage/Model/MKBXDScanDataModel.h

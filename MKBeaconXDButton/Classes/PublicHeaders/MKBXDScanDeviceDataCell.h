@@ -1,0 +1,1 @@
+../Functions/ScanPage/View/MKBXDScanDeviceDataCell.h

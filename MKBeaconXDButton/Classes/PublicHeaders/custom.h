@@ -1,0 +1,1 @@
+../Vendor/libxlsxwriter/include/xlsxwriter/custom.h

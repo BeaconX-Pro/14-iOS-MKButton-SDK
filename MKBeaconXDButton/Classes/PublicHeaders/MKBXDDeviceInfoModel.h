@@ -1,0 +1,1 @@
+../Functions/DeviceInfoPage/Model/MKBXDDeviceInfoModel.h

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0098F0D73064C195007B6D5B /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0098F0D63064C195007B6D5B /* SceneDelegate.m */; };
-		0B98E2B805116ACDB19E6864 /* Pods_MKBeaconXDButton_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47FD0899177B20BB87F34C54 /* Pods_MKBeaconXDButton_Example.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -38,7 +37,6 @@
 		0098F0D63064C195007B6D5B /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		07164103B25BC5693100603D /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		46689EDFA9264E8078F305B3 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		47FD0899177B20BB87F34C54 /* Pods_MKBeaconXDButton_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MKBeaconXDButton_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* MKBeaconXDButton_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MKBeaconXDButton_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -55,12 +53,16 @@
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8F5822B827C60D30B615717B /* MKBeaconXDButton.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MKBeaconXDButton.podspec; path = ../MKBeaconXDButton.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		9C9CC9B05C46B28D38646C53 /* Pods-MKBeaconXDButton_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MKBeaconXDButton_Example.release.xcconfig"; path = "Target Support Files/Pods-MKBeaconXDButton_Example/Pods-MKBeaconXDButton_Example.release.xcconfig"; sourceTree = "<group>"; };
-		CAE0CE9DDA867E611A508301 /* Pods-MKBeaconXDButton_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MKBeaconXDButton_Example.debug.xcconfig"; path = "Target Support Files/Pods-MKBeaconXDButton_Example/Pods-MKBeaconXDButton_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		FDC1324BAB93830435CE70DE /* Pods-MKBeaconXDButton_Example.adhoc.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MKBeaconXDButton_Example.adhoc.xcconfig"; path = "Target Support Files/Pods-MKBeaconXDButton_Example/Pods-MKBeaconXDButton_Example.adhoc.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+		AA0000000000000000000001 /* XCLocalSwiftPackageReference "../" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../;
+		};
+		AA0000000000000000000002 /* XCSwiftPackageProductDependency "MKBeaconXDButton" */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "MKBeaconXDButton";
+		};
 /* Begin PBXFrameworksBuildPhase section */
 		6003F587195388D20070C39A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -69,7 +71,6 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				0B98E2B805116ACDB19E6864 /* Pods_MKBeaconXDButton_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,12 +90,11 @@
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
-				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
+				60FF7A9C1954A5C5007DD14C /* Project Files */,
 				6003F593195388D20070C39A /* Example for MKBeaconXDButton */,
 				6003F5B5195388D20070C39A /* Tests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
-				7A6D8E3C3C49A9384464C1BB /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -114,7 +114,6 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				47FD0899177B20BB87F34C54 /* Pods_MKBeaconXDButton_Example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -162,24 +161,11 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		60FF7A9C1954A5C5007DD14C /* Podspec Metadata */ = {
+		60FF7A9C1954A5C5007DD14C /* Project Files */ = {
 			isa = PBXGroup;
 			children = (
-				8F5822B827C60D30B615717B /* MKBeaconXDButton.podspec */,
-				46689EDFA9264E8078F305B3 /* README.md */,
-				07164103B25BC5693100603D /* LICENSE */,
 			);
-			name = "Podspec Metadata";
-			sourceTree = "<group>";
-		};
-		7A6D8E3C3C49A9384464C1BB /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				CAE0CE9DDA867E611A508301 /* Pods-MKBeaconXDButton_Example.debug.xcconfig */,
-				9C9CC9B05C46B28D38646C53 /* Pods-MKBeaconXDButton_Example.release.xcconfig */,
-				FDC1324BAB93830435CE70DE /* Pods-MKBeaconXDButton_Example.adhoc.xcconfig */,
-			);
-			path = Pods;
+			name = "Project Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,11 +175,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "MKBeaconXDButton_Example" */;
 			buildPhases = (
-				87A23FBF977B3FB922EF2619 /* [CP] Check Pods Manifest.lock */,
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				8BFC7AA2DBA8DC6A74C77BA8 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -203,6 +187,9 @@
 			productName = MKBeaconXDButton;
 			productReference = 6003F58A195388D20070C39A /* MKBeaconXDButton_Example.app */;
 			productType = "com.apple.product-type.application";
+			packageProductDependencies = (
+				AA0000000000000000000002 /* XCSwiftPackageProductDependency "MKBeaconXDButton" */,
+			);
 		};
 		6003F5AD195388D20070C39A /* MKBeaconXDButton_Tests */ = {
 			isa = PBXNativeTarget;
@@ -234,7 +221,10 @@
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
 						DevelopmentTeam = R558LEUW2T;
-					};
+							packageReferences = (
+			AA0000000000000000000001 /* XCLocalSwiftPackageReference "../" */,
+		);
+	};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -255,6 +245,9 @@
 			targets = (
 				6003F589195388D20070C39A /* MKBeaconXDButton_Example */,
 				6003F5AD195388D20070C39A /* MKBeaconXDButton_Tests */,
+			);
+			packageReferences = (
+				AA0000000000000000000001 /* XCLocalSwiftPackageReference "../" */,
 			);
 		};
 /* End PBXProject section */
@@ -281,76 +274,8 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		87A23FBF977B3FB922EF2619 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MKBeaconXDButton_Example-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		8BFC7AA2DBA8DC6A74C77BA8 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MKBeaconXDButton_Example/Pods-MKBeaconXDButton_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/CTMediator/CTMediator.framework",
-				"${BUILT_PRODUCTS_DIR}/CircleProgressBar/CircleProgressBar.framework",
-				"${BUILT_PRODUCTS_DIR}/HHTransition/HHTransition.framework",
-				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
-				"${BUILT_PRODUCTS_DIR}/MKBaseBleModule/MKBaseBleModule.framework",
-				"${BUILT_PRODUCTS_DIR}/MKBaseModuleLibrary/MKBaseModuleLibrary.framework",
-				"${BUILT_PRODUCTS_DIR}/MKBeaconXCustomUI/MKBeaconXCustomUI.framework",
-				"${BUILT_PRODUCTS_DIR}/MKBeaconXDButton/MKBeaconXDButton.framework",
-				"${BUILT_PRODUCTS_DIR}/MKCustomUIModule/MKCustomUIModule.framework",
-				"${BUILT_PRODUCTS_DIR}/MLInputDodger/MLInputDodger.framework",
-				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
-				"${BUILT_PRODUCTS_DIR}/NordicDFU/NordicDFU.framework",
-				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
-				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
-				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
-				"${BUILT_PRODUCTS_DIR}/libxlsxwriter/xlsxwriter.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CTMediator.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CircleProgressBar.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HHTransition.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MKBaseBleModule.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MKBaseModuleLibrary.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MKBeaconXCustomUI.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MKBeaconXDButton.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MKCustomUIModule.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MLInputDodger.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NordicDFU.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SSZipArchive.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/xlsxwriter.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MKBeaconXDButton_Example/Pods-MKBeaconXDButton_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
+
+
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -465,7 +390,6 @@
 		};
 		0085C4D2296FE1300030C41C /* adhoc */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FDC1324BAB93830435CE70DE /* Pods-MKBeaconXDButton_Example.adhoc.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 2026091101;
@@ -477,7 +401,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 2.1.6;
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mokowuhan.mkbeaconxdbutton";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -501,7 +425,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mokowuhan.mkbeaconxdbutton";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MKBeaconXDButton_Example.app/MKBeaconXDButton_Example";
@@ -612,7 +536,6 @@
 		};
 		6003F5C0195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CAE0CE9DDA867E611A508301 /* Pods-MKBeaconXDButton_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 2026091101;
@@ -624,7 +547,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 2.1.6;
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mokowuhan.mkbeaconxdbutton";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -634,7 +557,6 @@
 		};
 		6003F5C1195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 9C9CC9B05C46B28D38646C53 /* Pods-MKBeaconXDButton_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 2026091101;
@@ -646,7 +568,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 2.1.6;
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mokowuhan.mkbeaconxdbutton";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -670,7 +592,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mokowuhan.mkbeaconxdbutton";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MKBeaconXDButton_Example.app/MKBeaconXDButton_Example";
@@ -690,7 +612,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mokowuhan.mkbeaconxdbutton";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MKBeaconXDButton_Example.app/MKBeaconXDButton_Example";

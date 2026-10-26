@@ -1,24 +1,21 @@
 # MKBeaconXDButton
 
-[![CI Status](https://img.shields.io/travis/aadyx2007@163.com/MKBeaconXDButton.svg?style=flat)](https://travis-ci.org/aadyx2007@163.com/MKBeaconXDButton)
-[![Version](https://img.shields.io/cocoapods/v/MKBeaconXDButton.svg?style=flat)](https://cocoapods.org/pods/MKBeaconXDButton)
-[![License](https://img.shields.io/cocoapods/l/MKBeaconXDButton.svg?style=flat)](https://cocoapods.org/pods/MKBeaconXDButton)
-[![Platform](https://img.shields.io/cocoapods/p/MKBeaconXDButton.svg?style=flat)](https://cocoapods.org/pods/MKBeaconXDButton)
-
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example project, clone the repo, and open the Xcode project in the `Example` directory. The example app uses the local Swift package via `relativePath ../`.
 
 ## Requirements
 
 ## Installation
 
-MKBeaconXDButton is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+MKBeaconXDButton is available through Swift Package Manager. To install
+it, simply add the following line to your Package.swift dependencies:
 
-```ruby
-pod 'MKBeaconXDButton'
+```swift
+.package(url: "https://github.com/lovexiaoxia/MKBeaconXDButton.git", from: "0.1.0")
 ```
+
+Or add it via Xcode: File → Add Packages... and enter the repository URL.
 
 ## Author
 
