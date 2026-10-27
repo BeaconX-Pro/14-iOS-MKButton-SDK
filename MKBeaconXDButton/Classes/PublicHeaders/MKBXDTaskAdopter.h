@@ -1,1 +1,0 @@
-../SDK/BXD/MKBXDTaskAdopter.h

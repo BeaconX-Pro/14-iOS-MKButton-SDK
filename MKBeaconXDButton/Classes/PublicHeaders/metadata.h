@@ -1,1 +1,0 @@
-../Vendor/libxlsxwriter/include/metadata.h

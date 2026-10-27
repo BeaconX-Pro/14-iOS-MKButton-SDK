@@ -65,11 +65,12 @@ let package = Package(
             ],
             sources: ["Classes"],
             resources: [.process("Assets")],
-            publicHeadersPath: "Classes/PublicHeaders",
             cSettings: [
                 .headerSearchPath("Classes"),
                 .headerSearchPath("Classes/ConnectManager"),
                 .headerSearchPath("Classes/CTMediator"),
+                .headerSearchPath("Classes/SDK/BXD"),
+                .headerSearchPath("Classes/SDK/Base"),
                 .headerSearchPath("Classes/Expand"),
                 .headerSearchPath("Classes/Expand/ExcelManager"),
                 .headerSearchPath("Classes/Expand/View"),

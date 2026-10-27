@@ -1,1 +1,0 @@
-../Vendor/libxlsxwriter/third_party/tree.h

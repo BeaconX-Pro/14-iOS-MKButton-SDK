@@ -1,1 +1,0 @@
-../Functions/AlarmModeConfigPage/V1/Controller/MKBXDAlarmModeConfigController.h
