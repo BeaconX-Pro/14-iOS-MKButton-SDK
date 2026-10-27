@@ -20,7 +20,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseBleModule.git", from: "1.1.6"),
-        .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseModuleLibrary.git", from: "2.2.19"),
+        .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseModuleLibrary.git", from: "2.2.21"),
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKCustomUIModule.git", from: "2.1.14"),
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBeaconXCustomUI.git", from: "1.0.17"),
     ],
@@ -59,9 +59,6 @@ let package = Package(
             exclude: [
                 "Classes/SDK",
                 "Classes/Functions/UpdatePage",  // NordicDFU 4.16.0 无 SPM
-                "Classes/Vendor/CTMediator",
-                "Classes/Vendor/HHTransition",
-                "Classes/Vendor/MLInputDodger",
             ],
             sources: ["Classes"],
             resources: [.process("Assets")],
@@ -161,9 +158,6 @@ let package = Package(
                 .headerSearchPath("Classes/Functions/TabBarPage/Controller"),
                 .headerSearchPath("Classes/Target"),
                 .headerSearchPath("Classes/Vendor"),
-                .headerSearchPath("Classes/Vendor/CTMediator"),
-                .headerSearchPath("Classes/Vendor/HHTransition"),
-                .headerSearchPath("Classes/Vendor/MLInputDodger"),
                 .headerSearchPath("Classes/Vendor/libxlsxwriter/include"),
             ],
             linkerSettings: [
