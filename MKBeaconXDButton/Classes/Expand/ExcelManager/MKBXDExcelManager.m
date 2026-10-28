@@ -8,7 +8,7 @@
 
 #import "MKBXDExcelManager.h"
 
-#import <xlsxwriter/xlsxwriter.h>
+#import "xlsxwriter.h"
 
 #import "MKMacroDefines.h"
 #import "NSString+MKAdd.h"
