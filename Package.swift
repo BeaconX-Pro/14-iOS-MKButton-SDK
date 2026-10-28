@@ -157,8 +157,6 @@ let package = Package(
                 .headerSearchPath("Classes/Functions/TabBarPage"),
                 .headerSearchPath("Classes/Functions/TabBarPage/Controller"),
                 .headerSearchPath("Classes/Target"),
-                .headerSearchPath("Classes/Vendor"),
-                .headerSearchPath("Classes/Vendor/libxlsxwriter/include"),
             ],
             linkerSettings: [
                 .linkedFramework("UIKit"),
