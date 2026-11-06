@@ -232,25 +232,25 @@ static const char *frameTypeKey = "frameTypeKey";
     if ([dataModel isKindOfClass:MKBXScanUIDCellModel.class]) {
         //UID
         MKBXScanUIDCell *cell = [MKBXScanUIDCell initCellWithTableView:tableView];
-        cell.dataModel = dataModel;
+        cell.dataModel = (MKBXScanUIDCellModel *)dataModel;
         return cell;
     }
     if ([dataModel isKindOfClass:MKBXScanBeaconCellModel.class]){
         //iBeacon
         MKBXScanBeaconCell *cell = [MKBXScanBeaconCell initCellWithTableView:tableView];
-        cell.dataModel = dataModel;
+        cell.dataModel = (MKBXScanBeaconCellModel *)dataModel;
         return cell;
     }
     if ([dataModel isKindOfClass:MKBXDScanDeviceInfoCellModel.class]) {
         //Device Info
         MKBXDScanDeviceInfoCell *cell = [MKBXDScanDeviceInfoCell initCellWithTableView:tableView];
-        cell.dataModel = dataModel;
+        cell.dataModel = (MKBXDScanDeviceInfoCellModel *)dataModel;
         return cell;
     }
     if ([dataModel isKindOfClass:MKBXDScanAdvCellModel.class]) {
         //Adv Data
         MKBXDScanAdvCell *cell = [MKBXDScanAdvCell initCellWithTableView:tableView];
-        cell.dataModel = dataModel;
+        cell.dataModel = (MKBXDScanAdvCellModel *)dataModel;
         return cell;
     }
     

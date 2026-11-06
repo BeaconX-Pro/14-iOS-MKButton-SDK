@@ -110,6 +110,7 @@ let package = Package(
                 .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/AlarmTypePickCell"),
                 .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/SlotBeaconCell"),
                 .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/SlotFramePickCell"),
+                .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/SlotHubbleCell"),
                 .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/SlotParamCell"),
                 .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/SlotUIDCell"),
                 .headerSearchPath("Classes/Functions/AlarmModeConfigPage/View/TriggerTypeClickCell"),

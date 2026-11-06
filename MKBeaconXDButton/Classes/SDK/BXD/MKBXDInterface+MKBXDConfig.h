@@ -121,6 +121,14 @@ NS_ASSUME_NONNULL_BEGIN
                               sucBlock:(void (^)(void))sucBlock
                            failedBlock:(void (^)(NSError *error))failedBlock;
 
+/// Configure the channel broadcast content as Hubble.
+/// @param channelType channelType
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configChannelContentHubble:(MKBXDChannelAlarmType)channelType
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock;
+
 /// Configure the channel broadcast parameters that trigger the alarm function.
 /// @param protocol protocol
 /// @param sucBlock Success callback
@@ -369,6 +377,31 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param failedBlock Failure callback
 + (void)bxd_clearSubButtonLongPressEventDataWithSucBlock:(void (^)(void))sucBlock
                                              failedBlock:(void (^)(NSError *error))failedBlock;
+
+#pragma mark - Hubble
+/// Hubble Device id.
+/// @param deviceID 16 Bytes.(HEX)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configHubbleDeviceID:(NSString *)deviceID
+                        sucBlock:(void (^)(void))sucBlock
+                     failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Hubble Device id.
+/// @param deviceKey 32 Bytes.(HEX)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configHubbleDeviceKey:(NSString *)deviceKey
+                         sucBlock:(void (^)(void))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Hubble Raw Data.
+/// @param rawData 1 Bytes.(HEX)
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_configHubbleRawData:(NSString *)rawData
+                       sucBlock:(void (^)(void))sucBlock
+                    failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark - password
 /// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.

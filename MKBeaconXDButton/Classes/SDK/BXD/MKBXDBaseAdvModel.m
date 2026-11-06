@@ -111,8 +111,11 @@
         tempModel.frameType = MKBXDRespondFrameType;
         return tempModel;
     }
-    if ([typeString isEqualToString:@"20"] || [typeString isEqualToString:@"21"]
-        || [typeString isEqualToString:@"22"] || [typeString isEqualToString:@"23"]) {
+    if ([typeString isEqualToString:@"20"]
+        || [typeString isEqualToString:@"21"]
+        || [typeString isEqualToString:@"22"]
+        || [typeString isEqualToString:@"23"]
+        || [typeString isEqualToString:@"3f"]) {
         //触发广播包
         MKBXDAdvDataModel *tempModel = [[MKBXDAdvDataModel alloc] initWithAdvertiseData:advData];
         tempModel.frameType = MKBXDAdvFrameType;

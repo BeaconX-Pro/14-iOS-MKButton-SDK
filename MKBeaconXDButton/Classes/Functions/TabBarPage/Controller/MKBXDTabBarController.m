@@ -40,6 +40,9 @@
 
 @implementation MKBXDTabBarController
 
+//delegate由UITabBarController实现，这里只是收窄了类型
+@dynamic delegate;
+
 - (void)dealloc {
     NSLog(@"MKBXDTabBarController销毁");
     [[NSNotificationCenter defaultCenter] removeObserver:self];

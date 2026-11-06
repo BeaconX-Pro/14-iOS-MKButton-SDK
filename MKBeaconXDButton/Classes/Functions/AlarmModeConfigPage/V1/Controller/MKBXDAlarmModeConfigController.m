@@ -594,6 +594,7 @@ MKBXDAbnormalInactivityTimeCellDelegate>
     }else if (self.pageType == MKBXDAlarmModeConfigControllerType_abnormal) {
         self.defaultTitle = @"Abnormal inactivity mode";
     }
+    [self setNavTitleFont:MKFont(15.f)];
     self.view.backgroundColor = RGBCOLOR(242, 242, 242);
     [self.rightButton setImage:LOADICON(@"MKBeaconXDButton", @"MKBXDAlarmModeConfigController", @"bxd_slotSaveIcon.png") forState:UIControlStateNormal];
     [self.view addSubview:self.tableView];

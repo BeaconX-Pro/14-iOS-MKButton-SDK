@@ -34,7 +34,7 @@
     //创建新xlsx文件
     lxw_workbook *workbook = workbook_new([path UTF8String]);
     //创建sheet
-    lxw_sheet *worksheet = workbook_add_worksheet(workbook, NULL);
+    lxw_worksheet *worksheet = workbook_add_worksheet(workbook, NULL);
     
     //设置列宽
     /*
@@ -69,8 +69,8 @@
     
     for (NSInteger i = 0; i < list.count; i ++) {
         NSDictionary *dic = list[i];
-        worksheet_write_string(worksheet, i + 1, 0, [SafeStr(dic[@"timestamp"]) UTF8String], NULL);
-        worksheet_write_string(worksheet, i + 1, 1, [SafeStr(dic[@"eventType"]) UTF8String], NULL);
+        worksheet_write_string(worksheet, (lxw_row_t)(i + 1), 0, [SafeStr(dic[@"timestamp"]) UTF8String], NULL);
+        worksheet_write_string(worksheet, (lxw_row_t)(i + 1), 1, [SafeStr(dic[@"eventType"]) UTF8String], NULL);
     }
     
     //关闭，保存文件

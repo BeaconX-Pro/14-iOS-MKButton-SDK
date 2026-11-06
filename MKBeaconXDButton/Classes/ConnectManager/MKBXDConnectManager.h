@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否带有光感传感器
 @property (nonatomic, assign)BOOL lightSensor;
 
-/// 是否是BXP-CR
+/// 是否是BXP-B-CR、BXP-B-ER，二者功能完全一致，所以合并处理
 @property (nonatomic, assign)BOOL isCR;
 
 /// 是否是双按键，只有BXP-B-D&deviceType=2&pcbType=3才支持
@@ -47,6 +47,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 使用新版本的dfu流程
 @property (nonatomic, assign)BOOL isBXPB03D;
+
+/// 是否是BXP-C-HN Hubble
+@property (nonatomic, assign)BOOL isHubble;
 
 + (MKBXDConnectManager *)shared;
 

@@ -90,6 +90,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy)NSString *uuid;
 
+#pragma mark - Hubble
+@property (nonatomic, copy)NSString *deviceKey;
+
+@property (nonatomic, copy)NSString *deviceID;
+
+@property (nonatomic, copy)NSString *rawData;
+
 
 
 #pragma mark - 底部Trigger notification type

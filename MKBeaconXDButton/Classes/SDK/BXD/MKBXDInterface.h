@@ -156,12 +156,13 @@ NS_ASSUME_NONNULL_BEGIN
 /*
     @{
     @"channelType":@"00",       //@"00":Single  @"01":Double   @"02":Long  @"03":Abnormal Inactivity.
-    @"advType":@"0",            //@"0": Alarm Info  @"1":UID  @"2":iBeacon
+    @"advType":@"0",            //@"0": Alarm Info  @"1":UID  @"2":iBeacon @"3":Hubble(No advContent)
     @"advContent":@{
  
  }
  }
- advContent: As follows. There is no advContent if the advType is Alarm Info.
+ advContent: As follows. There is no advContent if the advType is Alarm Info or Hubble.
+ Hubble: advType = 3, no advContent, the deviceKey/deviceID/rawData need to be read from the 7D/7E/7F commands.
  UID
  @"advContent":@{
  @"namespaceID":XXXXXXXX,
@@ -566,6 +567,39 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)bxd_readSubButtonLongPressEventCountWithSucBlock:(void (^)(id returnData))sucBlock
                                              failedBlock:(void (^)(NSError *error))failedBlock;
 
+#pragma mark - Hubble
+/// Hubble Device id.
+/*
+ @{
+ @"deviceID":@"00000000000000000000000000000000"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readHubbleDeviceIDWithSucBlock:(void (^)(id returnData))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Hubble Device key.
+/*
+ @{
+ @"deviceKey":@"0000000000000000000000000000000000000000000000000000000000000000"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readHubbleDeviceKeyWithSucBlock:(void (^)(id returnData))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock;
+
+/// Hubble Device Raw Data.
+/*
+ @{
+ @"data":@"00"
+ }
+ */
+/// @param sucBlock Success callback
+/// @param failedBlock Failure callback
++ (void)bxd_readHubbleRawDataWithSucBlock:(void (^)(id returnData))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock;
 
 #pragma mark - password
 /// Whether the device has enabled password verification when connecting. When the device has disabled password verification, no password is required to connect to the device, otherwise a connection password is required.

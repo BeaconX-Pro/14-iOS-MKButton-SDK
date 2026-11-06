@@ -194,6 +194,7 @@
 + (void)bxd_readChannelAdvContent:(MKBXDChannelAlarmType)channelType
                          sucBlock:(void (^)(id returnData))sucBlock
                       failedBlock:(void (^)(NSError *error))failedBlock {
+    //advType = 3 为Hubble，没有advContent，deviceKey/deviceID/rawData需要通过7D/7E/7F指令读取
     NSString *type = [MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1];
     NSString *commandString = [@"ea003301" stringByAppendingString:type];
     [centralManager addTaskWithTaskID:mk_bxd_taskReadChannelAdvContentOperation
@@ -483,6 +484,31 @@
                                              failedBlock:(void (^)(NSError *error))failedBlock {
     [self readDataWithTaskID:mk_bxd_taskReadSubButtonLongPressEventCountOperation
                      cmdFlag:@"79"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
+#pragma mark - Hubble
++ (void)bxd_readHubbleDeviceIDWithSucBlock:(void (^)(id returnData))sucBlock
+                               failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadHubbleDeviceIDOperation
+                     cmdFlag:@"7d"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
++ (void)bxd_readHubbleDeviceKeyWithSucBlock:(void (^)(id returnData))sucBlock
+                                failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadHubbleDeviceKeyOperation
+                     cmdFlag:@"7e"
+                    sucBlock:sucBlock
+                 failedBlock:failedBlock];
+}
+
++ (void)bxd_readHubbleRawDataWithSucBlock:(void (^)(id returnData))sucBlock
+                              failedBlock:(void (^)(NSError *error))failedBlock {
+    [self readDataWithTaskID:mk_bxd_taskReadHubbleRawDataOperation
+                     cmdFlag:@"7f"
                     sucBlock:sucBlock
                  failedBlock:failedBlock];
 }

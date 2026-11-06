@@ -56,6 +56,9 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskReadSubButtonSinglePressEventCountOperation, //读取副按键单击触发次数
     mk_bxd_taskReadSubButtonDoublePressEventCountOperation, //读取副按键双击触发次数
     mk_bxd_taskReadSubButtonLongPressEventCountOperation,   //读取副按键长按触发次数
+    mk_bxd_taskReadHubbleDeviceIDOperation,                 //读取Hubble deviceID
+    mk_bxd_taskReadHubbleDeviceKeyOperation,                //读取Hubble deviceKey
+    mk_bxd_taskReadHubbleRawDataOperation,                  //读取Hubble原始数据
 
 #pragma mark - custom write
     mk_bxd_taskConfigThreeAxisDataParamsOperation,      //设置3轴传感器参数
@@ -98,6 +101,9 @@ typedef NS_ENUM(NSInteger, mk_bxd_taskOperationID) {
     mk_bxd_taskClearSubBtnSinglePressEventDataOperation,    //清除副按键单击触发次数
     mk_bxd_taskClearSubBtnDoublePressEventDataOperation,    //清除副按键双击触发次数
     mk_bxd_taskClearSubBtnLongPressEventDataOperation,      //清除副按键长按触发次数
+    mk_bxd_taskConfigHubbleDeviceIDOperation,               //设置Hubble deviceID
+    mk_bxd_taskConfigHubbleDeviceKeyOperation,              //设置Hubble deviceKey
+    mk_bxd_taskConfigHubbleRawDataOperation,                //设置Hubble原始数据
     
 #pragma mark - password
     mk_bxd_taskConfigPasswordVerificationOperation,     //设置设备密码验证

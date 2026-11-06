@@ -14,6 +14,8 @@
 
 #import "MKCustomUIAdopter.h"
 
+#import "MKBXDConnectManager.h"
+
 @implementation MKBXDSlotFramePickCellModel
 @end
 
@@ -188,8 +190,6 @@
 - (UIPickerView *)pickerView{
     if (!_pickerView) {
         _pickerView = [[UIPickerView alloc] init];
-        // 显示选中框,iOS10以后分割线默认的是透明的，并且默认是显示的，设置该属性没有意义了，
-        _pickerView.showsSelectionIndicator = YES;
         _pickerView.dataSource = self;
         _pickerView.delegate = self;
         
@@ -204,6 +204,10 @@
 - (NSMutableArray *)dataList {
     if (!_dataList) {
         _dataList = [NSMutableArray arrayWithObjects:@"Alarm info",@"UID",@"iBeacon", nil];
+        //只有Hubble设备才支持HN info
+        if ([MKBXDConnectManager shared].isHubble) {
+            [_dataList addObject:@"HN info"];
+        }
     }
     return _dataList;
 }

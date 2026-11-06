@@ -31,6 +31,7 @@
 #import "MKBXDSlotFramePickCell.h"
 #import "MKBXDSlotBeaconCell.h"
 #import "MKBXDSlotUIDCell.h"
+#import "MKBXDSlotHubbleCell.h"
 
 #import "MKBXDSlotParamCell.h"
 #import "MKBXDAbnormalInactivityTimeCell.h"
@@ -45,6 +46,7 @@ MKTextFieldCellDelegate,
 MKBXDSlotFramePickCellDelegate,
 MKBXDSlotBeaconCellDelegate,
 MKBXDSlotUIDCellDelegate,
+MKBXDSlotHubbleCellDelegate,
 MKBXDSlotParamCellDelegate,
 MKBXDAbnormalInactivityTimeCellDelegate,
 MKBXDTxPowerCellDelegate,
@@ -125,6 +127,9 @@ MKBXDAlarmTypePickCellDelegate>
             return 120.f;
         }
         if (self.dataModel.slotType == bxd_slotType_beacon) {
+            return 160.f;
+        }
+        if (self.dataModel.slotType == bxd_slotType_hubble) {
             return 160.f;
         }
         return 0.f;
@@ -510,6 +515,25 @@ MKBXDAlarmTypePickCellDelegate>
     cellModel.instanceID = text;
 }
 
+#pragma mark - MKBXDSlotHubbleCellDelegate
+- (void)bxd_hubble_deviceKeyChanged:(NSString *)text {
+    self.dataModel.deviceKey = text;
+    MKBXDSlotHubbleCellModel *cellModel = self.section2List[0];
+    cellModel.deviceKey = text;
+}
+
+- (void)bxd_hubble_deviceIDChanged:(NSString *)text {
+    self.dataModel.deviceID = text;
+    MKBXDSlotHubbleCellModel *cellModel = self.section2List[0];
+    cellModel.deviceID = text;
+}
+
+- (void)bxd_hubble_rawDataChanged:(NSString *)text {
+    self.dataModel.rawData = text;
+    MKBXDSlotHubbleCellModel *cellModel = self.section2List[0];
+    cellModel.rawData = text;
+}
+
 #pragma mark - MKBXDSlotParamCellDelegate
 - (void)bxd_slotParam_advIntervalChanged:(NSString *)interval {
     self.dataModel.advInterval = interval;
@@ -655,6 +679,12 @@ MKBXDAlarmTypePickCellDelegate>
         cell.delegate = self;
         return cell;
     }
+    if (self.dataModel.slotType == bxd_slotType_hubble) {
+        MKBXDSlotHubbleCell *cell = [MKBXDSlotHubbleCell initCellWithTableView:self.tableView];
+        cell.dataModel = self.section2List[row];
+        cell.delegate = self;
+        return cell;
+    }
     MKBaseCell *cell = [[MKBaseCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"MKBXDAlarmModeConfigV2ControllerCell"];
     return cell;
 }
@@ -718,6 +748,14 @@ MKBXDAlarmTypePickCellDelegate>
         cellModel.major = self.dataModel.major;
         cellModel.minor = self.dataModel.minor;
         cellModel.uuid = self.dataModel.uuid;
+        [self.section2List addObject:cellModel];
+        return;
+    }
+    if (self.dataModel.slotType == bxd_slotType_hubble) {
+        MKBXDSlotHubbleCellModel *cellModel = [[MKBXDSlotHubbleCellModel alloc] init];
+        cellModel.deviceKey = self.dataModel.deviceKey;
+        cellModel.deviceID = self.dataModel.deviceID;
+        cellModel.rawData = self.dataModel.rawData;
         [self.section2List addObject:cellModel];
         return;
     }
@@ -876,6 +914,7 @@ MKBXDAlarmTypePickCellDelegate>
     }else if (self.pageType == MKBXDAlarmModeConfigV2ControllerType_abnormal) {
         self.defaultTitle = @"Abnormal inactivity mode";
     }
+    [self setNavTitleFont:MKFont(15.f)];
     self.view.backgroundColor = RGBCOLOR(242, 242, 242);
     [self.rightButton setImage:LOADICON(@"MKBeaconXDButton", @"MKBXDAlarmModeConfigV2Controller", @"bxd_slotSaveIcon.png") forState:UIControlStateNormal];
     [self.view addSubview:self.tableView];

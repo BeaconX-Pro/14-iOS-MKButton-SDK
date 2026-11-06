@@ -186,6 +186,16 @@
                    failedBlock:failedBlock];
 }
 
++ (void)bxd_configChannelContentHubble:(MKBXDChannelAlarmType)channelType
+                              sucBlock:(void (^)(void))sucBlock
+                           failedBlock:(void (^)(NSError *error))failedBlock {
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea013302",[MKBXDBaseSDKAdopter fetchHexValue:channelType byteLen:1],@"03"];
+    [self configDataWithTaskID:mk_bxd_taskConfigChannelContentOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
 + (void)bxd_configTriggerChannelAdvParams:(id <MKBXDTriggerChannelAdvParamsProtocol>)protocol
                                  sucBlock:(void (^)(void))sucBlock
                               failedBlock:(void (^)(NSError *error))failedBlock {
@@ -584,6 +594,51 @@
                                              failedBlock:(void (^)(NSError *error))failedBlock {
     NSString *commandString = @"ea017c00";
     [self configDataWithTaskID:mk_bxd_taskClearSubBtnLongPressEventDataOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
+#pragma mark - Hubble
++ (void)bxd_configHubbleDeviceID:(NSString *)deviceID
+                        sucBlock:(void (^)(void))sucBlock
+                     failedBlock:(void (^)(NSError *error))failedBlock {
+    if (![deviceID isKindOfClass:NSString.class] || deviceID.length != 32 || ![MKBXDBaseSDKAdopter checkHexCharacter:deviceID]) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        return;
+    }
+    NSString *len = [MKBXDBaseSDKAdopter fetchHexValue:(deviceID.length / 2) byteLen:1];
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea017d",len,deviceID];
+    [self configDataWithTaskID:mk_bxd_taskConfigHubbleDeviceIDOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_configHubbleDeviceKey:(NSString *)deviceKey
+                         sucBlock:(void (^)(void))sucBlock
+                      failedBlock:(void (^)(NSError *error))failedBlock {
+    if (![deviceKey isKindOfClass:NSString.class] || deviceKey.length != 64 || ![MKBXDBaseSDKAdopter checkHexCharacter:deviceKey]) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        return;
+    }
+    NSString *len = [MKBXDBaseSDKAdopter fetchHexValue:(deviceKey.length / 2) byteLen:1];
+    NSString *commandString = [NSString stringWithFormat:@"%@%@%@",@"ea017e",len,deviceKey];
+    [self configDataWithTaskID:mk_bxd_taskConfigHubbleDeviceKeyOperation
+                          data:commandString
+                      sucBlock:sucBlock
+                   failedBlock:failedBlock];
+}
+
++ (void)bxd_configHubbleRawData:(NSString *)rawData
+                       sucBlock:(void (^)(void))sucBlock
+                    failedBlock:(void (^)(NSError *error))failedBlock {
+    if (![rawData isKindOfClass:NSString.class] || rawData.length != 2 || ![MKBXDBaseSDKAdopter checkHexCharacter:rawData]) {
+        [MKBXDBaseSDKAdopter operationParamsErrorBlock:failedBlock];
+        return;
+    }
+    NSString *commandString = [NSString stringWithFormat:@"%@%@",@"ea017f01",rawData];
+    [self configDataWithTaskID:mk_bxd_taskConfigHubbleRawDataOperation
                           data:commandString
                       sucBlock:sucBlock
                    failedBlock:failedBlock];

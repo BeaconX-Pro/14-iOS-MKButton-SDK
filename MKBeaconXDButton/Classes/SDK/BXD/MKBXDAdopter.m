@@ -140,6 +140,8 @@
             return @"03";
         case mk_bxd_reminderType_ledAndBuzzer:
             return @"05";
+        default:
+            return @"00";
     }
 }
 
@@ -227,6 +229,11 @@
         
         [resultDic setObject:advContent forKey:@"advContent"];
         
+        return resultDic;
+    }
+    
+    if ([advType isEqualToString:@"3"]) {
+        //Hubble，没有advContent，deviceKey/deviceID/rawData需要通过7D/7E/7F指令读取
         return resultDic;
     }
     

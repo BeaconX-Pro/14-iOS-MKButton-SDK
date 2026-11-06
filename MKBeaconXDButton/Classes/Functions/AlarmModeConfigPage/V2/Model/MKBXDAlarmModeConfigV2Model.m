@@ -50,6 +50,12 @@
             [self operationFailedBlockWithMsg:@"Read Content Data Error" block:failedBlock];
             return;
         }
+        if (self.slotType == bxd_slotType_hubble) {
+            if (![self readHubbleParams]) {
+                [self operationFailedBlockWithMsg:@"Read Hubble Params Error" block:failedBlock];
+                return;
+            }
+        }
         if (self.alarmType == 3) {
             if (![self readAbnormalTime]) {
                 [self operationFailedBlockWithMsg:@"Read Abnormal Time Error" block:failedBlock];
@@ -113,6 +119,11 @@
             }
         }else if (self.slotType == bxd_slotType_beacon) {
             if (![self configBeacon]) {
+                [self operationFailedBlockWithMsg:@"Config Content Data Error" block:failedBlock];
+                return;
+            }
+        }else if (self.slotType == bxd_slotType_hubble) {
+            if (![self configHubbleParams]) {
                 [self operationFailedBlockWithMsg:@"Config Content Data Error" block:failedBlock];
                 return;
             }
@@ -341,6 +352,93 @@
     return success;
 }
 
+- (BOOL)readHubbleParams {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_readHubbleDeviceKeyWithSucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.deviceKey = returnData[@"result"][@"deviceKey"];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    if (!success) {
+        return NO;
+    }
+    
+    success = NO;
+    [MKBXDInterface bxd_readHubbleDeviceIDWithSucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.deviceID = returnData[@"result"][@"deviceID"];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    if (!success) {
+        return NO;
+    }
+    
+    success = NO;
+    [MKBXDInterface bxd_readHubbleRawDataWithSucBlock:^(id  _Nonnull returnData) {
+        success = YES;
+        self.rawData = returnData[@"result"][@"data"];
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
+
+- (BOOL)configHubbleParams {
+    __block BOOL success = NO;
+    [MKBXDInterface bxd_configChannelContentHubble:self.alarmType sucBlock:^{
+        success = YES;
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    if (!success) {
+        return NO;
+    }
+    
+    success = NO;
+    [MKBXDInterface bxd_configHubbleDeviceKey:self.deviceKey sucBlock:^{
+        success = YES;
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    if (!success) {
+        return NO;
+    }
+    
+    success = NO;
+    [MKBXDInterface bxd_configHubbleDeviceID:self.deviceID sucBlock:^{
+        success = YES;
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    if (!success) {
+        return NO;
+    }
+    
+    success = NO;
+    [MKBXDInterface bxd_configHubbleRawData:self.rawData sucBlock:^{
+        success = YES;
+        dispatch_semaphore_signal(self.semaphore);
+    } failedBlock:^(NSError * _Nonnull error) {
+        dispatch_semaphore_signal(self.semaphore);
+    }];
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    return success;
+}
+
 - (BOOL)readAbnormalTime {
     __block BOOL success = NO;
     [MKBXDInterface bxd_readAbnormalInactivityTimeWithSucBlock:^(id  _Nonnull returnData) {
@@ -563,13 +661,23 @@
             return NO;
         }
     }else if (self.slotType == bxd_slotType_beacon) {
-        if (!ValidStr(self.major) || ![self.major integerValue] < 0 || [self.major integerValue] > 65535) {
+        if (!ValidStr(self.major) || [self.major integerValue] < 0 || [self.major integerValue] > 65535) {
             return NO;
         }
-        if (!ValidStr(self.minor) || ![self.minor integerValue] < 0 || [self.minor integerValue] > 65535) {
+        if (!ValidStr(self.minor) || [self.minor integerValue] < 0 || [self.minor integerValue] > 65535) {
             return NO;
         }
         if (!ValidStr(self.uuid) || self.uuid.length != 32) {
+            return NO;
+        }
+    }else if (self.slotType == bxd_slotType_hubble) {
+        if (!ValidStr(self.deviceKey) || self.deviceKey.length != 64) {
+            return NO;
+        }
+        if (!ValidStr(self.deviceID) || self.deviceID.length != 32) {
+            return NO;
+        }
+        if (!ValidStr(self.rawData) || self.rawData.length != 2) {
             return NO;
         }
     }

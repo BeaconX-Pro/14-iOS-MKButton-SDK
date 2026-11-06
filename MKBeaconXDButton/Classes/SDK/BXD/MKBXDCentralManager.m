@@ -361,10 +361,12 @@ static void(^g_restorationCompletion)(NSArray<CBPeripheral *> *restoredPeriphera
 }
 
 - (void)startScan {
-    [[MKBXDBaseCentralManager shared] scanForPeripheralsWithServices:@[[CBUUID UUIDWithString:@"FEAA"],
-                                                                       [CBUUID UUIDWithString:@"FEAB"],
-                                                                       [CBUUID UUIDWithString:@"FEE0"],
-                                                                       [CBUUID UUIDWithString:@"EA00"]]
+    NSArray *services = @[[CBUUID UUIDWithString:@"FEAA"],
+                          [CBUUID UUIDWithString:@"FEAB"],
+                          [CBUUID UUIDWithString:@"FEE0"],
+                          [CBUUID UUIDWithString:@"EA00"],
+                          [CBUUID UUIDWithString:@"FCA6"]];
+    [[MKBXDBaseCentralManager shared] scanForPeripheralsWithServices:services
                                                              options:nil];
 }
 
@@ -388,7 +390,7 @@ static void(^g_restorationCompletion)(NSArray<CBPeripheral *> *restoredPeriphera
         __strong typeof(self) sself = weakSelf;
         if (![result isKindOfClass:NSDictionary.class]) {
             [sself clearAllParams];
-            [self operationFailedBlockWithMsg:@"Read Error" failedBlock:failedBlock];
+            [sself operationFailedBlockWithMsg:@"Read Error" failedBlock:failedBlock];
             return;
         }
         [sself clearAllParams];

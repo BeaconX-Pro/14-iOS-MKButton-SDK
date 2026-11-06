@@ -238,8 +238,6 @@ static CGFloat const pickerViewWidth = 110.f;
 - (UIPickerView *)pickerView{
     if (!_pickerView) {
         _pickerView = [[UIPickerView alloc] init];
-        // 显示选中框,iOS10以后分割线默认的是透明的，并且默认是显示的，设置该属性没有意义了，
-        _pickerView.showsSelectionIndicator = YES;
         _pickerView.dataSource = self;
         _pickerView.delegate = self;
         

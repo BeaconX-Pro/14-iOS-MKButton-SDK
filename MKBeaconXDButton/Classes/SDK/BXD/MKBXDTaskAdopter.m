@@ -496,6 +496,24 @@
         resultDic = @{
             @"count":count,
         };
+    }else if ([cmd isEqualToString:@"7d"]) {
+        //读取Hubble deviceID
+        operationID = mk_bxd_taskReadHubbleDeviceIDOperation;
+        resultDic = @{
+            @"deviceID":content,
+        };
+    }else if ([cmd isEqualToString:@"7e"]) {
+        //读取Hubble deviceKey
+        operationID = mk_bxd_taskReadHubbleDeviceKeyOperation;
+        resultDic = @{
+            @"deviceKey":content,
+        };
+    }else if ([cmd isEqualToString:@"7f"]) {
+        //读取Hubble原始数据
+        operationID = mk_bxd_taskReadHubbleRawDataOperation;
+        resultDic = @{
+            @"data":content,
+        };
     }
     
     return [self dataParserGetDataSuccess:resultDic operationID:operationID];
@@ -622,6 +640,15 @@
     }else if ([cmd isEqualToString:@"7c"]) {
         //清除副按键长按触发次数
         operationID = mk_bxd_taskClearSubBtnLongPressEventDataOperation;
+    }else if ([cmd isEqualToString:@"7d"]) {
+        //设置Hubble deviceID
+        operationID = mk_bxd_taskConfigHubbleDeviceIDOperation;
+    }else if ([cmd isEqualToString:@"7e"]) {
+        //设置Hubble deviceKey
+        operationID = mk_bxd_taskConfigHubbleDeviceKeyOperation;
+    }else if ([cmd isEqualToString:@"7f"]) {
+        //设置Hubble原始数据
+        operationID = mk_bxd_taskConfigHubbleRawDataOperation;
     }
     
     return [self dataParserGetDataSuccess:@{@"success":@(success)} operationID:operationID];

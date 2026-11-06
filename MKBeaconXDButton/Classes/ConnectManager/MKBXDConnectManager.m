@@ -73,28 +73,33 @@
             [self operationFailedMsg:@"Read Software Failed!" completeBlock:failedBlock];
             return;
         }
-        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-(D|CR)$"
-                                                                               options:0
-                                                                                 error:nil];
-        NSUInteger numberOfMatches = [regex numberOfMatchesInString:software
-                                                            options:0
-                                                              range:NSMakeRange(0, [software length])];
-        if (numberOfMatches <= 0) {
-            [self operationFailedMsg:@"Opps:The current app only supports BXP-B type devices!" completeBlock:failedBlock];
-            return;
+        self.isHubble = [software containsString:@"BXP-HN"];
+        if (!self.isHubble) {
+            //以下为BXP-B相关的判断，BXP-HN不需要
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-(D|CR|ER)$"
+                                                                                   options:0
+                                                                                     error:nil];
+            NSUInteger numberOfMatches = [regex numberOfMatchesInString:software
+                                                                options:0
+                                                                  range:NSMakeRange(0, [software length])];
+            if (numberOfMatches <= 0) {
+                [self operationFailedMsg:@"Opps:The current app only supports BXP-B type devices!" completeBlock:failedBlock];
+                return;
+            }
+            
+            self.isBXPB03D = [software containsString:@"BXP-B03-D"];
+            
+            //BXP-B-CR 与 BXP-B-ER 仅芯片不同，功能完全一致，合并判断
+            NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-(CR|ER)$"
+                                                                                    options:0
+                                                                                      error:nil];
+            NSUInteger crMatches = [regex1 numberOfMatchesInString:software
+                                                           options:0
+                                                             range:NSMakeRange(0, [software length])];
+            self.isCR = (crMatches > 0);
+            //BXP-B-D&deviceType=02&pcbType=3
+            self.doubleBtn = (crMatches <= 0 && self.pcbType == 3);
         }
-        
-        self.isBXPB03D = [software containsString:@"BXP-B03-D"];
-        
-        NSRegularExpression *regex1 = [NSRegularExpression regularExpressionWithPattern:@"^.*BXP-B.*-CR$"
-                                                                               options:0
-                                                                                 error:nil];
-        NSUInteger crMatches = [regex1 numberOfMatchesInString:software
-                                                       options:0
-                                                         range:NSMakeRange(0, [software length])];
-        self.isCR = (crMatches > 0);
-        //BXP-B-D&deviceType=02&pcbType=3
-        self.doubleBtn = (crMatches <= 0 && self.pcbType == 3);
         if (![self readSensorStatus]) {
             [self operationFailedMsg:@"Read Sensor Error" completeBlock:failedBlock];
             return;
