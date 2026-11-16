@@ -114,7 +114,22 @@
     __block BOOL success = NO;
     [MKBXDInterface bxd_readAlarmNotificationType:self.alarmType sucBlock:^(id  _Nonnull returnData) {
         success = YES;
-        self.alarmNotiType = [returnData[@"result"][@"alarmNotificationType"] integerValue];
+        
+        NSInteger type = [returnData[@"result"][@"alarmNotificationType"] integerValue];
+        if ([MKBXDConnectManager shared].isCR) {
+            self.alarmNotiType = type;
+        }else {
+            if (type == 0) {
+                self.alarmNotiType = 0;
+            }else if (type == 1) {
+                self.alarmNotiType = 1;
+            }else if (type == 3) {
+                self.alarmNotiType = 2;
+            }else if (type == 5) {
+                self.alarmNotiType = 3;
+            }
+        }
+        
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {
         dispatch_semaphore_signal(self.semaphore);
@@ -125,7 +140,19 @@
 
 - (BOOL)configAlarmType {
     __block BOOL success = NO;
-    [MKBXDInterface bxd_configAlarmNotificationType:self.alarmType reminderType:self.alarmNotiType sucBlock:^{
+    mk_bxd_reminderType reminderType = mk_bxd_reminderType_silent;
+    if ([MKBXDConnectManager shared].isCR) {
+        reminderType = self.alarmNotiType;
+    }else {
+        if (self.alarmNotiType == 1) {
+            reminderType = mk_bxd_reminderType_led;
+        }else if (self.alarmNotiType == 2) {
+            reminderType = mk_bxd_reminderType_buzzer;
+        }else if (self.alarmNotiType == 3) {
+            reminderType = mk_bxd_reminderType_ledAndBuzzer;
+        }
+    }
+    [MKBXDInterface bxd_configAlarmNotificationType:self.alarmType reminderType:reminderType sucBlock:^{
         success = YES;
         dispatch_semaphore_signal(self.semaphore);
     } failedBlock:^(NSError * _Nonnull error) {

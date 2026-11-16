@@ -103,6 +103,10 @@ static const char *frameTypeKey = "frameTypeKey";
     if ([advModel isKindOfClass:MKBXDAdvDataModel.class]) {
         //触发数据包
         MKBXDAdvDataModel *tempModel = (MKBXDAdvDataModel *)advModel;
+        if (tempModel.alarmType == MKBXDAdvAlarmType_productTest) {
+            //产测数据包不生成对应的广播帧cell
+            return nil;
+        }
         MKBXDScanAdvCellModel *cellModel = [[MKBXDScanAdvCellModel alloc] init];
         cellModel.alarmMode = tempModel.alarmType;
         cellModel.triggerStatus = tempModel.triggerStatus;

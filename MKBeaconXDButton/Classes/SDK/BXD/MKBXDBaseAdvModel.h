@@ -23,6 +23,7 @@ typedef NS_ENUM(NSInteger, MKBXDAdvAlarmType) {
     MKBXDAdvAlarmType_double,                    //Double click to trigger info frame.
     MKBXDAdvAlarmType_long,                      //Long press to trigger info frame.
     MKBXDAdvAlarmType_abnormalInactivity,        //Abnormal inactivity to trigger info frame.
+    MKBXDAdvAlarmType_productTest,               //Product test info
 };
 
 @class CBPeripheral;

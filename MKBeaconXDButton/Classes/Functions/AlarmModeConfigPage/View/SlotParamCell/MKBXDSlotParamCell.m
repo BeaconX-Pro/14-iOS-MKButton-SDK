@@ -290,7 +290,7 @@
 - (MKTextField *)intervalField {
     if (!_intervalField) {
         _intervalField = [MKCustomUIAdopter customNormalTextFieldWithText:@""
-                                                              placeHolder:@"1~100"
+                                                              placeHolder:@"1~500"
                                                                  textType:mk_realNumberOnly];
         _intervalField.font = MKFont(12.f);
         _intervalField.maxLength = 3;

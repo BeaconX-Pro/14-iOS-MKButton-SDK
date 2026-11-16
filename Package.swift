@@ -23,6 +23,7 @@ let package = Package(
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBaseModuleLibrary.git", from: "2.2.21"),
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKCustomUIModule.git", from: "2.1.14"),
         .package(url: "https://github.com/MOKO-iOS-Base-Library/MKBeaconXCustomUI.git", from: "1.0.17"),
+        .package(url: "https://github.com/nordicsemi/IOS-DFU-Library.git", from: "4.17.0"),
     ],
     targets: [
         .target(
@@ -54,11 +55,11 @@ let package = Package(
                 "MKBaseModuleLibrary",
                 "MKCustomUIModule",
                 "MKBeaconXCustomUI",
+                .product(name: "NordicDFU", package: "IOS-DFU-Library"),
             ],
             path: "MKBeaconXDButton",
             exclude: [
                 "Classes/SDK",
-                "Classes/Functions/UpdatePage",  // NordicDFU 4.16.0 无 SPM
             ],
             sources: ["Classes"],
             resources: [.process("Assets")],
@@ -158,6 +159,8 @@ let package = Package(
                 .headerSearchPath("Classes/Functions/TabBarPage"),
                 .headerSearchPath("Classes/Functions/TabBarPage/Controller"),
                 .headerSearchPath("Classes/Target"),
+                .headerSearchPath("Classes/Functions/UpdatePage/Controller"),
+                .headerSearchPath("Classes/Functions/UpdatePage/Model"),
             ],
             linkerSettings: [
                 .linkedFramework("UIKit"),

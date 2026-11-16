@@ -251,6 +251,9 @@ static CGFloat const batteryIconHeight = 25.f;
     
     if (ValidStr(_dataModel.deviceID)) {
         self.devieIDLabel.text = [NSString stringWithFormat:@"Device ID:0x%@",_dataModel.deviceID];
+    }else {
+        //cell复用时清空上一个设备的Device ID，避免UID等无Device ID的广播帧显示残留数据
+        self.devieIDLabel.text = @"";
     }
     [self setNeedsLayout];
 }

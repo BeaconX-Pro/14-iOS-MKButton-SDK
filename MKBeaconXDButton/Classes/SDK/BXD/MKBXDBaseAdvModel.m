@@ -174,6 +174,8 @@
             alarmType = MKBXDAdvAlarmType_long;
         }else if ([typeString isEqualToString:@"23"]) {
             alarmType = MKBXDAdvAlarmType_abnormalInactivity;
+        }else if ([typeString isEqualToString:@"3f"]) {
+            alarmType = MKBXDAdvAlarmType_productTest;
         }
         self.alarmType = alarmType;
         
